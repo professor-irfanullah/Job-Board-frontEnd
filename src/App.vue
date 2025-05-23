@@ -9,5 +9,5 @@
 <script setup>
 import testLoginAndFileUpload from "./components/tempCVupload.vue";
 import login from "./components/testLoginAndFileUpload.vue";
-import navBar from "./components/customNavbar.vue";
+import navBar from "./components/navBar.vue";
 </script>
