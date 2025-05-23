@@ -39,7 +39,7 @@ import axios from "axios";
 import { ref } from "vue";
 
 // production_url
-const url = "https://job-board-frontend-production.up.railway.app/";
+const url = "https://authentication-production-18e1.up.railway.app";
 // Auth refs
 const email = ref();
 const password = ref();
