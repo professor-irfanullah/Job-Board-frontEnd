@@ -38,8 +38,6 @@
 import axios from "axios";
 import { ref } from "vue";
 
-// production_url
-const url = "https://authentication-production-18e1.up.railway.app";
 // Auth refs
 const email = ref();
 const password = ref();
@@ -76,9 +74,8 @@ const handleFileChange = (event) => {
 
 const loginUser = async () => {
   try {
-    // const url = "http://localhost:3000/api/auth/login",
     const response = await axios.post(
-      url,
+      "http://localhost:3000/api/auth/login",
       {
         email: email.value,
         password: password.value,
@@ -116,11 +113,14 @@ const uploadFile = async () => {
 
   formData.append("profile", file.value);
 
-  // "http://localhost:3000/api/seeker/profile/picture",
   try {
-    const response = await axios.post(url, formData, {
-      withCredentials: true,
-    });
+    const response = await axios.post(
+      "http://localhost:3000/api/seeker/profile/picture",
+      formData,
+      {
+        withCredentials: true,
+      }
+    );
     console.log(response);
 
     fileUrl.value = response.data.url;
