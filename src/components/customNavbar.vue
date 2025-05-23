@@ -5,13 +5,13 @@
         <!-- Logo and main menu items -->
         <div class="flex items-center">
           <!-- Logo -->
-          <router-link to="/" class="flex-shrink-0 flex items-center">
+          <router-link to="/tempNav" class="flex-shrink-0 flex items-center">
             <img
               class="h-8 w-auto"
               src="../../public/vite.svg"
-              alt="Company Logo"
+              alt="JobBoard Logo"
             />
-            <span class="ml-2 text-xl font-bold text-gray-900">Company</span>
+            <span class="ml-2 text-xl font-bold text-gray-900">JobConnect</span>
           </router-link>
 
           <!-- Desktop menu items -->
@@ -30,14 +30,16 @@
 
         <!-- Right side items (search, profile, etc.) -->
         <div class="hidden sm:ml-6 sm:flex sm:items-center">
-          <!-- Search button -->
+          <!-- Notifications -->
           <button
             type="button"
-            class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative"
           >
-            <span class="sr-only">Search</span>
-            <!-- <MagnifyingGlassIcon class="h-6 w-6" /> -->
-            <f-a-c icon="magnifying-glass" />
+            <span class="sr-only">View notifications</span>
+            <f-a-c icon="bell" class="h-6 w-6" />
+            <span
+              class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white"
+            ></span>
           </button>
 
           <!-- Profile dropdown -->
@@ -54,7 +56,10 @@
                 <span class="sr-only">Open user menu</span>
                 <img
                   class="h-8 w-8 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  :src="
+                    user.avatar ||
+                    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+                  "
                   alt="User profile"
                 />
               </button>
@@ -75,8 +80,12 @@
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="user-menu-button"
-                tabindex="-1"
+                tabindex="1"
               >
+                <div class="px-4 py-2 text-sm text-gray-700 border-b">
+                  <div>Signed in as</div>
+                  <div class="font-medium truncate">{{ user.email }}</div>
+                </div>
                 <router-link
                   v-for="item in userNavigation"
                   :key="item.name"
@@ -95,7 +104,7 @@
         <!-- Mobile menu button -->
         <div class="-mr-2 flex items-center sm:hidden">
           <button
-            @click="toggleMobileMenu"
+            @click="isMobileMenuOpen = !isMobileMenuOpen"
             type="button"
             class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
             aria-controls="mobile-menu"
@@ -103,14 +112,11 @@
           >
             <span class="sr-only">Open main menu</span>
             <f-a-c icon="bars" v-if="!isMobileMenuOpen" class="block h-6 w-6" />
-            <!-- <Bars3Icon v-if="!isMobileMenuOpen" class="block h-6 w-6" />
-            <XMarkIcon v-else class="block h-6 w-6" /> -->
             <f-a-c icon="xmark" v-else class="block h-6 w-6" />
           </button>
         </div>
       </div>
     </div>
-
     <!-- Mobile menu -->
     <transition
       enter-active-class="transition ease-out duration-100"
@@ -139,18 +145,29 @@
             <div class="flex-shrink-0">
               <img
                 class="h-10 w-10 rounded-full"
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                :src="
+                  user.avatar ||
+                  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+                "
                 alt="User profile"
               />
             </div>
             <div class="ml-3">
-              <div class="text-base font-medium text-gray-800">John Doe</div>
+              <div class="text-base font-medium text-gray-800">
+                {{ user.name }}
+              </div>
               <div class="text-sm font-medium text-gray-500">
-                john@example.com
+                {{ user.email }}
               </div>
             </div>
           </div>
           <div class="mt-3 space-y-1">
+            <router-link
+              to="/post-job"
+              class="block w-full px-4 py-2 text-base font-medium text-center text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
+            >
+              Post a Job
+            </router-link>
             <router-link
               v-for="item in userNavigation"
               :key="item.name"
@@ -165,40 +182,36 @@
     </transition>
   </nav>
 </template>
-
 <script setup>
 import { onMounted, onUnmounted, ref } from "vue";
-// import {
-//   MagnifyingGlassIcon,
-//   Bars3Icon,
-//   XMarkIcon,
-// } from "@heroicons/vue/24/outline";
+const isMobileMenuOpen = ref(false);
+const isProfileDropdownOpen = ref(false);
+// Sample user data - replace with your actual user data
+const user = ref({
+  name: "John Doe",
+  email: "john@example.com",
+  avatar: "",
+  role: "employer", // or 'job_seeker'
+});
 
 const navigation = [
   { name: "Home", path: "/", current: true },
-  { name: "Products", path: "/", current: false },
-  { name: "Services", path: "/", current: false },
-  { name: "About", path: "/", current: false },
-  { name: "Contact", path: "/", current: false },
+  { name: "Find Jobs", path: "/jobs", current: false },
+  { name: "Companies", path: "/companies", current: false },
+  { name: "Career Resources", path: "/resources", current: false },
 ];
 
 const userNavigation = [
-  { name: "Your Profile", path: "/" },
-  { name: "Settings", path: "/" },
-  { name: "Sign out", path: "/" },
+  { name: "Dashboard", path: "/dashboard" },
+  { name: "My Profile", path: "/profile" },
+  { name: "Saved Jobs", path: "/saved-jobs" },
+  { name: "Applications", path: "/applications" },
+  { name: "Account Settings", path: "/settings" },
+  { name: "Sign out", path: "/logout" },
 ];
-
-const isMobileMenuOpen = ref(false);
-const isProfileDropdownOpen = ref(false);
-
-const toggleMobileMenu = () => {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value;
-};
-
 const toggleProfileDropdown = () => {
   isProfileDropdownOpen.value = !isProfileDropdownOpen.value;
 };
-
 // Close dropdowns when clicking outside
 const handleClickOutside = (event) => {
   if (!event.target.closest(".relative")) {
@@ -211,14 +224,12 @@ const handleClickOutside = (event) => {
     isMobileMenuOpen.value = false;
   }
 };
-
 // Add event listener when component mounts
-onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
-});
 
 // Clean up event listener when component unmounts
-onUnmounted(() => {
-  document.removeEventListener("click", handleClickOutside);
-});
 </script>
+<style scoped>
+.active {
+  font: bold;
+}
+</style>

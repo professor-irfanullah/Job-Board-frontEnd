@@ -74,8 +74,9 @@ const handleFileChange = (event) => {
 
 const loginUser = async () => {
   try {
+    // "http://localhost:3000/api/auth/login",
     const response = await axios.post(
-      "http://localhost:3000/api/auth/login",
+      "https://authentication-production-18e1.up.railway.app/api/auth/login",
       {
         email: email.value,
         password: password.value,
