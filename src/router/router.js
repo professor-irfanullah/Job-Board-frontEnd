@@ -6,7 +6,7 @@ const routes = [
     },
     {
         path: '/tempNav',
-        component: () => import('../components/navBar.vue')
+        component: () => import('../components/navbar2.0.vue')
     },
     {
         path: '/:pathMatch(.*)*',
