@@ -136,39 +136,42 @@
         class="absolute top-16 right-0 w-full h-[40vh] max-w-full min-w-0 overflow-y-auto w700:hidden z-50 bg-white shadow-md"
       >
         <div
-          class="center flex flex-col space-y-4 items-center text-gray-600 font-sans font-semibold text-sm"
+          class="center flex flex-col space-y-1 text-gray-600 font-sans font-semibold text-sm px-4"
         >
           <router-link
             @click="hideMobileMenuAfterClick"
-            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
             to="/"
             active-class="text-gray-900"
             >Home</router-link
           >
           <router-link
             @click="hideMobileMenuAfterClick"
-            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
             to="/a"
             active-class="text-gray-900"
             >Find Jobs</router-link
           >
           <router-link
             @click="hideMobileMenuAfterClick"
-            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
             to="/b"
             active-class="text-gray-900"
             >Companies</router-link
           >
           <router-link
             @click="hideMobileMenuAfterClick"
-            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
             to="/c"
             active-class="text-gray-900"
             >Career Resources</router-link
           >
         </div>
-        <div v-if="isAuthenticated" class="mt-2 flex items flex-col border-t">
-          <div class="links flex flex-col gap-3 justify-center items-center">
+        <div
+          v-if="isAuthenticated"
+          class="mt-4 flex items flex-col border-t px-4 mb-4"
+        >
+          <div class="links flex flex-col space-y-1">
             <div
               class="userInfo cursor-default mb-2 break-words flex items-center gap-4"
             >
@@ -180,45 +183,55 @@
                 />
               </div>
               <div class="info">
-                <small>Jhon Doe</small>
+                <small>Professor Irfan</small>
                 <p class="break-words">irfanprofessor60@gmail.com</p>
               </div>
             </div>
             <router-link
               @click="hideMobileMenuAfterClick"
-              class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/dashboard"
               >Dashboard</router-link
             >
             <router-link
               @click="hideMobileMenuAfterClick"
-              class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/profile"
               >My Profile</router-link
             >
             <router-link
               @click="hideMobileMenuAfterClick"
-              class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/dashboard"
               >Saved Jobs</router-link
             >
             <router-link
               @click="hideMobileMenuAfterClick"
-              class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/dashboard"
               >Applications</router-link
             >
             <router-link
               @click="hideMobileMenuAfterClick"
-              class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/dashboard"
               >Account Settings</router-link
             >
             <router-link
               @click="hideMobileMenuAfterClick"
-              class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/dashboard"
               >Sign out</router-link
+            >
+          </div>
+        </div>
+        <div class="mt-2" v-else>
+          <hr />
+          <div class="button text-sm p-2 mt-2 w-fit ml-2">
+            <router-link
+              to="/"
+              class="font-medium border p-2 bg-blue-500/70 rounded-md hover:bg-blue-500/90 transition"
+              >Sign In</router-link
             >
           </div>
         </div>
@@ -229,7 +242,7 @@
 <script setup>
 import { ref } from "vue";
 
-const isAuthenticated = ref(true);
+const isAuthenticated = ref(false);
 const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 

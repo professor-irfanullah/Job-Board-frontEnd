@@ -34,7 +34,7 @@
             <div>
               <label
                 for="username"
-                class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+                class="text-sm font-medium text-gray-700 mb-1 flex items-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@
             <div>
               <label
                 for="email"
-                class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+                class="text-sm font-medium text-gray-700 mb-1 flex items-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
