@@ -12,7 +12,7 @@
       >
         <router-link
           class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-          to="/"
+          to="/home"
           active-class="text-gray-900"
           >Home</router-link
         >
@@ -141,7 +141,7 @@
           <router-link
             @click="hideMobileMenuAfterClick"
             class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-            to="/"
+            to="/home"
             active-class="text-gray-900"
             >Home</router-link
           >
@@ -229,7 +229,7 @@
           <hr />
           <div class="button text-sm p-2 mt-2 w-fit ml-2">
             <router-link
-              to="/"
+              to="/home"
               class="font-medium border p-2 bg-blue-500/70 rounded-md hover:bg-blue-500/90 transition"
               @click="hideMobileMenuAfterClick"
               >Sign Up</router-link
