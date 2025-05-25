@@ -229,7 +229,7 @@
           <hr />
           <div class="button text-sm p-2 mt-2 w-fit ml-2">
             <router-link
-              to="/home"
+              to="/"
               class="font-medium border p-2 bg-blue-500/70 rounded-md hover:bg-blue-500/90 transition"
               @click="hideMobileMenuAfterClick"
               >Sign Up</router-link
