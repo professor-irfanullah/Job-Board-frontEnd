@@ -11,13 +11,13 @@ import './style.css'
 import router from './router/router'
 // Import FontAwesome library and icons
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUser, faCoffee, faSearch, faCheckCircle, faTimesCircle, faEdit, faPlus, faMagnifyingGlass, faBars, faXmark, faBell } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faCoffee, faSearch, faCheckCircle, faTimesCircle, faEdit, faPlus, faMagnifyingGlass, faBars, faXmark, faBell, faCode } from '@fortawesome/free-solid-svg-icons'
 
 // Import the FontAwesome component
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // Add icons to the library
-library.add(faUser, faCoffee, faSearch, faCheckCircle, faTimesCircle, faEdit, faPlus, faMagnifyingGlass, faBars, faXmark, faBell)
+library.add(faUser, faCoffee, faSearch, faCheckCircle, faTimesCircle, faEdit, faPlus, faMagnifyingGlass, faBars, faXmark, faBell, faCode)
 
 const app = createApp(App)
 

@@ -109,7 +109,7 @@
       </div>
       <div class="hidden w700:block" v-else>
         <router-link
-          class="font-semibold border p-2 rounded-md bg-indigo-300 hover:bg-indigo-400 transition"
+          class="border p-2 rounded-md bg-indigo-300 hover:bg-indigo-400 transition font-medium text-sm"
           to="/"
           >Sign Up</router-link
         >
@@ -231,7 +231,8 @@
             <router-link
               to="/"
               class="font-medium border p-2 bg-blue-500/70 rounded-md hover:bg-blue-500/90 transition"
-              >Sign In</router-link
+              @click="hideMobileMenuAfterClick"
+              >Sign Up</router-link
             >
           </div>
         </div>
