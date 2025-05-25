@@ -5,6 +5,14 @@ const routes = [
         component: () => import('../views/registerVue.vue')
     },
     {
+        path: '/login',
+        component: () => import('../views/loginVue.vue')
+    },
+    {
+        path: '/profile',
+        component: () => import('../views/myProfile.vue')
+    },
+    {
         path: '/:pathMatch(.*)*',
         component: () => import('../views/notFound.vue') // Create this component
     }
