@@ -86,6 +86,7 @@
               </label>
               <input
                 v-model="form.email"
+                @focus="handlfocus"
                 type="email"
                 id="email"
                 required
@@ -126,6 +127,17 @@
               />
             </div>
 
+            <div v-if="errMsg" class="err">
+              <p class="font-medium text-red-400 text-sm">
+                {{ errMsg || "An error has occured!" }}
+              </p>
+            </div>
+
+            <div v-if="okMessage" class="ok">
+              <p class="font-medium text-green-400 text-sm">
+                {{ okMessage || "Every thing is under controll!" }}
+              </p>
+            </div>
             <!-- Terms Checkbox -->
             <div class="flex items-center">
               <input
@@ -148,8 +160,9 @@
 
             <!-- Submit Button -->
             <button
+              :disabled="isButtonDisabled"
               type="submit"
-              class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition flex items-center justify-center"
+              class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition flex items-center justify-center disabled:bg-indigo-400 disabled:cursor-not-allowed"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -328,17 +341,59 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { ref } from "vue";
 
+const okMessage = ref("");
 const form = ref({
   username: "",
   email: "",
   password: "",
 });
-
-const handleSubmit = () => {
+const registerUrl = "http://localhost:3000/api/auth/register";
+const errMsg = ref("");
+const isButtonDisabled = ref(false);
+const validateEmail = () => {
+  const regex = /[a-zA-Z0-9]+[a-zA-Z0-9]+@[a-z]{3,}.com$/;
+  if (regex.test(form.value.email)) {
+    return true;
+  }
+  return false;
+};
+const handlfocus = () => {
+  isButtonDisabled.value = false;
+  errMsg.value = "";
+};
+const handleSubmit = async () => {
   // Handle form submission logic here
-  console.log("Form submitted:", form.value);
+  const isEmailValid = validateEmail();
+
+  if (!isEmailValid) {
+    errMsg.value = "Invalid Email";
+    isButtonDisabled.value = true;
+    return;
+  }
+
+  try {
+    okMessage.value = "Please wait...";
+    const response = await axios.post(registerUrl, {
+      user_name: form.value.username,
+      email: form.value.email,
+      password: form.value.password,
+    });
+    okMessage.value = response.data.message;
+    errMsg.value = "";
+    form.value.email = "";
+    isButtonDisabled.value = true;
+    // console.log(response);
+  } catch (error) {
+    console.error(error);
+    errMsg.value = error.response.data.msg || error.response.data.err;
+    isButtonDisabled.value = true;
+    okMessage.value = "";
+    isButtonDisabled.value = true;
+  }
+
   // You would typically send this data to your backend API
 };
 </script>

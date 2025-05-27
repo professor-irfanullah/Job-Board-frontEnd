@@ -133,7 +133,7 @@
     >
       <div
         v-if="isMobileMenuOpen"
-        class="absolute top-16 right-0 w-full h-[40vh] max-w-full min-w-0 overflow-y-auto w700:hidden z-50 bg-white shadow-md"
+        class="absolute top-16 right-0 w-full h-fit p-2 max-w-full min-w-0 overflow-y-auto w700:hidden z-50 bg-white shadow-md"
       >
         <div
           class="center flex flex-col space-y-1 text-gray-600 font-sans font-semibold text-sm px-4"
@@ -243,7 +243,7 @@
 <script setup>
 import { ref } from "vue";
 
-const isAuthenticated = ref(false);
+const isAuthenticated = ref(true);
 const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 

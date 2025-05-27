@@ -49,6 +49,7 @@
                 Email
               </label>
               <input
+                @focus="handlfocus"
                 v-model="form.email"
                 type="email"
                 id="email"
@@ -108,11 +109,21 @@
                 >
               </div>
             </div>
-
+            <div v-if="errMsg" class="err">
+              <p class="font-medium text-sm text-red-400 capitalize">
+                {{ errMsg || "something went wrong!" }}
+              </p>
+            </div>
+            <div v-if="okMessage" class="err">
+              <p class="font-medium text-sm text-green-400">
+                {{ okMessage || "Every thing looks good!" }}
+              </p>
+            </div>
             <!-- Submit Button -->
             <button
+              :disabled="isButtonDisabled"
               type="submit"
-              class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition flex items-center justify-center"
+              class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition flex items-center justify-center disabled:bg-indigo-300 disabled:cursor-not-allowed"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -261,16 +272,57 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { ref } from "vue";
 
+const url = "http://localhost:3000/api/auth/login";
+const errMsg = ref("");
+const okMessage = ref("");
+const isButtonDisabled = ref(false);
 const form = ref({
   email: "",
   password: "",
 });
-
-const handleSubmit = () => {
+const validateEmail = () => {
+  const regex = /[a-zA-Z0-9]+[a-zA-Z0-9]+@[a-z]{3,}.com$/;
+  if (regex.test(form.value.email)) {
+    return true;
+  }
+  return false;
+};
+const handlfocus = () => {
+  isButtonDisabled.value = false;
+  errMsg.value = "";
+};
+const handleSubmit = async () => {
   // Handle login submission logic here
-  console.log("Login form submitted:", form.value);
   // You would typically send this data to your authentication API
+  const isEmailValid = validateEmail();
+  if (!isEmailValid) {
+    errMsg.value = "Invalid Email!";
+    isButtonDisabled.value = true;
+    return;
+  }
+  try {
+    const response = await axios.post(
+      url,
+      {
+        email: form.value.email,
+        password: form.value.password,
+      },
+      { withCredentials: true }
+    );
+    // we will later redirect the user to the dashboard
+    okMessage.value = `Welcome Back Dear ${response.data.name}`;
+    isButtonDisabled.value = true;
+    errMsg.value = "";
+    form.value.email = "";
+    form.value.password = "";
+    console.log(response);
+  } catch (error) {
+    okMessage.value = "";
+    errMsg.value = error.response.data.err;
+    isButtonDisabled.value = true;
+  }
 };
 </script>
