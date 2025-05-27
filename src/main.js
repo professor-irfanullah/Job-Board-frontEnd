@@ -3,6 +3,7 @@
 
 // createApp(App).mount('#app')
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 // import router from './router/router'
 import './style.css'
@@ -20,7 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faUser, faCoffee, faSearch, faCheckCircle, faTimesCircle, faEdit, faPlus, faMagnifyingGlass, faBars, faXmark, faBell, faCode)
 
 const app = createApp(App)
-
+app.use(createPinia())
 app.use(router)
 // Register FontAwesome globally
 app.component('f-a-c', FontAwesomeIcon)

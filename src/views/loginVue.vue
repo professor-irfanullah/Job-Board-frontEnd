@@ -276,6 +276,8 @@ import axios from "axios";
 import { ref } from "vue";
 
 const url = "http://localhost:3000/api/auth/login";
+const railwayUrl =
+  "https://authentication-production-18e1.up.railway.app/api/auth/login";
 const errMsg = ref("");
 const okMessage = ref("");
 const isButtonDisabled = ref(false);
@@ -305,7 +307,7 @@ const handleSubmit = async () => {
   }
   try {
     const response = await axios.post(
-      url,
+      railwayUrl,
       {
         email: form.value.email,
         password: form.value.password,
@@ -318,7 +320,6 @@ const handleSubmit = async () => {
     errMsg.value = "";
     form.value.email = "";
     form.value.password = "";
-    console.log(response);
   } catch (error) {
     okMessage.value = "";
     errMsg.value = error.response.data.err;

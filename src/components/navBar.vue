@@ -183,8 +183,12 @@
                 />
               </div>
               <div class="info">
-                <small>Professor Irfan</small>
-                <p class="break-words">irfanprofessor60@gmail.com</p>
+                <small v-if="user.userName">{{
+                  user || "Professor Irfan"
+                }}</small>
+                <p v-if="user.email" class="break-words">
+                  irfanprofessor60@gmail.com
+                </p>
               </div>
             </div>
             <router-link
@@ -241,13 +245,45 @@
   </nav>
 </template>
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
+import { useUserState } from "../store/useUserState";
 
-const isAuthenticated = ref(true);
+// const useStore = useUserState();
 const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
-
+const isAuthenticated = ref(false);
+const useStore = useUserState();
+const user = ref({
+  userName: null,
+  email: null,
+});
 const hideMobileMenuAfterClick = () => {
   isMobileMenuOpen.value = false;
 };
+
+const userProfile = async () => {
+  try {
+    const response = await useStore.fetchUser();
+    if (response.err) {
+      isAuthenticated.value = false;
+      return;
+    }
+    isAuthenticated.value = true;
+    console.log(response);
+    // // console.log(useStore);
+    // isAuthenticated.value = true;
+    user.value.email = useStore.user.user.email;
+    user.value.userName = useStore.user.user.name;
+  } catch (error) {
+    isAuthenticated.value = false;
+    console.error(error);
+  }
+};
+watch(
+  () => user.value,
+  (newVal) => {
+    console.log("val changed , ", newVal);
+  }
+);
+onMounted(() => userProfile());
 </script>
