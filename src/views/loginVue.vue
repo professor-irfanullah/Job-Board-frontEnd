@@ -115,7 +115,7 @@
               </p>
             </div>
             <div v-if="okMessage" class="err">
-              <p class="font-medium text-sm text-green-400">
+              <p class="font-medium text-sm text-green-400 capitalize">
                 {{ okMessage || "Every thing looks good!" }}
               </p>
             </div>
@@ -279,7 +279,6 @@ import { useAuthStore } from "../store/useUserState";
 
 const store = useAuthStore();
 const router = useRouter();
-const url = "http://localhost:3000/api/auth/login";
 const railwayUrl =
   "https://authentication-production-18e1.up.railway.app/api/auth/login";
 const errMsg = ref("");
@@ -305,16 +304,24 @@ const handleSubmit = async () => {
   const isEmailValid = validateEmail();
   if (!isEmailValid) {
     errMsg.value = "Invalid Email!";
+    isButtonDisabled.value = true;
     okMessage.value = "";
     return;
   }
 
-  const respone = await store.login(form.value.email, form.value.password);
-  if (respone.err) {
-    errMsg.value = respone.err;
+  const response = await store.login(form.value.email, form.value.password);
+  if (
+    response.err ||
+    response === "Invalid credentials" ||
+    response === "User not found!"
+  ) {
+    errMsg.value = response.err || response;
     okMessage.value = "";
+    isButtonDisabled.value = true;
+    return;
   } else {
-    okMessage.value = `welcome back ${respone.name}`;
+    isButtonDisabled.value = true;
+    okMessage.value = `welcome back ${response.name}`;
     errMsg.value = "";
     setTimeout(() => {
       router.push("/dashboard");

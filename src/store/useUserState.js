@@ -34,6 +34,8 @@ export const useAuthStore = defineStore('auth', () => {
             return response.data
         } catch (err) {
             error.value = err
+            isAuthenticated.value = false
+            message.value = null
             return err.response.data.err
         }
     }
