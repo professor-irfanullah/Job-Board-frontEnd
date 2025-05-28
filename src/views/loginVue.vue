@@ -30,7 +30,7 @@
             <div>
               <label
                 for="email"
-                class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+                class="text-sm font-medium text-gray-700 mb-1 flex items-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@
             <div>
               <label
                 for="password"
-                class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+                class="text-sm font-medium text-gray-700 mb-1 flex items-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -276,7 +276,6 @@ import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../store/useUserState";
-import { storeToRefs } from "pinia";
 
 const store = useAuthStore();
 const router = useRouter();
