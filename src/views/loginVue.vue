@@ -279,7 +279,6 @@ import { useAuthStore } from "../store/useUserState";
 import { storeToRefs } from "pinia";
 
 const store = useAuthStore();
-const { user, error } = storeToRefs(store);
 const router = useRouter();
 const url = "http://localhost:3000/api/auth/login";
 const railwayUrl =
@@ -303,45 +302,6 @@ const handlfocus = () => {
   errMsg.value = "";
   okMessage.value = "";
 };
-/*
-const handleSubmit = async () => {
-  // Handle login submission logic here
-  // You would typically send this data to your authentication API
-  const isEmailValid = validateEmail();
-  if (!isEmailValid) {
-    errMsg.value = "Invalid Email!";
-    isButtonDisabled.value = true;
-    return;
-  }
-  try {
-    okMessage.value = "Please wait...";
-    const response = await axios.post(
-      url,
-      {
-        email: form.value.email,
-        password: form.value.password,
-      },
-      { withCredentials: true }
-    );
-    // we will later redirect the user to the dashboard
-    okMessage.value = `Welcome Back Dear ${response.data.name}`;
-    isButtonDisabled.value = true;
-    errMsg.value = "";
-    form.value.email = "";
-    form.value.password = "";
-  } catch (error) {
-    okMessage.value = "";
-    errMsg.value = error.response.data.err;
-    isButtonDisabled.value = true;
-  }
-  //   finally {
-  //     setTimeout(() => {
-  //       window.location.href = "http://localhost:5173/#/home";
-  //       window.location.reload();
-  //     }, 2000);
-  //   }
-};
-*/
 const handleSubmit = async () => {
   const isEmailValid = validateEmail();
   if (!isEmailValid) {
@@ -351,13 +311,15 @@ const handleSubmit = async () => {
   }
 
   const respone = await store.login(form.value.email, form.value.password);
-  // console.log(respone);
   if (respone.err) {
     errMsg.value = respone.err;
     okMessage.value = "";
   } else {
     okMessage.value = `welcome back ${respone.name}`;
     errMsg.value = "";
+    setTimeout(() => {
+      router.push("/dashboard");
+    }, 2000);
   }
 };
 </script>
