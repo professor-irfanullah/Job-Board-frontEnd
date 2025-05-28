@@ -274,7 +274,13 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../store/useUserState";
+import { storeToRefs } from "pinia";
 
+const store = useAuthStore();
+const { user, error } = storeToRefs(store);
+const router = useRouter();
 const url = "http://localhost:3000/api/auth/login";
 const railwayUrl =
   "https://authentication-production-18e1.up.railway.app/api/auth/login";
@@ -295,7 +301,9 @@ const validateEmail = () => {
 const handlfocus = () => {
   isButtonDisabled.value = false;
   errMsg.value = "";
+  okMessage.value = "";
 };
+/*
 const handleSubmit = async () => {
   // Handle login submission logic here
   // You would typically send this data to your authentication API
@@ -306,6 +314,7 @@ const handleSubmit = async () => {
     return;
   }
   try {
+    okMessage.value = "Please wait...";
     const response = await axios.post(
       url,
       {
@@ -324,6 +333,31 @@ const handleSubmit = async () => {
     okMessage.value = "";
     errMsg.value = error.response.data.err;
     isButtonDisabled.value = true;
+  }
+  //   finally {
+  //     setTimeout(() => {
+  //       window.location.href = "http://localhost:5173/#/home";
+  //       window.location.reload();
+  //     }, 2000);
+  //   }
+};
+*/
+const handleSubmit = async () => {
+  const isEmailValid = validateEmail();
+  if (!isEmailValid) {
+    errMsg.value = "Invalid Email!";
+    okMessage.value = "";
+    return;
+  }
+
+  const respone = await store.login(form.value.email, form.value.password);
+  // console.log(respone);
+  if (respone.err) {
+    errMsg.value = respone.err;
+    okMessage.value = "";
+  } else {
+    okMessage.value = `welcome back ${respone.name}`;
+    errMsg.value = "";
   }
 };
 </script>

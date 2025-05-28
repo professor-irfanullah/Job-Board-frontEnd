@@ -365,7 +365,7 @@ const profile = reactive({
   photo_url: "",
   resume_url: "",
   linkedin_url: "johndoe",
-  github_url: "https://github.com/professor-irfanullah/Job-Board-frontEnd.git",
+  github_url: "https://github.com/professor-irfanullah",
 });
 
 const editableProfile = ref({ ...profile });

@@ -1,5 +1,5 @@
 <template>
-  <nav class="p-4 shadow-md mb-2 relative">
+  <nav class="p-4 shadow-md relative">
     <div class="main flex justify-between items-center flex-wrap">
       <div class="left inline-flex items-center w200:gap-2">
         <img src="../../public/vite.svg" alt="" class="w200:h-8 w200:w-8" />
@@ -35,7 +35,7 @@
           >Career Resources</router-link
         >
       </div>
-      <div v-if="isAuthenticated" class="right hidden w700:block">
+      <div v-if="store.isAuthenticated" class="right hidden w700:block">
         <div class="bell_and_user_icon flex justify-center items-center gap-3">
           <div class="bell">
             <f-a-c
@@ -95,11 +95,12 @@
                       to="/dashboard"
                       >Account Settings</router-link
                     >
-                    <router-link
+                    <button
+                      @click="handleSignOut"
                       class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                      to="/dashboard"
-                      >Sign out</router-link
                     >
+                      Sign out
+                    </button>
                   </div>
                 </div>
               </div>
@@ -168,7 +169,7 @@
           >
         </div>
         <div
-          v-if="isAuthenticated"
+          v-if="store.isAuthenticated"
           class="mt-4 flex items flex-col border-t px-4 mb-4"
         >
           <div class="links flex flex-col space-y-1">
@@ -183,11 +184,9 @@
                 />
               </div>
               <div class="info">
-                <small v-if="user.userName">{{
-                  user || "Professor Irfan"
-                }}</small>
-                <p v-if="user.email" class="break-words">
-                  irfanprofessor60@gmail.com
+                <small>{{ store.user.user.name || "Professor Irfan" }}</small>
+                <p class="break-words">
+                  {{ store.user.user.email || "irfanprofessor60@gmail.com" }}
                 </p>
               </div>
             </div>
@@ -221,12 +220,12 @@
               to="/dashboard"
               >Account Settings</router-link
             >
-            <router-link
-              @click="hideMobileMenuAfterClick"
+            <button
+              @click="handleSignOut"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-              to="/dashboard"
-              >Sign out</router-link
             >
+              Sign out
+            </button>
           </div>
         </div>
         <div class="mt-2" v-else>
@@ -245,45 +244,19 @@
   </nav>
 </template>
 <script setup>
-import { onMounted, ref, watch } from "vue";
-import { useUserState } from "../store/useUserState";
-
-// const useStore = useUserState();
+import { ref } from "vue";
+import { useAuthStore } from "../store/useUserState";
+const store = useAuthStore();
 const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
-const isAuthenticated = ref(false);
-const useStore = useUserState();
-const user = ref({
-  userName: null,
-  email: null,
-});
 const hideMobileMenuAfterClick = () => {
   isMobileMenuOpen.value = false;
 };
 
-const userProfile = async () => {
-  try {
-    const response = await useStore.fetchUser();
-    if (response.err) {
-      isAuthenticated.value = false;
-      return;
-    }
-    isAuthenticated.value = true;
-    console.log(response);
-    // // console.log(useStore);
-    // isAuthenticated.value = true;
-    user.value.email = useStore.user.user.email;
-    user.value.userName = useStore.user.user.name;
-  } catch (error) {
-    isAuthenticated.value = false;
-    console.error(error);
-  }
+const handleSignOut = async () => {
+  await store.logOut();
+  setTimeout(() => {
+    isMobileMenuOpen.value = false;
+  }, 2000);
 };
-watch(
-  () => user.value,
-  (newVal) => {
-    console.log("val changed , ", newVal);
-  }
-);
-onMounted(() => userProfile());
 </script>
