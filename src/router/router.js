@@ -39,10 +39,15 @@ const isAuth = async () => {
     }
 }
 const publicPaths = ['/', '/login']
+const privatePaths = ['/dashboard', '/profile', '/saved-job', '/accout-setting', 'sign-out', '/application']
 router.beforeEach(async (to, from, next) => {
     const isPublic = publicPaths.includes(to.path)
+    const isPrivate = privatePaths.includes(to.path)
     const isAuthenticated = await isAuth()
     if (isAuthenticated && isPublic) {
+        return next('/home')
+    }
+    if (isAuthenticated === false && isPrivate) {
         return next('/home')
     }
     next()
