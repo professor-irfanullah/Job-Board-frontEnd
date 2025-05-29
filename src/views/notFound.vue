@@ -72,7 +72,7 @@
     >
       <div class="relative max-w-md mx-auto">
         <div
-          class="absolute inset-0 bg-purple-100 rounded-full opacity-20 blur-xl animate-pulse"
+          class="absolute inset-0 bg-purple-100 rounded-full opacity-10 blur-xl animate-pulse z-40"
         ></div>
         <svg
           class="relative w-full h-auto"

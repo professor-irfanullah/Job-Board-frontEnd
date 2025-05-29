@@ -246,6 +246,8 @@
 <script setup>
 import { ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const store = useAuthStore();
 const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
@@ -254,9 +256,23 @@ const hideMobileMenuAfterClick = () => {
 };
 
 const handleSignOut = async () => {
+  const privatePaths = [
+    "/dashboard",
+    "/profile",
+    "/saved-job",
+    "/accout-setting",
+    "/sign-out",
+    "/application",
+  ];
+
   await store.logOut();
+  // console.log(router.currentRoute.value.path);
+
   setTimeout(() => {
+    if (privatePaths.includes(router.currentRoute.value.path)) {
+      router.push("/home");
+    }
     isMobileMenuOpen.value = false;
-  }, 2000);
+  }, 1000);
 };
 </script>

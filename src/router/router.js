@@ -47,7 +47,7 @@ router.beforeEach(async (to, from, next) => {
     if (isAuthenticated && isPublic) {
         return next('/home')
     }
-    if (isAuthenticated === false && isPrivate) {
+    if (!isAuthenticated && isPrivate) {
         return next('/home')
     }
     next()
