@@ -18,6 +18,11 @@ const routes = [
         path: '/profile',
         component: () => import('../views/myProfile.vue')
     },
+
+    {
+        path: '/dashboard',
+        component: () => import('../views/dashBoard.vue')
+    },
     {
         path: '/:pathMatch(.*)*',
         component: () => import('../views/notFound.vue') // Create this component

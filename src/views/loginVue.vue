@@ -110,12 +110,16 @@
               </div>
             </div>
             <div v-if="errMsg" class="err">
-              <p class="font-medium text-sm text-red-400 capitalize">
+              <p
+                class="font-medium text-sm text-red-400 capitalize animate-pulse"
+              >
                 {{ errMsg || "something went wrong!" }}
               </p>
             </div>
             <div v-if="okMessage" class="err">
-              <p class="font-medium text-sm text-green-400 capitalize">
+              <p
+                class="font-medium text-sm text-green-400 capitalize animate-pulse"
+              >
                 {{ okMessage || "Every thing looks good!" }}
               </p>
             </div>
@@ -321,7 +325,7 @@ const handleSubmit = async () => {
     return;
   } else {
     isButtonDisabled.value = true;
-    okMessage.value = `welcome back ${response.name}`;
+    okMessage.value = `Please wait while we log you in...`;
     errMsg.value = "";
     setTimeout(() => {
       router.push("/dashboard");
