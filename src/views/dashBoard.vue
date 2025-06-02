@@ -37,6 +37,7 @@
         class="card hover:cursor-pointer hover:transition p-6 bg-white rounded-xl border-l-4 border-yellow-500 flex flex-col gap-2 hover:shadow-md transition"
       >
         <div class="iconandlogo flex justify-between items-center">
+          c
           <h1 class="text-lg font-semibold text-gray-500">
             Application Pending
           </h1>
@@ -70,7 +71,7 @@
         <div class="outer bg-gray-100 h-2.5 rounded-full">
           <div
             class="inner h-2.5 bg-green-400 rounded-full"
-            style="width: 400px"
+            style="max-width: 100%; width: 80%"
           ></div>
         </div>
         <router-link to="/profile" class="text-green-500 font-semibold text-sm">
@@ -84,7 +85,8 @@
         <h1 class="font-bold text-xl">Quick Actions</h1>
       </div>
       <section class="actions flex flex-col gap-3 p-4">
-        <div
+        <router-link
+          to="/upload-resume"
           class="resume flex items-center gap-4 border p-4 rounded-md hover:cursor-pointer hover:bg-gray-50 transition"
         >
           <div class="icon px-4 py-3 rounded-full bg-blue-100">
@@ -94,40 +96,43 @@
             <h1 class="font-semibold">Upload Resume</h1>
             <small>Increase your chances</small>
           </div>
-        </div>
-        <div
+        </router-link>
+        <router-link
+          to="/profile"
           class="profile flex items-center gap-4 border p-4 rounded-md hover:cursor-pointer hover:bg-gray-50 transition"
         >
           <div class="icon px-3 py-3 rounded-full bg-green-100">
             <f-a-c class="text-green-600 text-xl" :icon="faUserEdit" />
           </div>
           <div class="text flex flex-col">
-            <h1 class="font-semibold">Upload Resume</h1>
+            <h1 class="font-semibold">Complete your Profile</h1>
             <small>Increase your chances</small>
           </div>
-        </div>
-        <div
+        </router-link>
+        <router-link
+          to="/job-alerts"
           class="alerts flex items-center gap-4 border p-4 rounded-md hover:cursor-pointer hover:bg-gray-50 transition"
         >
           <div class="icon text-xl py-2 px-3 rounded-full bg-purple-100">
             <f-a-c class="text-xl text-purple-600" :icon="faBell" />
           </div>
           <div class="text flex flex-col">
-            <h1 class="font-semibold">Upload Resume</h1>
+            <h1 class="font-semibold">Job Alerts</h1>
             <small>Increase your chances</small>
           </div>
-        </div>
-        <div
+        </router-link>
+        <router-link
+          to="/saved-jobs"
           class="saved flex items-center gap-4 border p-4 rounded-md hover:cursor-pointer hover:bg-gray-50 transition"
         >
           <div class="icon px-3 py-2 rounded-full bg-red-100">
             <f-a-c class="text-xl text-red-600" :icon="faHeart" />
           </div>
           <div class="text flex flex-col">
-            <h1 class="font-semibold">Upload Resume</h1>
+            <h1 class="font-semibold">Saved Jobs</h1>
             <small>Increase your chances</small>
           </div>
-        </div>
+        </router-link>
       </section>
     </section>
   </main>

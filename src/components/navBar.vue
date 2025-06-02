@@ -48,7 +48,7 @@
             class="img relative cursor-pointer"
           >
             <img
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+              :src="image_url"
               alt="user logo"
               class="w-8 h-8 rounded-full"
             />
@@ -178,7 +178,7 @@
             >
               <div class="img">
                 <img
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  :src="image_url"
                   alt="user logo"
                   class="w-8 h-8 rounded-full"
                 />
@@ -247,6 +247,9 @@
 import { ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 import { useRouter } from "vue-router";
+const image_url = ref(
+  "https://res.cloudinary.com/dbvxz2y0g/image/upload/v1748851459/images_nknhl8.png"
+);
 const router = useRouter();
 const store = useAuthStore();
 const isMobileMenuOpen = ref(false);

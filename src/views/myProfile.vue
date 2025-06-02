@@ -89,7 +89,7 @@
             <!-- Left Column -->
             <div>
               <!-- Bio Section -->
-              <div class="mb-8">
+              <div class="mb-8 p-4 rounded-md bg-gray-50">
                 <div class="flex items-center mb-4">
                   <div class="bg-indigo-100 p-2 rounded-lg">
                     <svg
@@ -558,19 +558,19 @@
 import { ref, reactive } from "vue";
 
 const defaultProfileImage =
-  "https://res.cloudinary.com/dbvxz2y0g/image/upload/v1747718277/profile_images/zexgapiwqiej6eoasgfa.jpg";
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWh4JQiguAxq1T3C0NPL_e4KgaRWS-a5_EgQ&s";
 
 // Profile data (would normally come from API)
 const profile = reactive({
-  username: "Alex Johnson",
-  email: "alex.johnson@example.com",
+  username: "Irfan Ullah",
+  email: "irfanprofessor60@gmail.com",
   bio: "Senior Full Stack Developer with 8+ years of experience building scalable web applications. Specialized in JavaScript frameworks (Vue.js, React) and cloud architecture. Passionate about creating intuitive user experiences and mentoring junior developers.",
   headline: "Senior Full Stack Developer | JavaScript Specialist",
-  location: "San Francisco, CA",
+  location: "Barikot, Swat",
   photo_url: "",
-  resume_url: "https://example.com/resume.pdf",
-  linkedin_url: "alexjohnson",
-  github_url: "alexjohnson-dev",
+  resume_url: "",
+  linkedin_url: "",
+  github_url: "",
 });
 
 const editableProfile = ref({ ...profile });
