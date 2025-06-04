@@ -48,7 +48,7 @@
             class="img relative cursor-pointer"
           >
             <img
-              :src="image_url"
+              :src="store.profile_url || image_url"
               alt="user logo"
               class="w-8 h-8 rounded-full"
             />
@@ -67,7 +67,7 @@
                 <div class="items bg-gray-100/90 p-2 rounded-md">
                   <div class="userInfo cursor-default mb-2">
                     <small>Signed in as</small>
-                    <p>irfanprofessor60@gmail.com</p>
+                    <p>{{ store?.user?.user?.email || "undefined" }}</p>
                   </div>
                   <div class="links flex flex-col gap-3">
                     <router-link
@@ -244,7 +244,7 @@
   </nav>
 </template>
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 import { useRouter } from "vue-router";
 const image_url = ref(
@@ -269,6 +269,7 @@ const handleSignOut = async () => {
   ];
 
   await store.logOut();
+
   // console.log(router.currentRoute.value.path);
 
   setTimeout(() => {

@@ -555,22 +555,27 @@
   </div>
 </template>
 <script setup>
-import { ref, reactive } from "vue";
-
+import { ref, reactive, onMounted } from "vue";
+import { useAuthStore } from "../store/useUserState";
+const store = useAuthStore();
 const defaultProfileImage =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWh4JQiguAxq1T3C0NPL_e4KgaRWS-a5_EgQ&s";
 
 // Profile data (would normally come from API)
 const profile = reactive({
-  username: "Irfan Ullah",
-  email: "irfanprofessor60@gmail.com",
-  bio: "Senior Full Stack Developer with 8+ years of experience building scalable web applications. Specialized in JavaScript frameworks (Vue.js, React) and cloud architecture. Passionate about creating intuitive user experiences and mentoring junior developers.",
-  headline: "Senior Full Stack Developer | JavaScript Specialist",
-  location: "Barikot, Swat",
-  photo_url: "",
-  resume_url: "",
-  linkedin_url: "",
-  github_url: "",
+  username: store?.user?.user?.name || "undefined",
+  email: store?.user?.user?.email || "undefined",
+  bio:
+    store?.userInfo?.data?.bio ||
+    "" /*"Senior Full Stack Developer with 8+ years of experience building scalable web applications. Specialized in JavaScript frameworks (Vue.js, React) and cloud architecture. Passionate about creating intuitive user experiences and mentoring junior developers." */,
+  headline:
+    store?.userInfo?.data?.headline ||
+    "" /*"Senior Full Stack Developer | JavaScript Specialist"*/,
+  location: store?.userInfo?.data?.locatoin || "" /*"Barikot, Swat"*/,
+  photo_url: store?.userInfo?.data?.photo_url || "",
+  resume_url: store?.userInfo?.data?.resume_url || "",
+  linkedin_url: store?.userInfo?.data?.linkedin_url || "",
+  github_url: store?.userInfo?.data?.github_url || "",
 });
 
 const editableProfile = ref({ ...profile });
@@ -676,4 +681,10 @@ const saveProfile = async () => {
     isSaving.value = false;
   }
 };
+
+const getuserInfo = async () => {
+  await store.getUserInformation();
+  console.log(store.userInfo);
+};
+onMounted(() => getuserInfo());
 </script>

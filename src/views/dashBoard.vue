@@ -3,7 +3,10 @@
     <header class="p-4 shadow-md bg-white">
       <div class="welcomeNote py-2">
         <h1 class="font-bold font-sans w200:text-2xl w600:text-3xl">
-          Welcome, John Doe!
+          Welcome,
+          <span class="capitalize">{{
+            store?.user?.user?.name || "undefined"
+          }}</span>
         </h1>
         <p class="text-sm w400:font-medium">
           Here's what's happening with your job search
@@ -37,7 +40,6 @@
         class="card hover:cursor-pointer hover:transition p-6 bg-white rounded-xl border-l-4 border-yellow-500 flex flex-col gap-2 hover:shadow-md transition"
       >
         <div class="iconandlogo flex justify-between items-center">
-          c
           <h1 class="text-lg font-semibold text-gray-500">
             Application Pending
           </h1>
@@ -106,7 +108,7 @@
           </div>
           <div class="text flex flex-col">
             <h1 class="font-semibold">Complete your Profile</h1>
-            <small>Increase your chances</small>
+            <small>20% remaining</small>
           </div>
         </router-link>
         <router-link
@@ -118,7 +120,7 @@
           </div>
           <div class="text flex flex-col">
             <h1 class="font-semibold">Job Alerts</h1>
-            <small>Increase your chances</small>
+            <small>Manage notifications</small>
           </div>
         </router-link>
         <router-link
@@ -130,7 +132,7 @@
           </div>
           <div class="text flex flex-col">
             <h1 class="font-semibold">Saved Jobs</h1>
-            <small>Increase your chances</small>
+            <small>View your favorites</small>
           </div>
         </router-link>
       </section>
@@ -138,8 +140,8 @@
   </main>
 </template>
 <script setup>
-import { ref } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import { useAuthStore } from "../store/useUserState";
 import {
   faBriefcase,
   faFileAlt,
@@ -157,6 +159,7 @@ import {
   faCloudUploadAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "vue-router";
+import { onMounted } from "vue";
 
 // Add icons to library
 library.add(
@@ -176,7 +179,12 @@ library.add(
   faCloudUploadAlt
 );
 const router = useRouter();
+const store = useAuthStore();
 const handleNavigation = (route) => {
   router.push(route);
 };
+const getUser = async () => {
+  await store.userAuthStatus();
+};
+onMounted(() => getUser());
 </script>

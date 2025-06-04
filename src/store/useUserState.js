@@ -5,11 +5,14 @@ export const useAuthStore = defineStore('auth', () => {
     const url = 'http://localhost:3000/api/auth/protected'
     const signOutUrl = "http://localhost:3000/api/auth/logout";
     const loginUrl = 'http://localhost:3000/api/auth/login'
+    const userInfoUrl = 'http://localhost:3000/api/seeker/profile-info'
 
     const isAuthenticated = ref(false)
     const user = ref(null)
     const error = ref(null)
     const message = ref(null)
+    const profile_url = ref(null)
+    const userInfo = ref(null)
     const userAuthStatus = async () => {
         try {
             const response = await axios.post(url, {}, { withCredentials: true })
@@ -40,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    const logOut = async (email, password) => {
+    const logOut = async () => {
         try {
             const response = await axios.post(signOutUrl, {}, { withCredentials: true })
             message.value = response.data
@@ -52,5 +55,14 @@ export const useAuthStore = defineStore('auth', () => {
             return err.response.data.err
         }
     }
-    return { isAuthenticated, user, message, userAuthStatus, login, logOut, error }
+    const getUserInformation = async () => {
+        try {
+            const response = await axios.get(userInfoUrl, { withCredentials: true })
+            userInfo.value = response.data
+            return userInfo.value
+        } catch (error) {
+            return undefined
+        }
+    }
+    return { isAuthenticated, user, message, userAuthStatus, login, logOut, error, getUserInformation, profile_url, userInfo }
 })
