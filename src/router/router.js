@@ -16,12 +16,16 @@ const routes = [
     },
     {
         path: '/profile',
-        component: () => import('../views/myProfile.vue')
+        component: () => import('../views/profileVue.vue')
     },
 
     {
         path: '/dashboard',
         component: () => import('../views/dashBoard.vue')
+    },
+    {
+        path: '/temProfile',
+        component: () => import('../views/profileVue.vue')
     },
     {
         path: '/:pathMatch(.*)*',

@@ -18,7 +18,7 @@
         >
         <router-link
           class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-          to="/a"
+          to="/find-jobs"
           active-class="text-gray-900"
           >Find Jobs</router-link
         >
@@ -73,26 +73,31 @@
                     <router-link
                       class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                       to="/dashboard"
+                      active-class="text-gray-900"
                       >Dashboard</router-link
                     >
                     <router-link
                       class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                       to="/profile"
+                      active-class="text-gray-900"
                       >My Profile</router-link
                     >
                     <router-link
                       class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                       to="/dashboard"
+                      active-class="text-gray-900"
                       >Saved Jobs</router-link
                     >
                     <router-link
                       class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                       to="/dashboard"
+                      active-class="text-gray-900"
                       >Applications</router-link
                     >
                     <router-link
                       class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                       to="/dashboard"
+                      active-class="text-gray-900"
                       >Account Settings</router-link
                     >
                     <button
@@ -149,7 +154,7 @@
           <router-link
             @click="hideMobileMenuAfterClick"
             class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-            to="/a"
+            to="/find-jobs"
             active-class="text-gray-900"
             >Find Jobs</router-link
           >
@@ -269,7 +274,6 @@ const handleSignOut = async () => {
   ];
 
   await store.logOut();
-
   // console.log(router.currentRoute.value.path);
 
   setTimeout(() => {
