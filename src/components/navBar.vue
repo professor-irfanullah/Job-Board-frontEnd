@@ -48,10 +48,11 @@
             class="img relative cursor-pointer"
           >
             <img
-              :src="store.profile_url || image_url"
+              :src="store?.userInfo?.data?.photo_url || image_url"
               alt="user logo"
               class="w-8 h-8 rounded-full"
             />
+
             <transition
               enter-active-class="transition ease-out duration-100"
               enter-from-class="transform opacity-0 scale-95"

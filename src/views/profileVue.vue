@@ -7,16 +7,16 @@
         class="flex flex-col gap-2 items-cente flex-wrap justify-around w700:flex-row w700:items-center"
       >
         <section
-          class="profile&info flex items-center flex-wrap w600:gap-2 gap- gap-1"
+          class="profile&info flex items-center flex-wrap w600:gap-2 gap-1"
         >
           <div class="imageIcon relative">
             <div
               class="img w-[50px] h-[50px] w200:w-[100px] w200:h-[100px] rounded-full overflow-hidden border-2 w200:border-4"
             >
               <img
-                class="w-[50px] h-[50px] w200:w-[100px] w200:h-[100px]"
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWh4JQiguAxq1T3C0NPL_e4KgaRWS-a5_EgQ&s"
-                alt="img"
+                class="w-[50px] h-[50px] w200:w-[100px] w200:h-[100px] flex items-center justify-center"
+                :src="userInfo.photo_url"
+                alt="profile_img"
               />
             </div>
             <div v-if="isEditing" class="profile">
@@ -45,11 +45,17 @@
                     />
                   </svg>
                 </p>
-                <input type="file" class="hidden" id="profile" />
+                <input
+                  @change="handleProfileChange"
+                  type="file"
+                  class="hidden"
+                  id="profile"
+                  accept="image/jpg"
+                />
               </label>
             </div>
           </div>
-          <div v-if="profilePictureInput" class="btn">Upload</div>
+
           <div class="userInfo">
             <h1 class="text-white font-bold text-xl capitalize">
               {{ store?.user?.user?.name }}
@@ -89,6 +95,40 @@
               />
             </svg>
           </button>
+          <div
+            v-if="isEditing && profilePictureInput"
+            :title="profilePictureInput.name"
+            class="btn mt-2"
+          >
+            <button
+              @click="sumbitProfilePhoto"
+              class="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition flex items-center shadow-sm cursor-pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                />
+              </svg>
+              <p class="">{{ profilePictureInput.name }}</p>
+            </button>
+            <div class="errInProfileUpload mt-2">
+              <p v-if="errInProfileUpload" class="text-red-400">
+                {{ errInProfileUpload }}
+              </p>
+              <p v-if="successProfileUpload" class="text-green-300">
+                {{ successProfileUpload }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -663,6 +703,9 @@ const errorMessage = ref("");
 const responseMessage = ref("");
 const cvUploadMessage = ref("");
 const profilePictureInput = ref("");
+const errInProfileUpload = ref("");
+const successProfileUpload = ref("");
+
 const getInfo = async () => {
   const response = await store.getUserInformation();
   if (!response) return false;
@@ -692,7 +735,7 @@ const handleFileChange = (event) => {
     resumeInput.value = null;
   }
 };
-const submitpdf = async (pdfFile) => {
+const submitpdf = async () => {
   cvUploadMessage.value = "Please wait";
   const formData = new FormData();
   formData.append("file", resumeInput.value);
@@ -731,8 +774,42 @@ const submitDetails = async () => {
   responseMessage.value = "";
   disableBtn.value = true;
 };
-const call = () => {
-  console.log("hi");
+const handleProfileChange = (event) => {
+  const file = event.target.files[0];
+  if (
+    file &&
+    (file.type === "image/png" ||
+      file.type === "image/jpg" ||
+      file.type === "image/jpeg")
+  ) {
+    profilePictureInput.value = file;
+    return;
+  }
+  console.log("not supported");
+  profilePictureInput.value = null;
+};
+const sumbitProfilePhoto = async () => {
+  successProfileUpload.value = "Uploading please wait...";
+  console.log("triggered", profilePictureInput.value);
+  if (!profilePictureInput.value) return;
+  const formData = new FormData();
+  formData.append("profile", profilePictureInput.value);
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/api/seeker/profile/picture",
+      formData,
+      { withCredentials: true }
+    );
+    successProfileUpload.value = response.data.msg;
+    errInProfileUpload.value = "";
+    getInfo();
+    console.log(response);
+    profilePictureInput.value = null;
+  } catch (err) {
+    console.error(err);
+    successProfileUpload.value = "";
+    errInProfileUpload.value = err.response.data.err;
+  }
 };
 onMounted(() => getInfo());
 </script>

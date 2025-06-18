@@ -327,6 +327,7 @@ const handleSubmit = async () => {
     isButtonDisabled.value = true;
     okMessage.value = `Please wait while we log you in...`;
     errMsg.value = "";
+    await store.getUserInformation();
     setTimeout(() => {
       router.push("/dashboard");
     }, 2000);
