@@ -748,6 +748,7 @@ const submitpdf = async () => {
     console.log(response);
     cvUploadMessage.value = response.data.msg;
     notSupportedCVMessage.value = "";
+    resumeInput.value = null;
     await store.getUserInformation();
   } catch (error) {
     notSupportedCVMessage.value = error.response.data;
@@ -769,10 +770,11 @@ const submitDetails = async () => {
     disableBtn.value = true;
     return;
   }
-  console.log(response.data.err);
-  errorMessage.value = response.data.err;
+  console.log(response);
+  errorMessage.value = response?.data?.err || "Something went wrong";
   responseMessage.value = "";
   disableBtn.value = true;
+  await store.getUserInformation();
 };
 const handleProfileChange = (event) => {
   const file = event.target.files[0];
