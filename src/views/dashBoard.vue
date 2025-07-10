@@ -61,19 +61,17 @@
         class="card hover:cursor-pointer hover:transition p-6 bg-white rounded-xl border-l-4 border-green-500 flex flex-col gap-2 hover:shadow-md transition"
       >
         <div class="iconandlogo flex justify-between items-center">
-          <h1 class="text-lg font-semibold text-gray-500">
-            Application Pending
-          </h1>
+          <h1 class="text-lg font-semibold text-gray-500">Profile Status</h1>
           <p class="border px-3 py-2 rounded-full bg-green-200">
             <f-a-c class="text-green-700 text-xl" :icon="faShieldAlt" />
           </p>
         </div>
-        <h1 class="font-bold text-2xl">80%</h1>
+        <h1 class="font-bold text-2xl">{{ profilePercentage || "0" }}%</h1>
         <!-- <input type="range" readonly /> -->
         <div class="outer bg-gray-100 h-2.5 rounded-full">
           <div
             class="inner h-2.5 bg-green-400 rounded-full"
-            style="max-width: 100%; width: 80%"
+            :style="`max-width: ${100}%; width: ${profilePercentage || '0'}%`"
           ></div>
         </div>
         <router-link to="/profile" class="text-green-500 font-semibold text-sm">
@@ -108,7 +106,8 @@
           </div>
           <div class="text flex flex-col">
             <h1 class="font-semibold">Complete your Profile</h1>
-            <small>20% remaining</small>
+            <small v-if="profilePercentage == 100">Completed ✅</small>
+            <small v-else>{{ 100 - profilePercentage }}% remaining</small>
           </div>
         </router-link>
         <router-link
@@ -159,7 +158,8 @@ import {
   faCloudUploadAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "vue-router";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
+import axios from "axios";
 
 // Add icons to library
 library.add(
@@ -180,11 +180,27 @@ library.add(
 );
 const router = useRouter();
 const store = useAuthStore();
+const profilePercentage = ref();
+const getUserProfilePercentageUrl =
+  "http://localhost:3000/api/seeker/get/profile/comp/percentage";
 const handleNavigation = (route) => {
   router.push(route);
 };
 const getUser = async () => {
   await store.userAuthStatus();
+  await getUserProfilePercentage();
+  await store.getUserInformation();
+};
+const getUserProfilePercentage = async () => {
+  try {
+    const response = await axios.get(getUserProfilePercentageUrl, {
+      withCredentials: true,
+    });
+    // console.log(response.data.msg[0]);
+    profilePercentage.value = response.data.msg[0].profile_com_perc;
+  } catch (error) {
+    console.error(error);
+  }
 };
 onMounted(() => getUser());
 </script>

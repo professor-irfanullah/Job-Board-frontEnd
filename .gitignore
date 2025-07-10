@@ -3,3 +3,4 @@ node_modules/
 *.log
 dist/
 text.txt
+*.txt

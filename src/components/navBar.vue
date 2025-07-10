@@ -45,12 +45,12 @@
           </div>
           <div
             @click="isUserMenuOpen = !isUserMenuOpen"
-            class="img relative cursor-pointer"
+            class="relative cursor-pointer"
           >
             <img
               :src="store?.userInfo?.data?.photo_url || image_url"
-              alt="user logo"
-              class="w-8 h-8 rounded-full"
+              alt="User profile"
+              class="w-9 h-9 rounded-full object-center border-2 border-white shadow-sm hover:border-gray-200 transition-all"
             />
 
             <transition
@@ -63,48 +63,149 @@
             >
               <div
                 v-show="isUserMenuOpen"
-                class="userMenu absolute top-9 -right-3 w-[220px] h-full text-gray-600 font-sans font-semibold text-sm"
+                class="userMenu absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
               >
-                <div class="items bg-gray-100/90 p-2 rounded-md">
-                  <div class="userInfo cursor-default mb-2">
-                    <small>Signed in as</small>
-                    <p>{{ store?.user?.user?.email || "undefined" }}</p>
+                <div class="py-2 px-4">
+                  <div class="userInfo mb-3 pb-2 border-b border-gray-100">
+                    <p class="text-xs text-gray-400 font-medium">
+                      Signed in as
+                    </p>
+                    <p class="text-sm font-medium text-gray-700 truncate">
+                      {{ store?.user?.user?.email || "No email" }}
+                    </p>
                   </div>
-                  <div class="links flex flex-col gap-3">
+
+                  <div class="links flex flex-col space-y-1">
                     <router-link
-                      class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                      class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
                       to="/dashboard"
-                      active-class="text-gray-900"
-                      >Dashboard</router-link
+                      active-class="bg-gray-50 text-gray-900"
                     >
+                      <svg
+                        class="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"
+                        />
+                      </svg>
+                      Dashboard
+                    </router-link>
+
                     <router-link
-                      class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                      class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
                       to="/profile"
-                      active-class="text-gray-900"
-                      >My Profile</router-link
+                      active-class="bg-gray-50 text-gray-900"
                     >
+                      <svg
+                        class="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      My Profile
+                    </router-link>
+
                     <router-link
-                      class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                      to="/dashboard"
-                      active-class="text-gray-900"
-                      >Saved Jobs</router-link
+                      class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
+                      to="/saved-jobs"
+                      active-class="bg-gray-50 text-gray-900"
                     >
+                      <svg
+                        class="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                        />
+                      </svg>
+                      Saved Jobs
+                    </router-link>
+
                     <router-link
-                      class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                      to="/dashboard"
-                      active-class="text-gray-900"
-                      >Applications</router-link
+                      class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
+                      to="/applications"
+                      active-class="bg-gray-50 text-gray-900"
                     >
+                      <svg
+                        class="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                      </svg>
+                      Applications
+                    </router-link>
+
                     <router-link
-                      class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                      to="/dashboard"
-                      active-class="text-gray-900"
-                      >Account Settings</router-link
+                      class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
+                      to="/setting"
+                      active-class="bg-gray-50 text-gray-900"
                     >
+                      <svg
+                        class="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      Account Settings
+                    </router-link>
+                  </div>
+
+                  <div class="pt-2 mt-2 border-t border-gray-100">
                     <button
                       @click="handleSignOut"
-                      class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                      class="flex w-full items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors"
                     >
+                      <svg
+                        class="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
                       Sign out
                     </button>
                   </div>
@@ -116,10 +217,11 @@
       </div>
       <div class="hidden w700:block" v-else>
         <router-link
-          class="border p-2 rounded-md bg-indigo-300 hover:bg-indigo-400 transition font-medium text-sm"
           to="/login"
-          >Sign Up</router-link
+          class="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
+          Sign Up
+        </router-link>
       </div>
       <button
         @click="isMobileMenuOpen = !isMobileMenuOpen"
@@ -254,7 +356,7 @@ import { onMounted, ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 import { useRouter } from "vue-router";
 const image_url = ref(
-  "https://res.cloudinary.com/dbvxz2y0g/image/upload/v1748851459/images_nknhl8.png"
+  "https://res.cloudinary.com/dvrlvz76t/image/upload/v1752045266/Fa-Team-Fontawesome-FontAwesome-Circle-User.512_1_xpral9.png"
 );
 const router = useRouter();
 const store = useAuthStore();

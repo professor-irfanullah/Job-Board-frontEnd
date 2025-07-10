@@ -14,9 +14,12 @@
               class="img w-[50px] h-[50px] w200:w-[100px] w200:h-[100px] rounded-full overflow-hidden border-2 w200:border-4"
             >
               <img
-                class="w-[50px] h-[50px] w200:w-[100px] w200:h-[100px] flex items-center justify-center"
-                :src="userInfo.photo_url"
-                alt="profile_img"
+                class="w-[50px] h-[50px] w200:w-[100px] w200:h-[100px] flex items-center justify-center bg-white"
+                alt="img"
+                :src="
+                  userInfo.photo_url ||
+                  'https://res.cloudinary.com/dvrlvz76t/image/upload/v1752045266/Fa-Team-Fontawesome-FontAwesome-Circle-User.512_1_xpral9.png'
+                "
               />
             </div>
             <div v-if="isEditing" class="profile">
@@ -648,6 +651,8 @@
           </div>
         </div>
       </div>
+      <skillsVue :isEditing="isEditing" />
+      <educationVue :isEditing="isEditing" />
       <div v-if="isEditing" class="mt-10 flex justify-end space-x-4">
         <button
           @click="isEditing = !isEditing"
@@ -691,6 +696,8 @@
 import { onMounted, ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 import axios from "axios";
+import skillsVue from "../components/skillsVue.vue";
+import educationVue from "../components/educationVue.vue";
 const store = useAuthStore();
 
 const userInfo = ref({});
@@ -725,12 +732,10 @@ const validateInputs = () => {
 };
 const handleFileChange = (event) => {
   notSupportedCVMessage.value = "";
-  console.log("handleFileChanged triggered");
   const file = event.target.files[0];
   if (file && file.type === "application/pdf") {
     resumeInput.value = file;
   } else {
-    console.log("no file or not in pdf format");
     notSupportedCVMessage.value = "Only PDF files are supported";
     resumeInput.value = null;
   }
@@ -745,7 +750,6 @@ const submitpdf = async () => {
       formData,
       { withCredentials: true }
     );
-    console.log(response);
     cvUploadMessage.value = response.data.msg;
     notSupportedCVMessage.value = "";
     resumeInput.value = null;
@@ -763,14 +767,14 @@ const enableButtonAgain = () => {
 const submitDetails = async () => {
   const validInputs = validateInputs();
   const response = await store.postUserProfileInformation(validInputs);
-  if (response.msg === "operation successful") {
+  if (response.msg === "records saved successfully") {
     responseMessage.value = response.msg;
     errorMessage.value = "";
     await store.getUserInformation();
     disableBtn.value = true;
+    isEditing.value = false;
     return;
   }
-  console.log(response);
   errorMessage.value = response?.data?.err || "Something went wrong";
   responseMessage.value = "";
   disableBtn.value = true;
@@ -792,7 +796,6 @@ const handleProfileChange = (event) => {
 };
 const sumbitProfilePhoto = async () => {
   successProfileUpload.value = "Uploading please wait...";
-  console.log("triggered", profilePictureInput.value);
   if (!profilePictureInput.value) return;
   const formData = new FormData();
   formData.append("profile", profilePictureInput.value);
@@ -805,7 +808,6 @@ const sumbitProfilePhoto = async () => {
     successProfileUpload.value = response.data.msg;
     errInProfileUpload.value = "";
     getInfo();
-    console.log(response);
     profilePictureInput.value = null;
   } catch (err) {
     console.error(err);

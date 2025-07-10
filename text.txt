@@ -486,3 +486,157 @@ onUnmounted(() => {
   document.removeEventListener("click", handleClickOutside);
 });
 </script>
+
+
+SELECT
+    U.name,
+
+    -- Individual field flags
+    CASE WHEN SP.headline IS NOT NULL THEN 1 ELSE 0 END AS has_headline,
+    CASE WHEN SP.bio IS NOT NULL THEN 1 ELSE 0 END AS has_bio,
+    CASE WHEN SP.location IS NOT NULL THEN 1 ELSE 0 END AS has_location,
+    CASE WHEN SP.resume_url IS NOT NULL THEN 1 ELSE 0 END AS has_resume,
+    CASE WHEN SP.linkedin_url IS NOT NULL THEN 1 ELSE 0 END AS has_linkedin,
+    CASE WHEN SP.github_url IS NOT NULL THEN 1 ELSE 0 END AS has_github,
+    CASE 
+        WHEN SP.photo_url IS NOT NULL 
+             AND SP.photo_url != 'https://res.cloudinary.com/dvrlvz76t/image/upload/v1752045266/Fa-Team-Fontawesome-FontAwesome-Circle-User.512_1_xpral9.png'
+        THEN 1 ELSE 0 
+    END AS has_custom_photo,
+
+    CASE 
+        WHEN EXISTS (
+            SELECT 1 FROM seeker_skills SK 
+            WHERE SK.user_id = U.user_id 
+              AND SK.skill_name IS NOT NULL 
+              AND SK.proficiency_level IS NOT NULL 
+              AND SK.years_of_experience IS NOT NULL
+        ) THEN 1 ELSE 0 
+    END AS has_skills,
+
+    CASE 
+        WHEN EXISTS (
+            SELECT 1 FROM seeker_education SE 
+            WHERE SE.user_id = U.user_id
+              AND SE.institution IS NOT NULL 
+              AND SE.degree IS NOT NULL 
+              AND SE.field_of_study IS NOT NULL 
+              AND SE.start_date IS NOT NULL 
+              AND SE.end_date IS NOT NULL
+        ) THEN 1 ELSE 0 
+    END AS has_education,
+
+    -- Profile completion percentage (weighted)
+    ROUND((
+        (
+            CASE WHEN SP.headline IS NOT NULL THEN 1 ELSE 0 END +
+            CASE WHEN SP.bio IS NOT NULL THEN 1 ELSE 0 END +
+            CASE WHEN SP.location IS NOT NULL THEN 1 ELSE 0 END +
+            CASE WHEN SP.resume_url IS NOT NULL THEN 2 ELSE 0 END +
+            CASE WHEN SP.linkedin_url IS NOT NULL THEN 1 ELSE 0 END +
+            CASE WHEN SP.github_url IS NOT NULL THEN 1 ELSE 0 END +
+            CASE 
+                WHEN SP.photo_url IS NOT NULL 
+                     AND SP.photo_url != 'https://res.cloudinary.com/dvrlvz76t/image/upload/v1752045266/Fa-Team-Fontawesome-FontAwesome-Circle-User.512_1_xpral9.png'
+                THEN 1 ELSE 0 
+            END +
+            CASE 
+                WHEN EXISTS (
+                    SELECT 1 FROM seeker_skills SK 
+                    WHERE SK.user_id = U.user_id 
+                      AND SK.skill_name IS NOT NULL 
+                      AND SK.proficiency_level IS NOT NULL 
+                      AND SK.years_of_experience IS NOT NULL
+                ) THEN 2 ELSE 0 
+            END +
+            CASE 
+                WHEN EXISTS (
+                    SELECT 1 FROM seeker_education SE 
+                    WHERE SE.user_id = U.user_id
+                      AND SE.institution IS NOT NULL 
+                      AND SE.degree IS NOT NULL 
+                      AND SE.field_of_study IS NOT NULL 
+                      AND SE.start_date IS NOT NULL 
+                      AND SE.end_date IS NOT NULL
+                ) THEN 2 ELSE 0 
+            END
+        ) * 100.0 / 12
+    ), 1) AS profile_completion_percent,
+
+    -- Tier classification
+    CASE 
+        WHEN (
+            (
+                CASE WHEN SP.headline IS NOT NULL THEN 1 ELSE 0 END +
+                CASE WHEN SP.bio IS NOT NULL THEN 1 ELSE 0 END +
+                CASE WHEN SP.location IS NOT NULL THEN 1 ELSE 0 END +
+                CASE WHEN SP.resume_url IS NOT NULL THEN 2 ELSE 0 END +
+                CASE WHEN SP.linkedin_url IS NOT NULL THEN 1 ELSE 0 END +
+                CASE WHEN SP.github_url IS NOT NULL THEN 1 ELSE 0 END +
+                CASE 
+                    WHEN SP.photo_url IS NOT NULL 
+                         AND SP.photo_url != 'https://res.cloudinary.com/dvrlvz76t/image/upload/v1752045266/Fa-Team-Fontawesome-FontAwesome-Circle-User.512_1_xpral9.png'
+                    THEN 1 ELSE 0 
+                END +
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 FROM seeker_skills SK 
+                        WHERE SK.user_id = U.user_id 
+                          AND SK.skill_name IS NOT NULL 
+                          AND SK.proficiency_level IS NOT NULL 
+                          AND SK.years_of_experience IS NOT NULL
+                    ) THEN 2 ELSE 0 
+                END +
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 FROM seeker_education SE 
+                        WHERE SE.user_id = U.user_id
+                          AND SE.institution IS NOT NULL 
+                          AND SE.degree IS NOT NULL 
+                          AND SE.field_of_study IS NOT NULL 
+                          AND SE.start_date IS NOT NULL 
+                          AND SE.end_date IS NOT NULL
+                    ) THEN 2 ELSE 0 
+                END
+            ) * 100.0 / 12
+        ) < 50 THEN 'Incomplete'
+        WHEN (
+            (
+                CASE WHEN SP.headline IS NOT NULL THEN 1 ELSE 0 END +
+                CASE WHEN SP.bio IS NOT NULL THEN 1 ELSE 0 END +
+                CASE WHEN SP.location IS NOT NULL THEN 1 ELSE 0 END +
+                CASE WHEN SP.resume_url IS NOT NULL THEN 2 ELSE 0 END +
+                CASE WHEN SP.linkedin_url IS NOT NULL THEN 1 ELSE 0 END +
+                CASE WHEN SP.github_url IS NOT NULL THEN 1 ELSE 0 END +
+                CASE 
+                    WHEN SP.photo_url IS NOT NULL 
+                         AND SP.photo_url != 'https://res.cloudinary.com/dvrlvz76t/image/upload/v1752045266/Fa-Team-Fontawesome-FontAwesome-Circle-User.512_1_xpral9.png'
+                    THEN 1 ELSE 0 
+                END +
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 FROM seeker_skills SK 
+                        WHERE SK.user_id = U.user_id 
+                          AND SK.skill_name IS NOT NULL 
+                          AND SK.proficiency_level IS NOT NULL 
+                          AND SK.years_of_experience IS NOT NULL
+                    ) THEN 2 ELSE 0 
+                END +
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 FROM seeker_education SE 
+                        WHERE SE.user_id = U.user_id
+                          AND SE.institution IS NOT NULL 
+                          AND SE.degree IS NOT NULL 
+                          AND SE.field_of_study IS NOT NULL 
+                          AND SE.start_date IS NOT NULL 
+                          AND SE.end_date IS NOT NULL
+                    ) THEN 2 ELSE 0 
+                END
+            ) * 100.0 / 12
+        ) BETWEEN 50 AND 79 THEN 'Moderate'
+        ELSE 'Complete'
+    END AS profile_tier
+
+FROM USERS U
+JOIN seeker_profiles SP ON SP.user_id = U.user_id;
