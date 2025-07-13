@@ -162,7 +162,7 @@
 
                     <router-link
                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
-                      to="/setting"
+                      to="/accountSetting"
                       active-class="bg-gray-50 text-gray-900"
                     >
                       <svg
