@@ -4,9 +4,7 @@
       <div class="welcomeNote py-2">
         <h1 class="font-bold font-sans w200:text-2xl w600:text-3xl">
           Welcome,
-          <span class="capitalize">{{
-            store?.user?.user?.name || "undefined"
-          }}</span>
+          <span class="capitalize">{{ store?.userInfo?.data?.name }}</span>
         </h1>
         <p class="text-sm w400:font-medium">
           Here's what's happening with your job search
