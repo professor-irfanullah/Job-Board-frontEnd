@@ -55,7 +55,7 @@
         <transition-group name="list">
           <div
             class="mt-4 space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
-            v-for="(edu, idx) in mutatedEdu"
+            v-for="(edu, idx) in education"
             :key="idx"
           >
             <div class="grid grid-cols-1 gap-4 w600:grid-cols-2">
@@ -278,6 +278,8 @@ const addEducationUrl = `http://localhost:3000/api/seeker/insert/education/recor
 const education = ref([]);
 const errMsg = ref("");
 const responseMsg = ref("");
+const date = new Date();
+
 const isNoEducation = computed(() => {
   return education.value.length;
 });
@@ -323,7 +325,7 @@ const removeEducation = async (id, arrIdx) => {
 const saveEducation = async () => {
   responseMsg.value = "Saving changes...";
 
-  for (const item of mutatedEdu.value) {
+  for (const item of education.value) {
     try {
       const response = await axios.post(
         addEducationUrl,
@@ -349,20 +351,18 @@ const saveEducation = async () => {
   }
 };
 
-const mutatedEdu = ref(
-  computed(() => {
-    return education.value.map((edu) => ({
-      ...edu,
-      start_date: formatDate(edu.start_date),
-      end_date: formatDate(edu.end_date),
-    }));
-  })
-);
-
 const loadEducation = async () => {
   try {
     const response = await axios.get(url, { withCredentials: true });
-    education.value = response.data.data;
+    const arr = response.data.data;
+    education.value = arr.map((record) => ({
+      education_id: record.education_id,
+      institution: record.institution,
+      degree: record.degree,
+      field_of_study: record.field_of_study,
+      start_date: date.toISOString(record.start_date).split("T")[0],
+      end_date: date.toISOString(record.end_date).split("T")[0],
+    }));
   } catch (error) {
     education.value = [];
     console.error(error);
