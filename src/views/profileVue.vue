@@ -61,7 +61,7 @@
 
           <div class="userInfo">
             <h1 class="text-white font-bold text-xl capitalize">
-              {{ userInfo.name || "Undefined" }}
+              {{ userInfo.name || store?.user?.user?.name }}
             </h1>
             <template v-if="!isEditing">
               <div v-if="userInfo.headline" class="">
