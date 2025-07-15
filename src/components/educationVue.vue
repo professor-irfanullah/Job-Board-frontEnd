@@ -215,8 +215,8 @@
               </div>
               <div class="mt-2 sm:mt-0">
                 <span class="text-sm text-gray-500">
-                  {{ formatDate(edu.start_date) }} -
-                  {{ edu.end_date ? formatDate(edu.end_date) : "Present" }}
+                  {{ edu.start_date }} -
+                  {{ edu.end_date ? edu.end_date : "Present" }}
                 </span>
               </div>
             </div>
@@ -246,8 +246,8 @@
             </div>
             <div class="mt-2 sm:mt-0">
               <span class="text-sm text-gray-500">
-                {{ formatDate(edu.start_date) }} -
-                {{ edu.end_date ? formatDate(edu.end_date) : "Present" }}
+                {{ edu.start_date }} -
+                {{ edu.end_date ? edu.end_date : "Present" }}
               </span>
             </div>
           </div>
@@ -283,12 +283,6 @@ const date = new Date();
 const isNoEducation = computed(() => {
   return education.value.length;
 });
-
-const formatDate = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  return date.toISOString().split("T")[0];
-};
 
 const addNewEducation = () => {
   education.value.push({
@@ -333,8 +327,8 @@ const saveEducation = async () => {
           institution: item.institution,
           degree: item.degree,
           field_of_study: item.field_of_study,
-          start_date: formatDate(item.start_date),
-          end_date: formatDate(item.end_date),
+          start_date: item.start_date,
+          end_date: item.end_date,
         },
         { withCredentials: true }
       );
