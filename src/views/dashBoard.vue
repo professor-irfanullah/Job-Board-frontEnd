@@ -1,5 +1,8 @@
 <template>
-  <main class="bg-gray-50 flex flex-col space-y-3">
+  <main
+    v-if="store.user.user.role != 'employee'"
+    class="bg-gray-50 flex flex-col space-y-3"
+  >
     <header class="p-4 shadow-md bg-white">
       <div class="welcomeNote py-2">
         <h1 class="font-bold font-sans w200:text-2xl w600:text-3xl">
@@ -135,6 +138,7 @@
       </section>
     </section>
   </main>
+  <main v-else>Looks like Empoyee is signed in...</main>
 </template>
 <script setup>
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -185,6 +189,8 @@ const handleNavigation = (route) => {
   router.push(route);
 };
 const getUser = async () => {
+  const response = await store.userAuthStatus();
+  console.log(response, store.user);
   await store.userAuthStatus();
   await getUserProfilePercentage();
   await store.getUserInformation();
@@ -194,10 +200,14 @@ const getUserProfilePercentage = async () => {
     const response = await axios.get(getUserProfilePercentageUrl, {
       withCredentials: true,
     });
-    // console.log(response.data.msg[0]);
     profilePercentage.value = response.data.msg[0].profile_com_perc;
   } catch (error) {
-    console.error(error);
+    if (error.status === 403) {
+      // console.error(error);
+
+      store.user.user.role = "employee";
+      return 0;
+    }
   }
 };
 onMounted(() => getUser());

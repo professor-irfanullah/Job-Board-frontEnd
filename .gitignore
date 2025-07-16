@@ -4,3 +4,4 @@ node_modules/
 dist/
 text.txt
 *.txt
+src/views/jobsVue.vue

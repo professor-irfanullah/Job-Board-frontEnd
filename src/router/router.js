@@ -24,6 +24,10 @@ const routes = [
         component: () => import('../views/dashBoard.vue')
     },
     {
+        path: '/find-jobs',
+        component: () => import('../views/jobsVue.vue')
+    },
+    {
         path: '/accountSetting',
         component: () => import('../views/accountSettings.vue')
     },
@@ -47,7 +51,7 @@ const isAuth = async () => {
     }
 }
 const publicPaths = ['/', '/login']
-const privatePaths = ['/dashboard', '/profile', '/saved-job', '/accountSetting', 'sign-out', '/application']
+const privatePaths = ['/dashboard', '/profile', '/find-jobs', '/saved-job', '/accountSetting', 'sign-out', '/application']
 router.beforeEach(async (to, from, next) => {
     const isPublic = publicPaths.includes(to.path)
     const isPrivate = privatePaths.includes(to.path)

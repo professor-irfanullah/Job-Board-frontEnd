@@ -717,6 +717,8 @@ const getInfo = async () => {
   const response = await store.getUserInformation();
   if (!response) return false;
   userInfo.value = response.data;
+  const a = await store.userAuthStatus();
+  console.log(store.user);
 };
 
 const validateInputs = () => {

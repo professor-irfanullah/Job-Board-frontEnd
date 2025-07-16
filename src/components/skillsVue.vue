@@ -279,6 +279,7 @@
 </template><script setup>
 import axios from "axios";
 import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 const props = defineProps({
   isEditing: {
     type: Boolean,
@@ -310,6 +311,7 @@ const skills = ref([
 ]);
 const errMsg = ref("");
 const responseMsg = ref("");
+const router = useRouter();
 const isNoSkills = computed(() => {
   return skills.value.length;
 });
@@ -367,7 +369,10 @@ const loadSkills = async () => {
     skills.value = response.data.data;
   } catch (error) {
     skills.value = [];
-    console.error(error);
+    if ((error.status = 403)) {
+      console.error(error);
+      return router.push("/home");
+    }
   }
 };
 onMounted(() => loadSkills());

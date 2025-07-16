@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
     const userInfo = ref(null)
     const userAuthStatus = async () => {
         try {
+            user.value = null
             const response = await axios.post(url, {}, { withCredentials: true })
             user.value = response.data
             isAuthenticated.value = true
@@ -58,6 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
     const getUserInformation = async () => {
         try {
+            userInfo.value = null
             const response = await axios.get(userInfoUrl, { withCredentials: true })
             userInfo.value = response.data
             return userInfo.value

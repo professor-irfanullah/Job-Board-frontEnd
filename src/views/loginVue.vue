@@ -328,6 +328,7 @@ const handleSubmit = async () => {
     okMessage.value = `Please wait while we log you in...`;
     errMsg.value = "";
     await store.getUserInformation();
+    await store.userAuthStatus();
     setTimeout(() => {
       router.push("/dashboard");
     }, 2000);
