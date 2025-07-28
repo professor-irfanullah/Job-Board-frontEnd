@@ -1,6 +1,6 @@
 <template>
   <main
-    v-if="store.user.user.role != 'employee'"
+    v-if="store?.user?.user?.role != 'employee'"
     class="bg-gray-50 flex flex-col space-y-3"
   >
     <header class="p-4 shadow-md bg-white">
