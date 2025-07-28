@@ -34,7 +34,7 @@
                 />
               </svg>
               <input
-                v-model="searchQuery"
+                v-model.trim="searchQuery"
                 type="text"
                 placeholder="Job title, keywords"
                 class="ml-3 flex-1 outline-none text-gray-700"
@@ -62,7 +62,7 @@
                 />
               </svg>
               <input
-                v-model="locationQuery"
+                v-model.trim="locationQuery"
                 type="text"
                 placeholder="Location"
                 class="ml-3 flex-1 outline-none text-gray-700"
@@ -83,17 +83,21 @@
     <div class="container mx-auto px-4 py-16">
       <div class="flex justify-between items-center mb-10">
         <h2 class="text-3xl font-bold text-gray-800">Featured Jobs</h2>
-        <a href="#" class="text-indigo-600 hover:underline font-medium"
-          >View All</a
+        <button
+          :disabled="itemsPerPage >= filteredJobs.length"
+          @click="itemsPerPage = filteredJobs.length"
+          class="text-indigo-600 hover:underline font-medium disabled:text-indigo-400 disabled:cursor-not-allowed"
         >
+          View All
+        </button>
       </div>
 
       <!-- Jobs Carousel -->
       <div class="relative">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
-            v-for="job in featuredJobs"
-            :key="job.id"
+            v-for="job in limitedJobs"
+            :key="job.job_id"
             class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition"
           >
             <div class="p-6">
@@ -102,13 +106,15 @@
                   <h3 class="text-lg font-semibold text-gray-800">
                     {{ job.title }}
                   </h3>
-                  <p class="text-gray-600">{{ job.companyName }}</p>
+                  <p class="text-gray-600">
+                    {{ job.companyName || "Company name undefined" }}
+                  </p>
                 </div>
               </div>
               <div class="mt-4 flex flex-wrap gap-2">
                 <span
                   class="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full"
-                  >{{ job.type }}</span
+                  >{{ job.employment_type }}</span
                 >
                 <span
                   class="px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full"
@@ -124,18 +130,20 @@
                 {{ job.description }}
               </p>
               <div class="mt-6 flex justify-between items-center">
-                <span class="text-lg font-bold text-gray-800">{{
-                  job.salary
-                }}</span>
-                <a
+                <span class="text-lg font-bold text-gray-800"
+                  >${{ job.salary_min }}</span
+                >
+                <router-link
+                  to="/find-jobs"
                   :href="`/jobs/${job.id}`"
                   class="text-indigo-600 hover:underline font-medium"
-                  >View Details</a
+                  >View Details</router-link
                 >
               </div>
             </div>
           </div>
         </div>
+        <zero-skills @reset="resetFilters" v-if="filteredJobs.length == 0" />
       </div>
     </div>
 
@@ -197,10 +205,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
+import { computed, onMounted, ref } from "vue";
+import { useAuthStore } from "../store/useUserState";
+import { jobStore } from "../store/useJobStore";
+import zeroSkills from "../components/noJob.vue";
+const store = useAuthStore();
+const useJobStore = jobStore();
 const searchQuery = ref("");
 const locationQuery = ref("");
+const itemsPerPage = ref(4);
 
 const featuredJobs = ref([
   {
@@ -260,4 +273,52 @@ const searchJobs = () => {
   // Implement search functionality
   console.log("Searching for:", searchQuery.value, "in", locationQuery.value);
 };
+const resetFilters = () => {
+  searchQuery.value = "";
+  locationQuery.value = "";
+};
+const getJobs = async () => {
+  try {
+    const response = await useJobStore.fetchJobs();
+    featuredJobs.value = response.jobs;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const filteredJobs = computed(() => {
+  let result = featuredJobs.value;
+  result = featuredJobs.value.sort((a, b) => b.salary_max - a.salary_max);
+
+  if (searchQuery.value) {
+    const keyword = searchQuery.value.trim().toLowerCase();
+    if (keyword) {
+      result = result.filter((job) =>
+        job.title.toLowerCase().includes(keyword)
+      );
+    }
+  }
+
+  if (locationQuery.value) {
+    const keyword = locationQuery.value.trim().toLowerCase();
+    if (keyword) {
+      result = result.filter((job) =>
+        job.location.toLowerCase().includes(keyword)
+      );
+    }
+  }
+  return result;
+});
+const limitedJobs = ref(
+  computed(() => {
+    const currentPage = 1;
+    const start = (currentPage - 1) * itemsPerPage.value;
+    const end = start + itemsPerPage.value;
+
+    return filteredJobs.value.slice(start, end);
+  })
+);
+onMounted(async () => {
+  await store.userAuthStatus();
+  await getJobs();
+});
 </script>
