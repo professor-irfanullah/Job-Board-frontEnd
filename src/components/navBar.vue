@@ -24,7 +24,7 @@
         >
         <router-link
           class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-          to="/b"
+          to="/finalJobs"
           active-class="text-gray-900"
           >Companies</router-link
         >
@@ -37,7 +37,7 @@
       </div>
       <div v-if="store.isAuthenticated" class="right hidden w700:block">
         <div class="bell_and_user_icon flex justify-center items-center gap-3">
-          <div class="bell">
+          <div @click="checkAuth" class="bell">
             <f-a-c
               icon="bell"
               class="text-2xl text-gray-400 hover:text-gray-500 cursor-pointer transition"
@@ -264,7 +264,7 @@
           <router-link
             @click="hideMobileMenuAfterClick"
             class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-            to="/b"
+            to="/findJobs"
             active-class="text-gray-900"
             >Companies</router-link
           >
@@ -286,7 +286,7 @@
             >
               <div class="img">
                 <img
-                  :src="image_url"
+                  :src="store?.userInfo?.data?.photo_url || image_url"
                   alt="user logo"
                   class="w-8 h-8 rounded-full"
                 />
@@ -319,13 +319,13 @@
             <router-link
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-              to="/dashboard"
+              to="/applications"
               >Applications</router-link
             >
             <router-link
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-              to="/dashboard"
+              to="/accountSetting"
               >Account Settings</router-link
             >
             <button
@@ -355,17 +355,25 @@
 import { onMounted, ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 const image_url = ref(
   "https://res.cloudinary.com/dvrlvz76t/image/upload/v1752045266/Fa-Team-Fontawesome-FontAwesome-Circle-User.512_1_xpral9.png"
 );
 const router = useRouter();
 const store = useAuthStore();
 const isMobileMenuOpen = ref(false);
+const { isAuthenticated } = storeToRefs(store);
 const isUserMenuOpen = ref(false);
 const hideMobileMenuAfterClick = () => {
   isMobileMenuOpen.value = false;
 };
 
+const checkAuth = async () => {
+  // console.log(store.isAuthenticated, isAuthenticated.value);
+
+  const response = await store.userAuthStatus();
+  console.log("hu from nav", response);
+};
 const handleSignOut = async () => {
   const privatePaths = [
     "/dashboard",
@@ -386,4 +394,10 @@ const handleSignOut = async () => {
     isMobileMenuOpen.value = false;
   }, 1000);
 };
+onMounted(async () => {
+  await store.userAuthStatus();
+  await store.getUserInformation();
+
+  // console.log("hu from nav", response);
+});
 </script>

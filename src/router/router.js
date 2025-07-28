@@ -25,8 +25,13 @@ const routes = [
     },
     {
         path: '/find-jobs',
-        component: () => import('../views/jobsVue.vue')
+        component: () => import('../views/jobsView.vue')
     },
+    {
+        path: '/applications',
+        component: () => import('../views/application.vue')
+    },
+
     {
         path: '/accountSetting',
         component: () => import('../views/accountSettings.vue')
@@ -47,15 +52,16 @@ const isAuth = async () => {
         const response = await axios.post(protectedRoute, {}, { withCredentials: true })
         if (response.data.user.user_id) return true;
     } catch (error) {
+        console.clear()
         return false
     }
 }
 const publicPaths = ['/', '/login']
-const privatePaths = ['/dashboard', '/profile', '/find-jobs', '/saved-job', '/accountSetting', 'sign-out', '/application']
+const privatePaths = ['/dashboard', '/profile', '/saved-job', '/accountSetting', 'sign-out', '/applications']
 router.beforeEach(async (to, from, next) => {
+    const isAuthenticated = await isAuth()
     const isPublic = publicPaths.includes(to.path)
     const isPrivate = privatePaths.includes(to.path)
-    const isAuthenticated = await isAuth()
     if (isAuthenticated && isPublic) {
         return next('/home')
     }

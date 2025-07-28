@@ -17,20 +17,26 @@ export const useAuthStore = defineStore('auth', () => {
     const userAuthStatus = async () => {
         try {
             user.value = null
+            isAuthenticated.value = null
             const response = await axios.post(url, {}, { withCredentials: true })
             user.value = response.data
             isAuthenticated.value = true
+            console.clear()
             return true
         }
         catch (err) {
             user.value = null
             error.value = err.response
             isAuthenticated.value = false
+            console.clear()
+
             return false
         }
     }
 
     const login = async (email, password) => {
+        isAuthenticated.value = false
+
         try {
             const response = await axios.post(loginUrl, { email: email, password: password }, { withCredentials: true })
             message.value = response.data
