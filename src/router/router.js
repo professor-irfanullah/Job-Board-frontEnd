@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { useAuthStore } from '../store/useUserState'
 const protectedRoute = 'http://localhost:3000/api/auth/protected'
 const routes = [
     {
@@ -59,7 +60,8 @@ const isAuth = async () => {
 const publicPaths = ['/', '/login']
 const privatePaths = ['/dashboard', '/profile', '/saved-job', '/accountSetting', 'sign-out', '/applications']
 router.beforeEach(async (to, from, next) => {
-    const isAuthenticated = await isAuth()
+    const isAuth = useAuthStore()
+    const isAuthenticated = await isAuth.userAuthStatus()
     const isPublic = publicPaths.includes(to.path)
     const isPrivate = privatePaths.includes(to.path)
     if (isAuthenticated && isPublic) {
