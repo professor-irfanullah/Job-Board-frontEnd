@@ -23,11 +23,17 @@
       @click="resetFilters"
       class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition"
     >
-      Reset Filters
+      {{ props.button }}
     </button>
   </div>
 </template>
 <script setup>
+const props = defineProps({
+  button: {
+    type: String,
+    default: "Reset Filters",
+  },
+});
 const emits = defineEmits(["reset"]);
 const resetFilters = () => {
   emits("reset");
