@@ -62,11 +62,13 @@
               <span v-else>/year</span>
             </p>
             <p class="text-sm text-gray-500">
-              Posted: {{ date.toISOString(jobs.posted_at).split("T")[0] }}
+              Posted: {{ new Date(jobs.posted_at).toISOString().split("T")[0] }}
             </p>
             <p class="text-sm text-gray-500">
               Deadline:
-              {{ date.toISOString(jobs.application_deadline).split("T")[0] }}
+              {{
+                new Date(jobs.application_deadline).toISOString().split("T")[0]
+              }}
             </p>
           </div>
         </div>

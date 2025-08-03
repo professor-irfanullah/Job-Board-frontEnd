@@ -48,15 +48,7 @@ const router = createRouter(
         routes,
     }
 )
-const isAuth = async () => {
-    try {
-        const response = await axios.post(protectedRoute, {}, { withCredentials: true })
-        if (response.data.user.user_id) return true;
-    } catch (error) {
-        console.clear()
-        return false
-    }
-}
+
 const publicPaths = ['/', '/login']
 const privatePaths = ['/dashboard', '/profile', '/saved-job', '/accountSetting', 'sign-out', '/applications']
 router.beforeEach(async (to, from, next) => {
