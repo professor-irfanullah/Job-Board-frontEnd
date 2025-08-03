@@ -270,13 +270,15 @@
                       <div class="flex flex-col space-y-1">
                         <span class="text-sm text-gray-500">
                           Posted:
-                          {{ date.toISOString(job.posted_at).split("T")[0] }}
+                          {{
+                            new Date(job.posted_at).toISOString().split("T")[0]
+                          }}
                         </span>
                         <span class="text-sm text-gray-500">
                           Deadline:
                           {{
-                            date
-                              .toISOString(job.application_deadline)
+                            new Date(job.application_deadline)
+                              .toISOString()
                               .split("T")[0]
                           }}
                         </span>
@@ -293,8 +295,12 @@
                     </div>
                   </div>
                 </div>
-                <div class="heartIcon">
-                  <button class="hover:text-red-600 transition">
+                <div v-if="userStore.isAuthenticated" class="heartIcon">
+                  <button
+                    :class="getJobClasses(job)"
+                    type="button"
+                    @click="addToFavorite(job.job_id)"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       class="h-6 w-6"
@@ -429,27 +435,34 @@
 
         <!-- no results -->
         <transition name="fade-slide">
-          <zero-skills
-            v-if="filteredJobs.length === 0"
-            @resetFilters="resetFilters"
-          />
+          <zero-skills v-if="filteredJobs.length === 0" @reset="resetFilters" />
         </transition>
       </aside>
     </section>
-    <transition name="fade-slide">
-      <div
-        v-if="showModel"
-        class="model absolute w-full bg-gray-50 top-0 left-0 flex h-full"
-      >
-        <div class="mx-auto w-full">
-          <job-details
-            @close="showModel = false"
-            :jobs="passJobDetails"
-            class="sticky p-4 top-4 rounded-md mx-auto"
-          />
+    <teleport to="body">
+      <transition name="fade-slide">
+        <div
+          v-if="showModel"
+          class="fixed inset-0 z-50 bg-black bg-opacity-40 backdrop-blur-sm flex justify-center items-start overflow-y-auto pt-12 px-4"
+          @click.self="showModel = false"
+          @keydown.esc="showModel = false"
+          tabindex="0"
+        >
+          <div
+            class="relative w-full max-w-4xl bg-white rounded-lg shadow-xl p-6 outline-none"
+            role="dialog"
+            aria-modal="true"
+          >
+            <job-details
+              @close="showModel = false"
+              :jobs="passJobDetails"
+              class="w-full"
+            />
+          </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </teleport>
+
     <quickApplyModel
       @hide="showQuickApplyModel = false"
       v-if="showQuickApplyModel"
@@ -464,7 +477,10 @@ import { useAuthStore } from "../store/useUserState";
 import zeroSkills from "../components/noJob.vue";
 import jobDetails from "../components/jobDetails.vue";
 import quickApplyModel from "../components/quickApplyModel.vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const userStore = useAuthStore();
 const store = jobStore();
 const date = new Date();
@@ -473,6 +489,7 @@ const showModel = ref(false);
 const passJobDetails = ref({});
 const itemsPerPage = ref(5);
 const currentPage = ref(1);
+const savedJobs = ref([]);
 const filters = ref({
   keywords: "",
   location: "",
@@ -501,224 +518,6 @@ const datePosted = ref([
   { id: "7", name: "Last week" },
   { id: "30", name: "Last month" },
   { id: "any", name: "Any time" },
-]);
-const jobs = ref([
-  {
-    job_id: 1,
-    title: "Senior Frontend Developer",
-    company_name: "TechCorp",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "We are looking for an experienced frontend developer to join our team working with Vue.js and Tailwind CSS. You will be responsible for building user interfaces and implementing new features.",
-    requirements:
-      "5+ years of experience with Vue.js, JavaScript, and modern frontend frameworks. Strong CSS skills required.",
-    location: "San Francisco, CA",
-    employment_type: "Full-time",
-    is_remote: true,
-    salary_min: 120000,
-    salary_max: 150000,
-    status: "active",
-    posted_at: "2023-06-10T09:00:00Z",
-    application_deadline: "2023-07-10T23:59:59Z",
-  },
-  {
-    job_id: 2,
-    title: "UX/UI Designer",
-    company_name: "DesignHub",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Join our design team to create beautiful and intuitive user experiences for our products. You will work closely with product managers and developers to bring designs to life.",
-    requirements:
-      "3+ years of UX/UI design experience. Portfolio required. Proficiency in Figma or Sketch.",
-    location: "Remote",
-    employment_type: "Contract",
-    is_remote: true,
-    salary_min: 80,
-    salary_max: 100,
-    status: "active",
-    posted_at: "2023-06-05T09:00:00Z",
-    application_deadline: "2023-07-05T23:59:59Z",
-  },
-  {
-    job_id: 3,
-    title: "Backend Engineer",
-    company_name: "DataSystems",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Looking for a backend engineer with experience in Node.js and databases to help scale our infrastructure and build new APIs.",
-    requirements:
-      "3+ years of Node.js experience. Strong database skills (SQL/NoSQL). Experience with cloud platforms.",
-    location: "New York, NY",
-    employment_type: "Full-time",
-    is_remote: false,
-    salary_min: 110000,
-    salary_max: 130000,
-    status: "active",
-    posted_at: "2023-06-09T09:00:00Z",
-    application_deadline: "2023-07-09T23:59:59Z",
-  },
-  {
-    job_id: 4,
-    title: "Product Manager",
-    company_name: "ProductLabs",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Lead product development for our SaaS platform, working with cross-functional teams to define and execute the product roadmap.",
-    requirements:
-      "5+ years of product management experience. Technical background preferred. Strong leadership skills.",
-    location: "Austin, TX",
-    employment_type: "Full-time",
-    is_remote: false,
-    salary_min: 130000,
-    salary_max: 160000,
-    status: "active",
-    posted_at: "2023-06-07T09:00:00Z",
-    application_deadline: "2023-07-07T23:59:59Z",
-  },
-  {
-    job_id: 5,
-    title: "DevOps Engineer",
-    company_name: "CloudScale",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Join our infrastructure team to build and maintain our cloud-based systems and deployment pipelines.",
-    requirements:
-      "5+ years of DevOps experience. AWS/GCP certification preferred. CI/CD pipeline expertise.",
-    location: "Remote",
-    employment_type: "Full-time",
-    is_remote: true,
-    salary_min: 140000,
-    salary_max: 170000,
-    status: "active",
-    posted_at: "2023-06-11T09:00:00Z",
-    application_deadline: "2023-07-11T23:59:59Z",
-  },
-  {
-    job_id: 6,
-    title: "Marketing Specialist",
-    company_name: "GrowthMarketing",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Assist our marketing team with campaigns, content creation, and social media management.",
-    requirements:
-      "1+ years of marketing experience. Strong writing skills. Social media savvy.",
-    location: "Chicago, IL",
-    employment_type: "Part-time",
-    is_remote: false,
-    salary_min: 25,
-    salary_max: 35,
-    status: "active",
-    posted_at: "2023-05-30T09:00:00Z",
-    application_deadline: "2023-06-30T23:59:59Z",
-  },
-  {
-    job_id: 7,
-    title: "Mobile App Developer",
-    company_name: "AppVerse",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Develop and maintain cross-platform mobile applications using Flutter or React Native.",
-    requirements:
-      "2+ years of mobile development experience. Familiarity with app store deployment and mobile UI design.",
-    location: "Los Angeles, CA",
-    employment_type: "Full-time",
-    is_remote: true,
-    salary_min: 95000,
-    salary_max: 115000,
-    status: "active",
-    posted_at: "2023-06-15T09:00:00Z",
-    application_deadline: "2023-07-20T23:59:59Z",
-  },
-  {
-    job_id: 8,
-    title: "Technical Writer",
-    company_name: "DocuStream",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Create clear and concise technical documentation for APIs and developer tools.",
-    requirements:
-      "Strong writing skills. Experience with Markdown, Git, and technical docs. Background in software or engineering preferred.",
-    location: "Remote",
-    employment_type: "Contract",
-    is_remote: true,
-    salary_min: 40,
-    salary_max: 60,
-    status: "active",
-    posted_at: "2023-06-17T09:00:00Z",
-    application_deadline: "2023-07-22T23:59:59Z",
-  },
-  {
-    job_id: 9,
-    title: "AI Research Intern",
-    company_name: "AI Innovations",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Work with our machine learning team to prototype and test new AI models and techniques.",
-    requirements:
-      "Enrolled in a CS/AI graduate program. Experience with Python and PyTorch or TensorFlow.",
-    location: "Boston, MA",
-    employment_type: "Internship",
-    is_remote: false,
-    salary_min: 3000,
-    salary_max: 4000,
-    status: "active",
-    posted_at: "2023-06-20T09:00:00Z",
-    application_deadline: "2023-07-25T23:59:59Z",
-  },
-  {
-    job_id: 10,
-    title: "Salesforce Administrator",
-    company_name: "CRM Solutions",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Manage and customize our Salesforce platform to improve sales team workflows.",
-    requirements:
-      "Salesforce Administrator certification required. 2+ years of admin experience.",
-    location: "Denver, CO",
-    employment_type: "Full-time",
-    is_remote: false,
-    salary_min: 85000,
-    salary_max: 100000,
-    status: "active",
-    posted_at: "2023-06-12T09:00:00Z",
-    application_deadline: "2023-07-18T23:59:59Z",
-  },
-  {
-    job_id: 11,
-    title: "Cybersecurity Analyst",
-    company_name: "SecureNet",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Monitor and respond to security incidents, perform threat analysis, and implement preventive measures.",
-    requirements:
-      "3+ years in cybersecurity. Experience with SIEM tools, IDS/IPS, and incident response.",
-    location: "Washington, D.C.",
-    employment_type: "Full-time",
-    is_remote: false,
-    salary_min: 115000,
-    salary_max: 140000,
-    status: "active",
-    posted_at: "2023-06-25T09:00:00Z",
-    application_deadline: "2023-07-30T23:59:59Z",
-  },
-  {
-    job_id: 12,
-    title: "Customer Success Manager",
-    company_name: "ClientFirst",
-    company_logo: "https://via.placeholder.com/150",
-    description:
-      "Support our clients post-sale, ensuring adoption, retention, and satisfaction.",
-    requirements:
-      "Excellent communication skills. Experience with CRM tools like HubSpot or Zendesk.",
-    location: "Seattle, WA",
-    employment_type: "Full-time",
-    is_remote: true,
-    salary_min: 70000,
-    salary_max: 90000,
-    status: "active",
-    posted_at: "2023-06-25T09:00:00Z",
-    application_deadline: "2023-07-30T23:59:59Z",
-  },
 ]);
 const jobsUpdated = ref([]);
 const showQuickApplyModel = ref(false);
@@ -795,6 +594,12 @@ const filteredJobs = computed(() => {
   if (sortBy.value == "highestSalary") {
     result = result.sort((a, b) => b.salary_max - a.salary_max);
   }
+  if (sortBy.value == "recent") {
+    result = result.sort(
+      (a, b) => new Date(b.posted_at) - new Date(a.posted_at)
+    );
+  }
+
   return result;
 });
 const resetFilters = () => {
@@ -815,9 +620,41 @@ const limitedJobs = ref(
     return filteredJobs.value.slice(start, end);
   })
 );
+const addToFavorite = async (jobId) => {
+  try {
+    await axios.post(
+      "http://localhost:3000/api/seeker/insert/favorite/job",
+      {
+        job_id: jobId,
+      },
+      { withCredentials: true }
+    );
+    await getSavedjobs();
+  } catch (error) {
+    router.push("/saved-jobs");
+    console.log(error);
+  }
+};
+const getSavedjobs = async () => {
+  try {
+    const response = await store.fetchFavoriteJobs();
+    savedJobs.value = response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getJobClasses = (job) => {
+  return {
+    "text-red-500": savedJobs.value.some((Job) => job.job_id === Job.job_id),
+    "text-gray-400": !job.favorite_job_id,
+    "hover:text-red-600": true,
+    transition: true,
+  };
+};
 onMounted(async () => {
-  await userStore.userAuthStatus();
   getJobs();
+  getSavedjobs();
+  await userStore.userAuthStatus();
 });
 </script>
 <style scoped>
