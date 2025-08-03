@@ -38,6 +38,10 @@ const routes = [
         component: () => import('../views/accountSettings.vue')
     },
     {
+        path: '/saved-jobs',
+        component: () => import('../views/savedJobs.vue')
+    },
+    {
         path: '/:pathMatch(.*)*',
         component: () => import('../views/notFound.vue') // Create this component
     }
@@ -50,7 +54,7 @@ const router = createRouter(
 )
 
 const publicPaths = ['/', '/login']
-const privatePaths = ['/dashboard', '/profile', '/saved-job', '/accountSetting', 'sign-out', '/applications']
+const privatePaths = ['/dashboard', '/profile', '/saved-jobs', '/accountSetting', 'sign-out', '/applications']
 router.beforeEach(async (to, from, next) => {
     const isAuth = useAuthStore()
     const isAuthenticated = await isAuth.userAuthStatus()
