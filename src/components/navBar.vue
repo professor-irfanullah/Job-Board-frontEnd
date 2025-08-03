@@ -44,6 +44,7 @@
             />
           </div>
           <div
+            ref="userMenuRef"
             @click="isUserMenuOpen = !isUserMenuOpen"
             class="relative cursor-pointer"
           >
@@ -352,7 +353,7 @@
   </nav>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -363,6 +364,7 @@ const router = useRouter();
 const store = useAuthStore();
 const isMobileMenuOpen = ref(false);
 const { isAuthenticated } = storeToRefs(store);
+const userMenuRef = ref(null);
 const isUserMenuOpen = ref(false);
 const hideMobileMenuAfterClick = () => {
   isMobileMenuOpen.value = false;
@@ -394,7 +396,17 @@ const handleSignOut = async () => {
     isMobileMenuOpen.value = false;
   }, 1000);
 };
+const onClickOutside = (event) => {
+  if (userMenuRef.value && !userMenuRef.value.contains(event.target)) {
+    isUserMenuOpen.value = false;
+  }
+};
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", onClickOutside);
+});
 onMounted(async () => {
+  document.addEventListener("click", onClickOutside);
   await store.userAuthStatus();
   await store.getUserInformation();
 
