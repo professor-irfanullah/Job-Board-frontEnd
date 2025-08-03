@@ -3,6 +3,7 @@ import axios from 'axios'
 export const jobStore = defineStore('jobs', () => {
     const jobsUrl = `http://localhost:3000/api/seeker/get/all/jobs`
     const applcationsUrl = `http://localhost:3000/api/seeker/get/seeker/applications`
+    const fetchFavoriteJobsURL = 'http://localhost:3000/api/seeker/get/favorite/jobs'
 
     const fetchJobs = async () => {
         try {
@@ -21,5 +22,13 @@ export const jobStore = defineStore('jobs', () => {
             throw error
         }
     }
-    return { fetchJobs, fetchApplications }
+    const fetchFavoriteJobs = async () => {
+        try {
+            const response = await axios.get(fetchFavoriteJobsURL, { withCredentials: true })
+            return response.data
+        } catch (error) {
+            throw error
+        }
+    }
+    return { fetchJobs, fetchApplications, fetchFavoriteJobs }
 })
