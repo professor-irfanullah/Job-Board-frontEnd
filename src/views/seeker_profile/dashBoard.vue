@@ -1,6 +1,6 @@
 <template>
   <main
-    v-if="store?.user?.user?.role != 'employee'"
+    v-if="store?.user?.user?.role == 'seeker'"
     class="bg-gray-50 flex flex-col space-y-3"
   >
     <header class="p-4 shadow-md bg-white">
@@ -189,8 +189,7 @@ const handleNavigation = (route) => {
   router.push(route);
 };
 const getUser = async () => {
-  const response = await store.userAuthStatus();
-  console.log(response, store.user);
+  await store.userAuthStatus();
   await store.userAuthStatus();
   await getUserProfilePercentage();
   await store.getUserInformation();
