@@ -11,24 +11,57 @@
         class="center hidden w700:flex space-x-8 text-gray-600 font-sans font-semibold text-sm"
       >
         <router-link
+          v-if="store?.user?.user?.role === 'employee'"
+          class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+          to="/employee-dashboard"
+          active-class="text-gray-900"
+          >Dashboard</router-link
+        >
+        <router-link
+          v-else
           class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
           to="/home"
           active-class="text-gray-900"
           >Home</router-link
         >
         <router-link
+          v-if="store?.user?.user?.role === 'employee'"
+          class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+          to="/my-jobs"
+          active-class="text-gray-900"
+          >My Jobs</router-link
+        >
+        <router-link
+          v-else
           class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
           to="/find-jobs"
           active-class="text-gray-900"
           >Find Jobs</router-link
         >
         <router-link
+          v-if="store?.user?.user?.role === 'employee'"
+          class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+          to="/applicants"
+          active-class="text-gray-900"
+          >Applicants</router-link
+        >
+        <router-link
+          v-else
           class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
           to="/finalJobs"
           active-class="text-gray-900"
           >Companies</router-link
         >
         <router-link
+          v-if="store?.user?.user?.role === 'employee'"
+          class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+          to="/company-profile"
+          active-class="text-gray-900"
+          >Company Profile</router-link
+        >
+
+        <router-link
+          v-else
           class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
           to="/c"
           active-class="text-gray-900"
@@ -249,6 +282,15 @@
           class="center flex flex-col space-y-1 text-gray-600 font-sans font-semibold text-sm px-4"
         >
           <router-link
+            v-if="store?.user?.user?.role === 'employee'"
+            @click="hideMobileMenuAfterClick"
+            class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
+            to="/employee-dashboard"
+            active-class="text-gray-900"
+            >Dashboard</router-link
+          >
+          <router-link
+            v-else
             @click="hideMobileMenuAfterClick"
             class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
             to="/home"
@@ -256,6 +298,15 @@
             >Home</router-link
           >
           <router-link
+            v-if="store?.user?.user?.role === 'employee'"
+            @click="hideMobileMenuAfterClick"
+            class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
+            to="/my-jobs"
+            active-class="text-gray-900"
+            >My Jobs</router-link
+          >
+          <router-link
+            v-else
             @click="hideMobileMenuAfterClick"
             class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
             to="/find-jobs"
@@ -263,6 +314,15 @@
             >Find Jobs</router-link
           >
           <router-link
+            v-if="store?.user?.user?.role === 'employee'"
+            @click="hideMobileMenuAfterClick"
+            class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
+            to="/applicants"
+            active-class="text-gray-900"
+            >Applicants</router-link
+          >
+          <router-link
+            v-else
             @click="hideMobileMenuAfterClick"
             class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
             to="/findJobs"
@@ -270,6 +330,15 @@
             >Companies</router-link
           >
           <router-link
+            v-if="store?.user?.user?.role === 'employee'"
+            @click="hideMobileMenuAfterClick"
+            class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
+            to="/company-profile"
+            active-class="text-gray-900"
+            >Company Profile</router-link
+          >
+          <router-link
+            v-else
             @click="hideMobileMenuAfterClick"
             class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
             to="/c"
@@ -300,33 +369,52 @@
               </div>
             </div>
             <router-link
+              v-if="store?.user?.user?.role === 'seeker'"
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/dashboard"
               >Dashboard</router-link
             >
             <router-link
+              v-if="store?.user?.user?.role === 'seeker'"
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/profile"
               >My Profile</router-link
             >
             <router-link
+              v-else
+              @click="hideMobileMenuAfterClick"
+              class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
+              to="/my-profile"
+              >My Profile</router-link
+            >
+            <router-link
+              v-if="store?.user?.user?.role === 'seeker'"
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/dashboard"
               >Saved Jobs</router-link
             >
             <router-link
+              v-if="store?.user?.user?.role === 'seeker'"
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/applications"
               >Applications</router-link
             >
             <router-link
+              v-if="store?.user?.user?.role === 'seeker'"
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
               to="/accountSetting"
+              >Account Settings</router-link
+            >
+            <router-link
+              v-else
+              @click="hideMobileMenuAfterClick"
+              class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
+              to="/employee-accountSetting"
               >Account Settings</router-link
             >
             <button
@@ -370,12 +458,6 @@ const hideMobileMenuAfterClick = () => {
   isMobileMenuOpen.value = false;
 };
 
-const checkAuth = async () => {
-  // console.log(store.isAuthenticated, isAuthenticated.value);
-
-  const response = await store.userAuthStatus();
-  console.log("hu from nav", response);
-};
 const handleSignOut = async () => {
   const privatePaths = [
     "/dashboard",
@@ -387,6 +469,7 @@ const handleSignOut = async () => {
   ];
 
   await store.logOut();
+  await store.userAuthStatus();
   // console.log(router.currentRoute.value.path);
 
   setTimeout(() => {
