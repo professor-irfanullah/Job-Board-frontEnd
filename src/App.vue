@@ -1,6 +1,6 @@
 <template>
   <main>
-    <navBar />
+    <nav-bar />
     <router-view v-slot="{ Component }">
       <transition name="fade-slide">
         <component :is="Component" />
@@ -29,12 +29,11 @@
 </style>
 
 <script setup>
-import testLoginAndFileUpload from "./components/tempCVupload.vue";
-import login from "./components/testLoginAndFileUpload.vue";
 import navBar from "./components/navBar.vue";
 import { useAuthStore } from "../src/store/useUserState";
 import { onMounted } from "vue";
 const store = useAuthStore();
+console.log();
 
 onMounted(async () => {
   await store.userAuthStatus();
