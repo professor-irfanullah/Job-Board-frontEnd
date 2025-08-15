@@ -111,6 +111,7 @@
 
                   <div class="links flex flex-col space-y-1">
                     <router-link
+                      v-if="store?.user?.user?.role === 'seeker'"
                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
                       to="/dashboard"
                       active-class="bg-gray-50 text-gray-900"
@@ -132,6 +133,7 @@
                     </router-link>
 
                     <router-link
+                      v-if="store?.user?.user?.role === 'seeker'"
                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
                       to="/profile"
                       active-class="bg-gray-50 text-gray-900"
@@ -153,6 +155,29 @@
                     </router-link>
 
                     <router-link
+                      v-else
+                      class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
+                      to="/employee-profile"
+                      active-class="bg-gray-50 text-gray-900"
+                    >
+                      <svg
+                        class="w-4 h-4 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      My Profile
+                    </router-link>
+
+                    <router-link
+                      v-if="store?.user?.user?.role === 'seeker'"
                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
                       to="/saved-jobs"
                       active-class="bg-gray-50 text-gray-900"
@@ -174,6 +199,7 @@
                     </router-link>
 
                     <router-link
+                      v-if="store?.user?.user?.role === 'seeker'"
                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
                       to="/applications"
                       active-class="bg-gray-50 text-gray-900"
@@ -195,6 +221,7 @@
                     </router-link>
 
                     <router-link
+                      v-if="store?.user?.user?.role === 'seeker'"
                       class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded transition-colors"
                       to="/accountSetting"
                       active-class="bg-gray-50 text-gray-900"
@@ -386,14 +413,14 @@
               v-else
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-              to="/my-profile"
+              to="/employee-profile"
               >My Profile</router-link
             >
             <router-link
               v-if="store?.user?.user?.role === 'seeker'"
               @click="hideMobileMenuAfterClick"
               class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-              to="/dashboard"
+              to="/saved-jobs"
               >Saved Jobs</router-link
             >
             <router-link
@@ -466,11 +493,14 @@ const handleSignOut = async () => {
     "/accout-setting",
     "/sign-out",
     "/application",
+    "/employee-dashboard", // done
+    "/employee-profile",
+    "/my-jobs", // done
+    "/applications", //done
   ];
 
   await store.logOut();
   await store.userAuthStatus();
-  // console.log(router.currentRoute.value.path);
 
   setTimeout(() => {
     if (privatePaths.includes(router.currentRoute.value.path)) {
