@@ -387,10 +387,10 @@
                 </button>
               </div>
               <div
-                v-if="job.posted_at"
+                v-if="job.status"
                 class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
               >
-                New
+                {{ job.status }}
               </div>
             </div>
             <!-- Pagination -->
@@ -636,11 +636,13 @@ const addToFavorite = async (jobId) => {
   }
 };
 const getSavedjobs = async () => {
-  try {
-    const response = await store.fetchFavoriteJobs();
-    savedJobs.value = response;
-  } catch (error) {
-    console.log(error);
+  if (userStore.isAuthenticated) {
+    try {
+      const response = await store.fetchFavoriteJobs();
+      savedJobs.value = response;
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 const getJobClasses = (job) => {
