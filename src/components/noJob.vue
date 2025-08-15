@@ -15,8 +15,14 @@
       />
     </svg>
     <h3 class="mt-4 text-lg font-medium text-gray-900">No jobs found</h3>
-    <p class="mt-2 text-gray-500">
+    <p
+      v-if="authStore?.user?.user?.role === 'seeker'"
+      class="mt-2 text-gray-500"
+    >
       Try adjusting your search or filter criteria
+    </p>
+    <p v-else class="mt-1 text-sm text-gray-500">
+      Get started by posting a new job opening.
     </p>
     <button
       type="button"
@@ -28,6 +34,9 @@
   </div>
 </template>
 <script setup>
+import { useAuthStore } from "../store/useUserState";
+
+const authStore = useAuthStore();
 const props = defineProps({
   button: {
     type: String,
