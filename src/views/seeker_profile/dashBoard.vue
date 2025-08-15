@@ -1,8 +1,5 @@
 <template>
-  <main
-    v-if="store?.user?.user?.role == 'seeker'"
-    class="bg-gray-50 flex flex-col space-y-3"
-  >
+  <main class="bg-gray-50 flex flex-col space-y-3">
     <header class="p-4 shadow-md bg-white">
       <div class="welcomeNote py-2">
         <h1 class="font-bold font-sans w200:text-2xl w600:text-3xl">
@@ -138,7 +135,6 @@
       </section>
     </section>
   </main>
-  <main v-else>Looks like Empoyee is signed in...</main>
 </template>
 <script setup>
 import { library } from "@fortawesome/fontawesome-svg-core";
