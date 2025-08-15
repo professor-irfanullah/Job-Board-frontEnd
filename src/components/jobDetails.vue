@@ -105,23 +105,16 @@
           </ul>
         </section>
 
-        <!-- Perks / Benefits -->
-        <section v-if="jobs.perks?.length">
-          <h2 class="text-lg font-semibold text-gray-800 mb-2">
-            Perks & Benefits
-          </h2>
-          <ul class="list-disc list-inside text-gray-700 space-y-1">
-            <li v-for="(perk, index) in job.perks" :key="index">{{ perk }}</li>
-          </ul>
-        </section>
-
         <!-- CTA Buttons -->
-        <div class="flex flex-col sm:flex-row gap-3 border-t pt-6">
+        <div
+          v-if="store?.user?.user?.role === 'seeker'"
+          class="flex flex-col sm:flex-row gap-3 border-t pt-6"
+        >
           <button
             v-if="store.isAuthenticated"
             class="px-6 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition"
           >
-            Quick Apply
+            Quick Apply {{}}
           </button>
           <button
             v-else
@@ -146,7 +139,6 @@ import { ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 const store = useAuthStore();
 const job = ref({});
-const date = new Date();
 const props = defineProps({
   jobs: {
     type: Object,
