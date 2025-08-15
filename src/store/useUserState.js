@@ -21,8 +21,6 @@ export const useAuthStore = defineStore('auth', () => {
             const response = await axios.post(url, {}, { withCredentials: true })
             user.value = response.data
             isAuthenticated.value = true
-
-            // console.clear()
             return true
         }
         catch (err) {
@@ -65,14 +63,16 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
     const getUserInformation = async () => {
-        try {
-            userInfo.value = null
-            const response = await axios.get(userInfoUrl, { withCredentials: true })
-            userInfo.value = response.data
-            return userInfo.value
-        } catch (error) {
-            userInfo.value = null
-            return null
+        if (isAuthenticated.value === true && user?.value?.user?.role === 'seeker') {
+            try {
+                userInfo.value = null
+                const response = await axios.get(userInfoUrl, { withCredentials: true })
+                userInfo.value = response.data
+                return userInfo.value
+            } catch (error) {
+                userInfo.value = null
+                return null
+            }
         }
     }
     const postUserProfileInformation = async (userProfileInfo) => {
