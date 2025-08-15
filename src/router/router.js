@@ -40,6 +40,24 @@ const routes = [
         path: '/saved-jobs',
         component: () => import('../views/seeker_profile//savedJobs.vue')
     },
+    // employee specific routes
+    {
+        path: '/employee-profile',
+        component: () => import('../views/employee_profile/employeeProfile.vue')
+    },
+    {
+        path: '/employee-dashboard',
+        component: () => import('../views/employee_profile/dashboard.vue')
+    },
+
+    {
+        path: '/my-jobs',
+        component: () => import('../views/employee_profile/myJobs.vue')
+    },
+    {
+        path: '/applicants',
+        component: () => import('../views/employee_profile/applicants.vue')
+    },
     {
         path: '/:pathMatch(.*)*',
         component: () => import('../views/seeker_profile/notFound.vue') // Create this component
@@ -51,26 +69,7 @@ const router = createRouter(
         routes,
     }
 )
-
-const publicPaths = ['/', '/login']
-const privatePaths = ['/dashboard', '/profile', '/saved-jobs', '/accountSetting', 'sign-out', '/applications']
-/**
-router.beforeEach(async (to, from, next) => {
-    const isAuth = useAuthStore()
-    const role = isAuth?.user?.user?.role
-
-    const isAuthenticated = await isAuth.userAuthStatus()
-    const isPublic = publicPaths.includes(to.path)
-    const isPrivate = privatePaths.includes(to.path)
-    if (isAuthenticated && isPublic) {
-        return next('/home')
-    }
-    if (!isAuthenticated && isPrivate) {
-        return next('/home')
-    }
-    next()
-})
-     */
+const employerOnlyRoutes = ['/employee-dashboard', '/employee-profile', '/my-jobs', '/applicants']
 router.beforeEach(async (to, from, next) => {
     const beforeAuthRoutesForSeeker = ['/home', '/find-jobs', '/companies', '/resources']
     const afterAuthRoutesForSeeker = ['/dashboard', '/profile', '/saved-jobs', '/applications', '/accountSetting']
@@ -82,20 +81,23 @@ router.beforeEach(async (to, from, next) => {
     if (isAuthenticated && avoidAfterAuth.includes(to.path) && role === 'employee') {
         return next('/employee_dashboard')
     }
-    // avoid to access login or register for seeker
+    if (!isAuthenticated && employerOnlyRoutes.includes(to.path)) {
+        return next('/home')
+    }
     if (isAuthenticated && avoidAfterAuth.includes(to.path) && role === 'seeker') {
         return next('/dashboard')
     }
 
 
     // prevent beforeAuthRoutesForSeeker 
-    if (!isAuthenticated && afterAuthRoutesForSeeker.includes(to.path)) {
+    if (!isAuthenticated && (afterAuthRoutesForSeeker.includes(to.path) || employerOnlyRoutes.includes(to.path))) {
         return next('/home')
     }
 
     if (isAuthenticated && role === 'employee' && (beforeAuthRoutesForSeeker.includes(to.path) || afterAuthRoutesForSeeker.includes(to.path))) {
-        return next('/employee_route')
+        return next('/employee-dashboard')
     }
+
 
     next()
 
