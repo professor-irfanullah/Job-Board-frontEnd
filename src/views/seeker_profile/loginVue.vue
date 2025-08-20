@@ -312,7 +312,7 @@ const handleSubmit = async () => {
     okMessage.value = "";
     return;
   }
-
+  okMessage.value = "Please wait...";
   const response = await store.login(form.value.email, form.value.password);
   if (
     response.err ||
