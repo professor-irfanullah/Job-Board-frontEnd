@@ -4,4 +4,10 @@ node_modules/
 dist/
 text.txt
 *.txt
-src/components/quickApplyModel.vue
+# src/components/quickApplyModel.vue
+# src/components/postJob.vue
+
+src/components/navbarForEmployers.vue
+# src/components/applicantDetails.vue
+
+# src/views/seeker_profile/myProfile.vue
