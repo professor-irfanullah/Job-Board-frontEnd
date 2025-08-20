@@ -45,7 +45,7 @@
             <f-a-c class="text-yellow-700 text-xl" :icon="faFileAlt" />
           </p>
         </div>
-        <h1 class="font-bold text-2xl">3</h1>
+        <h1 class="font-bold text-2xl">{{ applicants?.length }}</h1>
         <router-link
           to="/applications"
           class="text-yellow-500 font-semibold text-sm"
@@ -139,6 +139,7 @@
 <script setup>
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { useAuthStore } from "../../store/useUserState";
+import { jobStore } from "../../store/useJobStore";
 import {
   faBriefcase,
   faFileAlt,
@@ -178,6 +179,8 @@ library.add(
 );
 const router = useRouter();
 const store = useAuthStore();
+const useJobStore = jobStore();
+const applicants = ref();
 const profilePercentage = ref();
 const getUserProfilePercentageUrl =
   "http://localhost:3000/api/seeker/get/profile/comp/percentage";
@@ -189,6 +192,8 @@ const getUser = async () => {
   await store.userAuthStatus();
   await getUserProfilePercentage();
   await store.getUserInformation();
+  const response = await useJobStore.fetchApplications();
+  applicants.value = response;
 };
 const getUserProfilePercentage = async () => {
   try {
