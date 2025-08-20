@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { ref } from 'vue'
 export const jobStore = defineStore('jobs', () => {
     const jobsUrl = `http://localhost:3000/api/seeker/get/all/jobs`
     const applcationsUrl = `http://localhost:3000/api/seeker/get/seeker/applications`
     const fetchFavoriteJobsURL = 'http://localhost:3000/api/seeker/get/favorite/jobs'
-
+    const applicantsURL = 'http://localhost:3000/api/employee/fetchApplicantsDetail'
+    const jobApplicants = ref(null)
     const fetchJobs = async () => {
         try {
             const response = await axios.get(jobsUrl, { withCredentials: true });
@@ -30,5 +32,14 @@ export const jobStore = defineStore('jobs', () => {
             throw error
         }
     }
-    return { fetchJobs, fetchApplications, fetchFavoriteJobs }
+    const fetchJobApplicants = async () => {
+        try {
+            const response = await axios.get(applicantsURL, { withCredentials: true })
+            jobApplicants.value = response.data
+            return response.data
+        } catch (error) {
+            throw error
+        }
+    }
+    return { fetchJobs, fetchApplications, fetchFavoriteJobs, fetchJobApplicants, jobApplicants }
 })
