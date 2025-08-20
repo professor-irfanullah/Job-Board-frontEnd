@@ -306,9 +306,6 @@
 <script setup>
 import axios from "axios";
 import { ref, computed } from "vue";
-/**-- select * from applications ap join users u on u.user_id = ap.user_id
--- join jobs j on j.job_id = ap.job_id
-SELECT * from users */
 const updatingUrl = "http://localhost:3000/api/employee/update/job";
 const errMessage = ref("");
 const responseMessage = ref("");
