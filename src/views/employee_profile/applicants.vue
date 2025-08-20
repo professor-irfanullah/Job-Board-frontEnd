@@ -105,7 +105,7 @@
           </div>
           <div class="w-full md:w-48">
             <select
-              v-model="filters.status"
+              v-model="filters.application_status"
               class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
               <option value="">All Statuses</option>
@@ -156,8 +156,8 @@
                   class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden"
                 >
                   <img
-                    v-if="applicant.avatar"
-                    :src="applicant.avatar"
+                    v-if="applicant.photo_url"
+                    :src="applicant.photo_url"
                     :alt="applicant.name"
                     class="h-full w-full object-cover"
                   />
@@ -198,10 +198,11 @@
             <div class="md:col-span-2 flex items-center">
               <div>
                 <p class="text-sm font-medium text-gray-900">
-                  {{ getJobTitle(applicant.job_id) }}
+                  {{ applicant.title }}
                 </p>
                 <p class="text-sm text-gray-500">
-                  {{ getJobType(applicant.job_id) }}
+                  {{ applicant.employment_type }} •
+                  {{ applicant.location }}
                 </p>
               </div>
             </div>
@@ -222,7 +223,7 @@
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              {{ formatDate(applicant.applied_at) }}
+              {{ new Date(applicant.applied_at).toISOString().split("T")[0] }}
             </div>
 
             <!-- Experience Column -->
@@ -237,12 +238,12 @@
             <!-- Status Column -->
             <div class="md:col-span-2 flex items-center">
               <select
-                v-model="applicant.status"
+                v-model="applicant.application_status"
                 @change="updateStatus(applicant)"
                 class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                :class="statusClass(applicant.status)"
+                :class="statusClass(applicant.application_status)"
               >
-                <option value="new" class="bg-blue-100 text-blue-800">
+                <option value="IN_PROGRESS" class="bg-blue-100 text-blue-800">
                   New
                 </option>
                 <option value="reviewed" class="bg-purple-100 text-purple-800">
@@ -284,7 +285,7 @@
                 </svg>
               </a>
               <button
-                @click="viewApplicant(applicant)"
+                @click="handleDetailModal(applicant.job_id)"
                 class="text-gray-600 hover:text-gray-900"
                 title="View Details"
               >
@@ -563,15 +564,27 @@
         </div>
       </div>
     </div>
+    <section v-if="showDetailModal">
+      <teleport to="body">
+        <section class="fixed inset-0 overflow-y-auto">
+          <applicant-details
+            :applicant="jobToPass"
+            @close="showDetailModal = false"
+          />
+        </section>
+      </teleport>
+    </section>
   </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-
+import applicantDetails from "../../components/applicantDetails.vue";
+import { jobStore } from "../../store/useJobStore";
+const store = jobStore();
+const jobToPass = ref(null);
+/**  */
+const showDetailModal = ref(false);
 // Sample data - replace with actual API calls
 const jobs = ref([
   {
@@ -594,68 +607,12 @@ const jobs = ref([
   },
 ]);
 
-const applicants = ref([
-  {
-    id: 1,
-    job_id: 1,
-    name: "Alex Johnson",
-    email: "alex.johnson@example.com",
-    phone: "(555) 123-4567",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    experience: 5,
-    applied_at: "2023-06-15T10:30:00Z",
-    status: "new",
-    resume_url: "#",
-  },
-  {
-    id: 2,
-    job_id: 1,
-    name: "Sarah Williams",
-    email: "sarah.williams@example.com",
-    phone: "(555) 987-6543",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    experience: 7,
-    applied_at: "2023-06-14T14:20:00Z",
-    status: "reviewed",
-    resume_url: "#",
-  },
-  {
-    id: 3,
-    job_id: 2,
-    name: "Michael Brown",
-    email: "michael.brown@example.com",
-    phone: "(555) 456-7890",
-    avatar: null,
-    experience: 3,
-    applied_at: "2023-06-16T09:15:00Z",
-    status: "interview",
-    resume_url: "#",
-  },
-  {
-    id: 4,
-    job_id: 3,
-    name: "Emily Davis",
-    email: "emily.davis@example.com",
-    phone: "(555) 789-0123",
-    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
-    experience: 4,
-    applied_at: "2023-06-13T16:45:00Z",
-    status: "hired",
-    resume_url: "#",
-  },
-  {
-    id: 5,
-    job_id: 3,
-    name: "David Wilson",
-    email: "david.wilson@example.com",
-    phone: null,
-    avatar: null,
-    experience: 6,
-    applied_at: "2023-06-17T11:10:00Z",
-    status: "rejected",
-    resume_url: "#",
-  },
-]);
+const handleDetailModal = (id) => {
+  showDetailModal.value = true;
+  const isFound = applicants.value.find((job) => job.job_id === id);
+  jobToPass.value = isFound;
+};
+const applicants = ref([]);
 
 // Filters
 const filters = ref({
@@ -685,8 +642,8 @@ const filteredApplicants = computed(() => {
     const matchesJob = filters.value.job
       ? applicant.job_id === parseInt(filters.value.job)
       : true;
-    const matchesStatus = filters.value.status
-      ? applicant.status === filters.value.status
+    const matchesStatus = filters.value.application_status
+      ? applicant.application_status === filters.value.application_status
       : true;
 
     return matchesSearch && matchesJob && matchesStatus;
@@ -704,30 +661,6 @@ const paginatedApplicants = computed(() => {
 });
 
 // Methods
-const getJobTitle = (jobId) => {
-  const job = jobs.value.find((j) => j.job_id === jobId);
-  return job ? job.title : "Unknown Job";
-};
-
-const getJobType = (jobId) => {
-  const job = jobs.value.find((j) => j.job_id === jobId);
-  if (!job) return "";
-
-  const types = {
-    "full-time": "Full-time",
-    "part-time": "Part-time",
-    contract: "Contract",
-    internship: "Internship",
-  };
-
-  const type = types[job.employment_type] || job.employment_type;
-  return job.is_remote ? `${type} • Remote` : type;
-};
-
-const formatDate = (dateString) => {
-  const options = { year: "numeric", month: "short", day: "numeric" };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
 
 const statusClass = (status) => {
   const classes = {
@@ -744,19 +677,16 @@ const resetFilters = () => {
   filters.value = {
     search: "",
     job: "",
-    status: "",
+    application_status: "",
   };
   currentPage.value = 1;
 };
 
 const updateStatus = (applicant) => {
   // In a real app, you would make an API call here
-  console.log(`Updated status for ${applicant.name} to ${applicant.status}`);
-};
-
-const viewApplicant = (applicant) => {
-  // In a real app, you would navigate to the applicant detail page
-  console.log(`Viewing applicant ${applicant.id}`);
+  console.log(
+    `Updated status for ${applicant.name} to ${applicant.application_status}`
+  );
 };
 
 const exportApplicants = () => {
@@ -781,6 +711,9 @@ const deleteApplicant = () => {
 
 // In a real app, you would fetch applicants and jobs from your API
 onMounted(async () => {
+  await store.fetchJobApplicants();
+  console.log(store?.jobApplicants);
+  applicants.value = store?.jobApplicants;
   // await fetchApplicants();
   // await fetchJobs();
 });
