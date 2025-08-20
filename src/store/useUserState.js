@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         try {
             // const response = await axios.post(loginUrl, { email: email, password: password }, { withCredentials: true })
-            const response = await api.post('/api/auth/login', { email: email, password: password }, { withCredentials: true })
+            const response = await api.post('https://authentication-production-86b0.up.railway.app/api/auth/login', { email: email, password: password }, { withCredentials: true })
             message.value = response.data
             isAuthenticated.value = true
             error.value = null
