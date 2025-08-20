@@ -305,10 +305,10 @@
 
 <script setup>
 import axios from "axios";
-import { ref, computed, onMounted } from "vue";
-import { useEmployeeStore } from "../store/useEmployeeStore";
-
-const employeeStore = useEmployeeStore();
+import { ref, computed } from "vue";
+/**-- select * from applications ap join users u on u.user_id = ap.user_id
+-- join jobs j on j.job_id = ap.job_id
+SELECT * from users */
 const updatingUrl = "http://localhost:3000/api/employee/update/job";
 const errMessage = ref("");
 const responseMessage = ref("");
@@ -357,86 +357,10 @@ const updateJob = async () => {
     errMessage.value = "";
     responseMessage.value = response.data.msg;
     console.log(response.data.msg);
-    await employeeStore.fetchEmployeeAllJobs();
   } catch (error) {
     errMessage.value = error.response.data.err;
     responseMessage.value = "";
     console.error(error.response.data.err);
   }
 };
-onMounted(async () => await employeeStore.fetchEmployeeAllJobs());
 </script>
-
-const employeeStore = useEmployeeStore();
-const jobPostUrl = "http://localhost:3000/api/employee/post/job";
-
-const errMessage = ref("");
-const responseMessage = ref("");
-const props = defineProps({
-  jobData: {
-    type: Object,
-    default: null,
-  },
-});
-
-const isEditing = computed(() => !!props.jobData);
-
-// Form data structure
-const form = ref({
-  title: "",
-  description: "",
-  requirements: "",
-  responsibilities: "",
-  location: "",
-  employment_type: "",
-  is_remote: false,
-  salary_min: "",
-  salary_max: "",
-  status: "draft",
-  deadline: "",
-});
-
-const isSubmitting = ref(false);
-
-// If editing, populate form with existing data
-onMounted(() => {
-  if (props.jobData) {
-    form.value = {
-      ...props.jobData,
-      is_remote: props.jobData.is_remote || false,
-    };
-  }
-});
-
-const submitForm = async () => {
-  responseMessage.value = "Please wait..";
-  errMessage.value = "";
-  isSubmitting.value = true;
-  try {
-    const response = await axios.post(
-      jobPostUrl,
-      {
-        title: form.value.title,
-        description: form.value.description,
-        requirements: form.value.requirements,
-        responsibilities: form.value.responsibilities,
-        location: form.value.location,
-        employment_type: form.value.employment_type,
-        is_remote: form.value.is_remote,
-        salary_min: form.value.salary_min,
-        salary_max: form.value.salary_max,
-        status: form.value.status,
-        application_deadline: form.value.deadline,
-      },
-      { withCredentials: true }
-    );
-    responseMessage.value = response.data.msg || "Operation Successful..";
-    await employeeStore.fetchEmployeeAllJobs();
-  } catch (error) {
-    errMessage.value = error.response.data.err || "Something went wrong...";
-    responseMessage.value = "";
-    console.log(error);
-  } finally {
-    isSubmitting.value = false;
-  }
-};
