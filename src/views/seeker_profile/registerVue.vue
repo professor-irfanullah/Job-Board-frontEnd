@@ -344,7 +344,7 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
-
+import api from "../../api/api";
 const okMessage = ref("");
 const form = ref({
   username: "",
@@ -377,7 +377,12 @@ const handleSubmit = async () => {
 
   try {
     okMessage.value = "Please wait...";
-    const response = await axios.post(registerUrl, {
+    // const response = await axios.post(registerUrl, {
+    //   user_name: form.value.username,
+    //   email: form.value.email,
+    //   password: form.value.password,
+    // });
+    const response = await api.post("/api/auth/register", {
       user_name: form.value.username,
       email: form.value.email,
       password: form.value.password,
