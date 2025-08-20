@@ -99,7 +99,7 @@
             <div>
               <p class="text-sm font-medium text-gray-500">Total Applicants</p>
               <p class="text-3xl font-semibold text-gray-800 mt-1">
-                {{ stats.totalApplicants || 0 }}
+                {{ jobsStore?.jobApplicants?.length || 0 }}
               </p>
             </div>
             <div class="bg-green-100 p-3 rounded-lg">
@@ -149,7 +149,7 @@
             <div>
               <p class="text-sm font-medium text-gray-500">New Applicants</p>
               <p class="text-3xl font-semibold text-gray-800 mt-1">
-                {{ stats.newApplicants || 0 }}
+                {{ filterForNewJobs?.length || 0 }}
               </p>
             </div>
             <div class="bg-blue-100 p-3 rounded-lg">
@@ -528,14 +528,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import postJob from "../../components/postJob.vue";
 import { useAuthStore } from "../../store/useUserState";
 import { useEmployeeStore } from "../../store/useEmployeeStore";
+import { jobStore } from "../../store/useJobStore";
 
 const userStore = useAuthStore();
 const employeeStore = useEmployeeStore();
+const jobsStore = jobStore();
 const showInsertModel = ref(false);
 const router = useRouter();
 const profilePercentage = ref(null);
@@ -606,6 +608,13 @@ const activeJobs = ref([
   },
 ]);
 
+const filterForNewJobs = ref(
+  computed(() => {
+    return jobsStore?.jobApplicants?.filter(
+      (job) => job.application_status === "IN_PROGRESS"
+    );
+  })
+);
 const viewApplicant = (id) => {
   router.push(`/employer/applicants/${id}`);
 };
@@ -620,5 +629,6 @@ onMounted(async () => {
   await userStore.userAuthStatus();
   await employeeStore.fetchEmployeeAllJobs();
   await employeeStore.fetchEmployeeProfileCompletionProgress();
+  await jobsStore.fetchJobApplicants();
 });
 </script>
