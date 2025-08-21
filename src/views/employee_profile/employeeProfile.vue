@@ -721,6 +721,7 @@
 import { computed, onMounted, ref } from "vue";
 import { useEmployeeStore } from "../../store/useEmployeeStore";
 import axios from "axios";
+import api from "../../api/api";
 
 const store = useEmployeeStore();
 const companyInfo = ref({});
@@ -735,13 +736,11 @@ const errInLogoUpload = ref("");
 const successLogoUpload = ref("");
 
 const getCompanyInfo = async () => {
+  // http://localhost:3000
   try {
-    const response = await axios.get(
-      "http://localhost:3000/api/employer/profile",
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await api.get("/api/employer/profile", {
+      withCredentials: true,
+    });
     companyInfo.value = response.data.company || {};
   } catch (error) {
     console.error("Error fetching company info:", error);
@@ -782,13 +781,11 @@ const submitLogo = async () => {
 
   const formData = new FormData();
   formData.append("logo", logoInput.value);
-
+  // http://localhost:3000
   try {
-    const response = await axios.post(
-      "http://localhost:3000/api/employer/profile/logo",
-      formData,
-      { withCredentials: true }
-    );
+    const response = await api.post("/api/employer/profile/logo", formData, {
+      withCredentials: true,
+    });
     successLogoUpload.value = response.data.msg;
     errInLogoUpload.value = "";
     getCompanyInfo();
@@ -809,13 +806,11 @@ const enableButtonAgain = () => {
 const submitDetails = async () => {
   isSaving.value = true;
   const validInputs = validateInputs();
-
+  // http://localhost:3000/
   try {
-    const response = await axios.put(
-      "http://localhost:3000/api/employer/profile",
-      validInputs,
-      { withCredentials: true }
-    );
+    const response = await api.put("api/employer/profile", validInputs, {
+      withCredentials: true,
+    });
 
     responseMessage.value = response.data.msg || "Profile updated successfully";
     errorMessage.value = "";

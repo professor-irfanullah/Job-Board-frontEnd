@@ -306,6 +306,7 @@
 <script setup>
 import axios from "axios";
 import { ref, computed } from "vue";
+import api from "../api/api";
 const updatingUrl = "http://localhost:3000/api/employee/update/job";
 const errMessage = ref("");
 const responseMessage = ref("");
@@ -332,8 +333,8 @@ const form = computed(() => ({
 const updateJob = async () => {
   console.log(form.value);
   try {
-    const response = await axios.post(
-      updatingUrl,
+    const response = await api.post(
+      "/api/employee/update/job",
       {
         application_deadline: form.value.application_deadline,
         description: form.value.description,

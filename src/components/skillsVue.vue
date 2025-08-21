@@ -280,6 +280,7 @@
 import axios from "axios";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import api from "../api/api";
 const props = defineProps({
   isEditing: {
     type: Boolean,
@@ -319,9 +320,12 @@ const isNoSkills = computed(() => {
 const removeSkill = async (index, arrIdx) => {
   try {
     if (index) {
-      const response = await axios.get(removeSkillUrl + index, {
-        withCredentials: true,
-      });
+      const response = await api.get(
+        `/api/seeker/delete/skill/record?skill_id=${index}`,
+        {
+          withCredentials: true,
+        }
+      );
       errMsg.value = "";
       responseMsg.value = response.data.msg;
       skills.value.splice(index, 1);
@@ -341,8 +345,8 @@ const saveSkills = async () => {
   responseMsg.value = "please wait..";
   for (const item of skills.value) {
     try {
-      const response = await axios.post(
-        addSkillUrl,
+      const response = await api.post(
+        "/api/seeker/insert/skill/record",
         {
           skill_name: item.skill_name,
           proficiency_level: item.proficiency_level,
@@ -365,7 +369,9 @@ const saveSkills = async () => {
 };
 const loadSkills = async () => {
   try {
-    const response = await axios.get(url, { withCredentials: true });
+    const response = await api.get("/api/seeker/get/skill/record", {
+      withCredentials: true,
+    });
     skills.value = response.data.data;
   } catch (error) {
     skills.value = [];

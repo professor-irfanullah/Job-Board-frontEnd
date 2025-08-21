@@ -264,6 +264,7 @@
 // Your existing script remains exactly the same
 import axios from "axios";
 import { computed, onMounted, ref } from "vue";
+import api from "../api/api";
 
 const props = defineProps({
   isEditing: {
@@ -297,9 +298,12 @@ const addNewEducation = () => {
 const removeEducation = async (id, arrIdx) => {
   try {
     if (id) {
-      const response = await axios.get(removeEducationUrl + id, {
-        withCredentials: true,
-      });
+      const response = await api.get(
+        `/api/seeker/delete/education/record?education_id=${id}`,
+        {
+          withCredentials: true,
+        }
+      );
       errMsg.value = "";
       responseMsg.value = response.data.msg;
       education.value.splice(id, 1);
@@ -321,8 +325,8 @@ const saveEducation = async () => {
 
   for (const item of education.value) {
     try {
-      const response = await axios.post(
-        addEducationUrl,
+      const response = await api.post(
+        "/api/seeker/insert/education/record",
         {
           institution: item.institution,
           degree: item.degree,
@@ -347,7 +351,9 @@ const saveEducation = async () => {
 
 const loadEducation = async () => {
   try {
-    const response = await axios.get(url, { withCredentials: true });
+    const response = await api.get("/api/seeker/get/education/record", {
+      withCredentials: true,
+    });
     const arr = response.data.data;
     education.value = arr.map((record) => ({
       education_id: record.education_id,

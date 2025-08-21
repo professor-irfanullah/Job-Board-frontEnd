@@ -587,6 +587,7 @@
 import { onMounted, ref } from "vue";
 import { useAuthStore } from "../../store/useUserState";
 import axios from "axios";
+import api from "../../api/api";
 
 const changePasswordUrl = "http://localhost:3000/api/auth/change/password";
 const updateNameAndVisibilityUrl =
@@ -673,9 +674,13 @@ const changePassword = async () => {
     errMsg.value = "";
     responseMsg.value = "***";
     try {
-      const response = await axios.post(changePasswordUrl, password.value, {
-        withCredentials: true,
-      });
+      const response = await api.post(
+        "/api/auth/change/password",
+        password.value,
+        {
+          withCredentials: true,
+        }
+      );
       const { msg } = response.data;
       responseMsg.value = msg;
       errMsg.value = "";
@@ -716,8 +721,8 @@ const deleteAccount = () => {
 const changeProfileAndVisibility = async () => {
   if (profile.value.name.trim()) {
     try {
-      const response = await axios.post(
-        updateNameAndVisibilityUrl,
+      const response = await api.post(
+        "/api/seeker/update/profile/name/visibility",
         { profile: profile.value },
         { withCredentials: true }
       );

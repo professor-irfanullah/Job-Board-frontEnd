@@ -698,6 +698,7 @@ import { useAuthStore } from "../../store/useUserState";
 import axios from "axios";
 import skillsVue from "../../components/skillsVue.vue";
 import educationVue from "../../components/educationVue.vue";
+import api from "../../api/api";
 const store = useAuthStore();
 
 const userInfo = ref({});
@@ -746,12 +747,11 @@ const submitpdf = async () => {
   cvUploadMessage.value = "Please wait";
   const formData = new FormData();
   formData.append("file", resumeInput.value);
+  // "http://localhost:3000/api/seeker/profile/cv",
   try {
-    const response = await axios.post(
-      "http://localhost:3000/api/seeker/profile/cv",
-      formData,
-      { withCredentials: true }
-    );
+    const response = await api.post("/api/seeker/profile/cv", formData, {
+      withCredentials: true,
+    });
     cvUploadMessage.value = response.data.msg;
     notSupportedCVMessage.value = "";
     resumeInput.value = null;
@@ -801,12 +801,11 @@ const sumbitProfilePhoto = async () => {
   if (!profilePictureInput.value) return;
   const formData = new FormData();
   formData.append("profile", profilePictureInput.value);
+  // "http://localhost:3000/api/seeker/profile/picture",
   try {
-    const response = await axios.post(
-      "http://localhost:3000/api/seeker/profile/picture",
-      formData,
-      { withCredentials: true }
-    );
+    const response = await api.post("/api/seeker/profile/picture", formData, {
+      withCredentials: true,
+    });
     successProfileUpload.value = response.data.msg;
     errInProfileUpload.value = "";
     getInfo();

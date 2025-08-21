@@ -348,11 +348,11 @@ const filterJobs = ref(
 );
 
 const removeFromFavorite = async (jobId) => {
+  // `http://localhost:3000/api/seeker/delete/favorite/job?job_id=${jobId}`,
   try {
-    await axios.delete(
-      `http://localhost:3000/api/seeker/delete/favorite/job?job_id=${jobId}`,
-      { withCredentials: true }
-    );
+    await axios.delete(`/api/seeker/delete/favorite/job?job_id=${jobId}`, {
+      withCredentials: true,
+    });
 
     savedJobs.value = savedJobs.value.filter((job) => job.job_id !== jobId);
   } catch (error) {

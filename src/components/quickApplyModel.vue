@@ -86,6 +86,7 @@
 import { onMounted, ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 import axios from "axios";
+import api from "../api/api";
 
 const submitionURL = "http://localhost:3000/api/seeker/insert/job/application";
 const emits = defineEmits(["hide"]);
@@ -101,8 +102,8 @@ const props = defineProps({
 });
 const submitApplication = async () => {
   try {
-    const response = await axios.post(
-      submitionURL,
+    const response = await api.post(
+      "/api/seeker/insert/job/application",
       {
         job_id: props?.jobs?.job_id,
         cover_letter: textInput.value,

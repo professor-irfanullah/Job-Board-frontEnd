@@ -479,6 +479,7 @@ import jobDetails from "../../components/jobDetails.vue";
 import quickApplyModel from "../../components/quickApplyModel.vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import api from "../../api/api";
 
 const router = useRouter();
 const userStore = useAuthStore();
@@ -621,9 +622,10 @@ const limitedJobs = ref(
   })
 );
 const addToFavorite = async (jobId) => {
+  // "http://localhost:3000/api/seeker/insert/favorite/job",
   try {
-    await axios.post(
-      "http://localhost:3000/api/seeker/insert/favorite/job",
+    await api.post(
+      "/api/seeker/insert/favorite/job",
       {
         job_id: jobId,
       },

@@ -329,6 +329,7 @@
 import axios from "axios";
 import { ref, computed, onMounted } from "vue";
 import { useEmployeeStore } from "../store/useEmployeeStore";
+import api from "../api/api";
 
 const employeeStore = useEmployeeStore();
 const jobPostUrl = "http://localhost:3000/api/employee/post/job";
@@ -380,8 +381,8 @@ const submitForm = async () => {
   errMessage.value = "";
   isSubmitting.value = true;
   try {
-    const response = await axios.post(
-      jobPostUrl,
+    const response = await api.post(
+      "/api/employee/post/job",
       {
         title: form.value.title,
         description: form.value.description,

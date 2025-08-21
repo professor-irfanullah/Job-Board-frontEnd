@@ -581,9 +581,10 @@ const fetchEmployeeAllJobs = async () => {
 };
 // In a real app, you would fetch jobs from your API
 const deleteJob = async () => {
+  // http://localhost:3000
   try {
-    await axios.delete(
-      `http://localhost:3000/api/employee/delete/job?job_id=${jobToDelete.value.job_id}&employer_id=${jobToDelete.value.employer_id}`,
+    await api.delete(
+      `/api/employee/delete/job?job_id=${jobToDelete.value.job_id}&employer_id=${jobToDelete.value.employer_id}`,
       { withCredentials: true }
     );
     showDeleteModal.value = false;

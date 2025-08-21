@@ -159,6 +159,7 @@ import {
 import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import axios from "axios";
+import api from "../../api/api";
 
 // Add icons to library
 library.add(
@@ -197,7 +198,7 @@ const getUser = async () => {
 };
 const getUserProfilePercentage = async () => {
   try {
-    const response = await axios.get(getUserProfilePercentageUrl, {
+    const response = await api.get("/api/seeker/get/profile/comp/percentage", {
       withCredentials: true,
     });
     profilePercentage.value = response.data.msg[0].profile_com_perc;
