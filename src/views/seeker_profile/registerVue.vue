@@ -383,7 +383,7 @@ const handleSubmit = async () => {
     //   password: form.value.password,
     // });
     const response = await axios.post(
-      "authentication-production-53cf.up.railway.app/api/auth/register",
+      "https://authentication-production-53cf.up.railway.app/api/auth/register",
       {
         user_name: form.value.username,
         email: form.value.email,
