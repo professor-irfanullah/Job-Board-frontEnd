@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
             user.value = null
             isAuthenticated.value = null
             // const response = await axios.post(url, {}, { withCredentials: true })
-            const response = await api.post('/api/auth/protected', {}, { withCredentials: true })
+            const response = await axios.post('/api/auth/protected', {}, { withCredentials: true })
 
             user.value = response.data
             isAuthenticated.value = true
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         try {
             // const response = await axios.post(loginUrl, { email: email, password: password }, { withCredentials: true })
-            const response = await api.post('/api/auth/login', { email: email, password: password }, { withCredentials: true })
+            const response = await axios.post('authentication-production-53cf.up.railway.app/api/auth/login', { email: email, password: password }, { withCredentials: true })
             message.value = response.data
             isAuthenticated.value = true
             error.value = null
@@ -58,7 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
 
             // const response = await axios.post(signOutUrl, {}, { withCredentials: true })
-            const response = await api.post('/api/auth/logout', {}, { withCredentials: true })
+            const response = await axios.post('authentication-production-53cf.up.railway.app/api/auth/logout', {}, { withCredentials: true })
 
             message.value = response.data
             isAuthenticated.value = false
@@ -74,7 +74,7 @@ export const useAuthStore = defineStore('auth', () => {
             try {
                 userInfo.value = null
                 // const response = await axios.get(userInfoUrl, { withCredentials: true })
-                const response = await api.get('/api/seeker/profile-info', { withCredentials: true })
+                const response = await axios.get('authentication-production-53cf.up.railway.app/api/seeker/profile-info', { withCredentials: true })
 
                 userInfo.value = response.data
                 return userInfo.value
@@ -99,8 +99,8 @@ export const useAuthStore = defineStore('auth', () => {
             //     },
             //     { withCredentials: true }
             // );
-            const response = await api.post(
-                '/api/seeker/insert/profile/record',
+            const response = await axios.post(
+                'authentication-production-53cf.up.railway.app/api/seeker/insert/profile/record',
                 {
                     bio: userProfileInfo.about,
                     headline: userProfileInfo.headline,
