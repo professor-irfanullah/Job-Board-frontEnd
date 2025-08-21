@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { ref } from 'vue'
+import api from '../api/api'
 export const jobStore = defineStore('jobs', () => {
     const jobsUrl = `http://localhost:3000/api/seeker/get/all/jobs`
     const applcationsUrl = `http://localhost:3000/api/seeker/get/seeker/applications`
@@ -9,7 +10,7 @@ export const jobStore = defineStore('jobs', () => {
     const jobApplicants = ref(null)
     const fetchJobs = async () => {
         try {
-            const response = await axios.get(jobsUrl, { withCredentials: true });
+            const response = await api.get('/api/seeker/get/all/jobs', { withCredentials: true });
             return response.data;
         } catch (error) {
             // You can customize error handling here or just rethrow
@@ -18,7 +19,7 @@ export const jobStore = defineStore('jobs', () => {
     };
     const fetchApplications = async () => {
         try {
-            const response = await axios.get(applcationsUrl, { withCredentials: true })
+            const response = await api.get('/api/seeker/get/seeker/applications', { withCredentials: true })
             return response.data
         } catch (error) {
             throw error
@@ -26,7 +27,7 @@ export const jobStore = defineStore('jobs', () => {
     }
     const fetchFavoriteJobs = async () => {
         try {
-            const response = await axios.get(fetchFavoriteJobsURL, { withCredentials: true })
+            const response = await api.get('/api/seeker/get/favorite/jobs', { withCredentials: true })
             return response.data
         } catch (error) {
             throw error
@@ -34,7 +35,7 @@ export const jobStore = defineStore('jobs', () => {
     }
     const fetchJobApplicants = async () => {
         try {
-            const response = await axios.get(applicantsURL, { withCredentials: true })
+            const response = await api.get('/api/employee/fetchApplicantsDetail', { withCredentials: true })
             jobApplicants.value = response.data
             return response.data
         } catch (error) {
