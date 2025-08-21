@@ -382,11 +382,14 @@ const handleSubmit = async () => {
     //   email: form.value.email,
     //   password: form.value.password,
     // });
-    const response = await api.post("/api/auth/register", {
-      user_name: form.value.username,
-      email: form.value.email,
-      password: form.value.password,
-    });
+    const response = await axios.post(
+      "authentication-production-53cf.up.railway.app/api/auth/register",
+      {
+        user_name: form.value.username,
+        email: form.value.email,
+        password: form.value.password,
+      }
+    );
     okMessage.value = response.data.message;
     errMsg.value = "";
     form.value.email = "";
