@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { computed, ref } from "vue";
+import api from "../api/api";
 export const useEmployeeStore = defineStore('employeeStore', () => {
     const profile_url = 'http://localhost:3000/api/employee/insertProfile'
     const fetchProfileUrl = 'http://localhost:3000/api/employee/fetchProfile'
@@ -12,7 +13,7 @@ export const useEmployeeStore = defineStore('employeeStore', () => {
     const profile_percentage = ref(null)
     const insertEmployeeProfile = async (param) => {
         try {
-            const response = await axios.post(profile_url, {
+            const response = await api.post('/api/employee/insertProfile', {
                 company_description: param.description,
                 founded_year: param.founded_year,
                 headquarters_location: param.headquarters,
@@ -29,7 +30,7 @@ export const useEmployeeStore = defineStore('employeeStore', () => {
     }
     const fetchEmployeeProfile = async () => {
         try {
-            const response = await axios.get(fetchProfileUrl, { withCredentials: true })
+            const response = await api.get('/api/employee/fetchProfile', { withCredentials: true })
             profileInfo.value = response.data.data[0]
         } catch (error) {
             throw error
@@ -38,7 +39,7 @@ export const useEmployeeStore = defineStore('employeeStore', () => {
 
     const fetchEmployeeAllJobs = async () => {
         try {
-            const response = await axios.get(fetchEmployeeAllJobsUrl, { withCredentials: true })
+            const response = await api.get('/api/employee/fetchEmployeeAllJobs', { withCredentials: true })
             employeeJobsLength.value = response.data.length
             allJobs.value = response.data
             return response.data
@@ -48,7 +49,7 @@ export const useEmployeeStore = defineStore('employeeStore', () => {
     }
     const fetchEmployeeProfileCompletionProgress = async () => {
         try {
-            const response = await axios.get(employeeProgressUrl, { withCredentials: true })
+            const response = await api.get('/api/employee/fetchProfilePercentage', { withCredentials: true })
             profile_percentage.value = response.data[0]
         } catch (error) {
             throw error
