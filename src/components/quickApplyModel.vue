@@ -31,17 +31,16 @@
         </p>
 
         <div
-          class="space-y-1 mx-auto flex justify-center items-center flex-col"
+          class="space-y-1 mx-auto flex justify-center items-center flex-col overflow-x-auto"
         >
           <label class="text-sm font-medium text-gray-600" for="selection"
             >Tell us why we should hire you!</label
           >
           <textarea
             name=""
-            id="selection"
-            cols="50"
             rows="3"
-            class="p-2 border overflow-hidden outline-blue-400 rounded-md transition text-sm font-serif"
+            id="selection"
+            class="p-2 border overflow-hidden outline-blue-400 rounded-md transition text-sm font-serif w-full"
             required
             placeholder="What makes you fit for this job"
             v-model.trim="textInput"
@@ -63,7 +62,7 @@
           </div>
         </div>
 
-        <div class="mt-6 flex justify-end space-x-3">
+        <div class="mt-6 flex justify-end gap-2 flex-col">
           <button
             @click="hideModel"
             class="px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 transition"
@@ -72,8 +71,9 @@
           </button>
           <!-- @click="submitApplication" -->
           <button
+            :disabled="errMsg != '' || responseMsg != ''"
             type="submit"
-            class="px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition disabled:bg-indigo-400"
           >
             Submit Application
           </button>

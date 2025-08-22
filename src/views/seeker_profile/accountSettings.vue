@@ -15,8 +15,10 @@
             </div>
             <div class="flex space-x-2">
               <button
+                title="This feature is not added yet"
+                disabled
                 @click="showDeleteModal = true"
-                class="px-4 py-2 text-red-100 bg-white/10 rounded-md hover:bg-white/20 transition"
+                class="px-4 py-2 text-red-100 bg-white/10 rounded-md hover:bg-white/20 transition disabled:bg-white/15 cursor-not-allowed"
               >
                 Delete Account
               </button>

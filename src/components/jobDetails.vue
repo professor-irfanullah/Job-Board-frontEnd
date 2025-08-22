@@ -111,10 +111,11 @@
           class="flex flex-col sm:flex-row gap-3 border-t pt-6"
         >
           <button
+            disabled
             v-if="store.isAuthenticated"
-            class="px-6 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition"
+            class="px-6 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition disabled:bg-indigo-400"
           >
-            Quick Apply {{}}
+            Quick Apply
           </button>
           <button
             v-else
