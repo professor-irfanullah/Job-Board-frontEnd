@@ -185,19 +185,13 @@
           Whether you're looking for talent or your next opportunity, we've got
           you covered.
         </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <a
-            href="/post-job"
-            class="bg-white text-indigo-700 px-8 py-3 rounded-md font-bold hover:bg-gray-100 transition"
-          >
-            Post a Job
-          </a>
-          <a
-            href="/jobs"
+        <div class="">
+          <router-link
+            to="/find-jobs"
             class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-md font-bold hover:bg-indigo-800 transition"
           >
             Browse Jobs
-          </a>
+          </router-link>
         </div>
       </div>
     </div>
@@ -216,6 +210,7 @@ const locationQuery = ref("");
 const itemsPerPage = ref(4);
 
 const featuredJobs = ref([
+  /*
   {
     id: 1,
     title: "Senior Frontend Developer",
@@ -252,6 +247,7 @@ const featuredJobs = ref([
       "Oversee daily operations of our healthcare facility and ensure quality patient care standards.",
     salary: "$85,000 - $100,000",
   },
+  */
 ]);
 
 const categories = ref([
