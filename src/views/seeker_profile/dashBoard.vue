@@ -24,7 +24,7 @@
             <f-a-c class="text-blue-700 text-xl" :icon="faBriefcase" />
           </p>
         </div>
-        <h1 class="font-bold text-2xl">5</h1>
+        <h1 class="font-bold text-2xl">0</h1>
         <router-link
           to="/dashboard"
           class="text-blue-500 font-semibold text-sm"
@@ -84,7 +84,7 @@
       </div>
       <section class="actions flex flex-col gap-3 p-4">
         <router-link
-          to="/upload-resume"
+          to="/profile"
           class="resume flex items-center gap-4 border p-4 rounded-md hover:cursor-pointer hover:bg-gray-50 transition"
         >
           <div class="icon px-4 py-3 rounded-full bg-blue-100">
@@ -108,7 +108,7 @@
             <small v-else>{{ 100 - profilePercentage }}% remaining</small>
           </div>
         </router-link>
-        <router-link
+        <!-- <router-link
           to="/job-alerts"
           class="alerts flex items-center gap-4 border p-4 rounded-md hover:cursor-pointer hover:bg-gray-50 transition"
         >
@@ -119,7 +119,7 @@
             <h1 class="font-semibold">Job Alerts</h1>
             <small>Manage notifications</small>
           </div>
-        </router-link>
+        </router-link> -->
         <router-link
           to="/saved-jobs"
           class="saved flex items-center gap-4 border p-4 rounded-md hover:cursor-pointer hover:bg-gray-50 transition"
@@ -158,7 +158,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
-import axios from "axios";
 import api from "../../api/api";
 
 // Add icons to library
@@ -183,8 +182,6 @@ const store = useAuthStore();
 const useJobStore = jobStore();
 const applicants = ref();
 const profilePercentage = ref();
-const getUserProfilePercentageUrl =
-  "http://localhost:3000/api/seeker/get/profile/comp/percentage";
 const handleNavigation = (route) => {
   router.push(route);
 };
