@@ -251,18 +251,18 @@ const featuredJobs = ref([
 ]);
 
 const categories = ref([
-  { id: 1, name: "Technology", jobs: 1243 },
-  { id: 2, name: "Marketing", jobs: 876 },
-  { id: 3, name: "Healthcare", jobs: 765 },
-  { id: 4, name: "Finance", jobs: 543 },
-  { id: 5, name: "Education", jobs: 432 },
-  { id: 6, name: "Engineering", jobs: 987 },
-  { id: 7, name: "Business", jobs: 654 },
-  { id: 8, name: "Science", jobs: 321 },
-  { id: 9, name: "Legal", jobs: 234 },
-  { id: 10, name: "Consulting", jobs: 456 },
-  { id: 11, name: "Government", jobs: 345 },
-  { id: 12, name: "Remote", jobs: 678 },
+  { id: 1, name: "Technology", jobs: 0 },
+  { id: 2, name: "Marketing", jobs: 0 },
+  { id: 3, name: "Healthcare", jobs: 0 },
+  { id: 4, name: "Finance", jobs: 0 },
+  { id: 5, name: "Education", jobs: 0 },
+  { id: 6, name: "Engineering", jobs: 0 },
+  { id: 7, name: "Business", jobs: 0 },
+  { id: 8, name: "Science", jobs: 0 },
+  { id: 9, name: "Legal", jobs: 0 },
+  { id: 10, name: "Consulting", jobs: 0 },
+  { id: 11, name: "Government", jobs: 0 },
+  { id: 12, name: "Remote", jobs: 0 },
 ]);
 
 const searchJobs = () => {
