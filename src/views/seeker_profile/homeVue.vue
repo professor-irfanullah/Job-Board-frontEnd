@@ -107,7 +107,7 @@
                     {{ job.title }}
                   </h3>
                   <p class="text-gray-600">
-                    {{ job.companyName || "Company name undefined" }}
+                    {{ job.company_name || "Company name undefined" }}
                   </p>
                 </div>
               </div>
@@ -209,46 +209,7 @@ const searchQuery = ref("");
 const locationQuery = ref("");
 const itemsPerPage = ref(4);
 
-const featuredJobs = ref([
-  /*
-  {
-    id: 1,
-    title: "Senior Frontend Developer",
-    companyName: "TechCorp",
-    companyLogo: "https://via.placeholder.com/150",
-    type: "Full-time",
-    location: "San Francisco, CA",
-    isRemote: true,
-    description:
-      "We are looking for an experienced frontend developer to join our team working with Vue.js and Tailwind CSS.",
-    salary: "$120,000 - $150,000",
-  },
-  {
-    id: 2,
-    title: "Marketing Manager",
-    companyName: "Digital Agency",
-    companyLogo: "https://via.placeholder.com/150",
-    type: "Full-time",
-    location: "New York, NY",
-    isRemote: false,
-    description:
-      "Lead our marketing team and develop strategies to grow our client base and brand awareness.",
-    salary: "$90,000 - $110,000",
-  },
-  {
-    id: 3,
-    title: "Healthcare Administrator",
-    companyName: "MediCare Systems",
-    companyLogo: "https://via.placeholder.com/150",
-    type: "Full-time",
-    location: "Chicago, IL",
-    isRemote: false,
-    description:
-      "Oversee daily operations of our healthcare facility and ensure quality patient care standards.",
-    salary: "$85,000 - $100,000",
-  },
-  */
-]);
+const featuredJobs = ref([]);
 
 const categories = ref([
   { id: 1, name: "Technology", jobs: 0 },
