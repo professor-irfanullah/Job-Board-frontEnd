@@ -98,7 +98,11 @@
               class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
               <option value="">All Jobs</option>
-              <option v-for="job in jobs" :key="job.job_id" :value="job.job_id">
+              <option
+                v-for="job in empJobs"
+                :key="job.job_id"
+                :value="job.job_id"
+              >
                 {{ job.title }}
               </option>
             </select>
@@ -285,7 +289,7 @@
                 </svg>
               </a>
               <button
-                @click="handleDetailModal(applicant.job_id)"
+                @click="handleDetailModal(applicant.application_id)"
                 class="text-gray-600 hover:text-gray-900"
                 title="View Details"
               >
@@ -581,35 +585,17 @@
 import { ref, computed, onMounted } from "vue";
 import applicantDetails from "../../components/applicantDetails.vue";
 import { jobStore } from "../../store/useJobStore";
+import { useEmployeeStore } from "../../store/useEmployeeStore";
+const empStore = useEmployeeStore();
 const store = jobStore();
 const jobToPass = ref(null);
 /**  */
 const showDetailModal = ref(false);
-// Sample data - replace with actual API calls
-const jobs = ref([
-  {
-    job_id: 1,
-    title: "Senior Frontend Developer",
-    employment_type: "full-time",
-    is_remote: true,
-  },
-  {
-    job_id: 2,
-    title: "UX/UI Designer",
-    employment_type: "contract",
-    is_remote: true,
-  },
-  {
-    job_id: 3,
-    title: "Backend Engineer",
-    employment_type: "full-time",
-    is_remote: false,
-  },
-]);
 
 const handleDetailModal = (id) => {
   showDetailModal.value = true;
-  const isFound = applicants.value.find((job) => job.job_id === id);
+
+  const isFound = applicants.value.find((job) => job.application_id === id);
   jobToPass.value = isFound;
 };
 const applicants = ref([]);
@@ -709,10 +695,12 @@ const deleteApplicant = () => {
   }
 };
 
+const empJobs = ref(null);
 // In a real app, you would fetch applicants and jobs from your API
 onMounted(async () => {
   await store.fetchJobApplicants();
-  console.log(store?.jobApplicants);
+  const response = await empStore.fetchEmployeeAllJobs();
+  empJobs.value = response;
   applicants.value = store?.jobApplicants;
   // await fetchApplicants();
   // await fetchJobs();
