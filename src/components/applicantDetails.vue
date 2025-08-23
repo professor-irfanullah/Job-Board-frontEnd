@@ -503,51 +503,7 @@ const props = defineProps({
 const emits = defineEmits(["close"]);
 
 const closeModal = () => emits("close");
-// const applicant = ref({
-//   id: 1,
-//   job_id: 1,
-//   name: "Alex Johnson",
-//   email: "alex.johnson@example.com",
-//   phone: "(555) 123-4567",
-//   photo_url: "https://randomuser.me/api/portraits/men/32.jpg",
-//   about:
-//     "Experienced frontend developer with 5+ years of experience building responsive web applications using Vue.js and React. Passionate about creating intuitive user interfaces and optimizing performance.",
-//   experience: 5,
-//   applied_at: "2023-06-15T10:30:00Z",
-//   status: "reviewed",
-//   resume_url: "#",
-//   cover_letter:
-//     "I'm excited to apply for the Senior Frontend Developer position at your company...",
-//   experiences: [
-//     {
-//       position: "Frontend Developer",
-//       company: "TechCorp Inc.",
-//       start_date: "2020-01-15",
-//       end_date: "2023-05-30",
-//       description:
-//         "Developed and maintained multiple Vue.js applications. Led the migration from Angular to Vue.js for the main product.",
-//     },
-//     {
-//       position: "Junior Web Developer",
-//       company: "Digital Solutions",
-//       start_date: "2018-06-01",
-//       end_date: "2019-12-20",
-//       description:
-//         "Built responsive websites using HTML, CSS, and JavaScript. Collaborated with designers to implement UI/UX improvements.",
-//     },
-//   ],
-//   education: [
-//     {
-//       degree: "Bachelor of Science in Computer Science",
-//       institution: "State University",
-//       field_of_study: "Software Engineering",
-//       start_date: "2014-09-01",
-//       end_date: "2018-05-30",
-//     },
-//   ],
-// });
 
-const notes = ref("");
 const interviewDate = ref("");
 const showDeleteModal = ref(false);
 
@@ -657,6 +613,5 @@ const deleteApplicant = () => {
 onMounted(() => {
   // const applicantId = route.params.id;
   // fetchApplicant(applicantId);
-  console.log(props.applicant);
 });
 </script>
