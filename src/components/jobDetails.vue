@@ -42,7 +42,7 @@
               </p>
               <div class="flex flex-wrap gap-2 mt-2 text-sm">
                 <span
-                  class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full text-xs font-medium"
+                  class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full text-xs font-medium capitalize"
                 >
                   {{ jobs.employment_type }}
                 </span>
