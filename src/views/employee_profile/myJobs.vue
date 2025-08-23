@@ -521,10 +521,11 @@ const truncate = (text, length) => {
 
 const formatJobType = (type) => {
   const types = {
-    "full-time": "Full-time",
-    "part-time": "Part-time",
+    "full-time": "Full-Time",
+    "part-time": "Part-Time",
     contract: "Contract",
     internship: "Internship",
+    temporary: "Temporary",
   };
   return types[type] || type;
 };
@@ -535,6 +536,7 @@ const jobTypeClass = (type) => {
     "part-time": "bg-purple-100 text-purple-800",
     contract: "bg-yellow-100 text-yellow-800",
     internship: "bg-green-100 text-green-800",
+    temporary: "bg-gray-100 text-gray-800",
   };
   return classes[type] || "bg-gray-100 text-gray-800";
 };
