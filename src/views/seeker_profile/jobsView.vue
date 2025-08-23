@@ -107,28 +107,7 @@
                 }}</label>
               </div>
             </div>
-            <div class="experienceLevel">
-              <div class="form flex flex-col gap-2">
-                <h1 class="text-sm font-medium text-gray-600">
-                  Experience Level
-                </h1>
-                <div
-                  v-for="(item, index) in experienceLevels"
-                  :key="index"
-                  class="boxes flex items-center gap-2"
-                >
-                  <input
-                    class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                    :id="item.id"
-                    type="checkbox"
-                    value="entry-level"
-                  />
-                  <label class="text-gray-600 text-sm" :for="item.id">{{
-                    item.name
-                  }}</label>
-                </div>
-              </div>
-            </div>
+
             <div class="salaryRange">
               <h1 class="text-sm font-medium text-gray-600">Salary Range</h1>
               <div class="drop">
@@ -322,11 +301,17 @@
             <div class="bg-gray-50 px-6 py-4 flex justify-between items-center">
               <div class="flex gap-3 justify-center items-centers flex-wrap">
                 <button
+                  :disabled="job.status === 'closed'"
                   @click="
                     passJobInfoToModel(job.job_id, (name = 'applicationModel'))
                   "
                   v-if="userStore.isAuthenticated"
-                  class="px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition flex items-center"
+                  class="px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition flex items-center disabled:bg-indigo-500 disabled:cursor-not-allowed"
+                  :title="
+                    job.status === 'closed'
+                      ? 'apply not allowed'
+                      : 'apply to this job'
+                  "
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -388,6 +373,11 @@
               </div>
               <div
                 v-if="job.status"
+                :class="
+                  job.status === 'closed'
+                    ? 'bg-red-200 text-gray-400'
+                    : 'bg-green-400'
+                "
                 class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
               >
                 {{ job.status }}
@@ -501,17 +491,17 @@ const filters = ref({
   companySizes: [],
 });
 const jobTypes = ref([
-  { id: "full-time", name: "Full-time", count: 1243 },
-  { id: "part-time", name: "Part-time", count: 342 },
-  { id: "contract", name: "Contract", count: 567 },
-  { id: "internship", name: "Internship", count: 189 },
-  { id: "temporary", name: "Temporary", count: 87 },
+  { id: "full-time", name: "full-time" },
+  { id: "part-time", name: "part-time" },
+  { id: "contract", name: "contract" },
+  { id: "internship", name: "internship" },
+  { id: "temporary", name: "temporary" },
 ]);
 const experienceLevels = ref([
-  { id: "entry", name: "Entry Level", count: 432 },
-  { id: "mid", name: "Mid Level", count: 876 },
-  { id: "senior", name: "Senior Level", count: 654 },
-  { id: "executive", name: "Executive", count: 123 },
+  { id: "entry", name: "Entry Level" },
+  { id: "mid", name: "Mid Level" },
+  { id: "senior", name: "Senior Level" },
+  { id: "executive", name: "Executive" },
 ]);
 const datePosted = ref([
   { id: "1", name: "Last 24 hours" },
