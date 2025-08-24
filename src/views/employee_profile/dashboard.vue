@@ -316,7 +316,8 @@
                       {{ applicant.name }}
                     </h3>
                     <p class="text-sm text-gray-500">
-                      Applied for {{ applicant.title }}
+                      Applied for
+                      <span class="font-bold">{{ applicant.title }}</span>
                     </p>
                     <div class="flex items-center mt-1">
                       <span
