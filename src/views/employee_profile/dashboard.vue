@@ -99,7 +99,7 @@
             <div>
               <p class="text-sm font-medium text-gray-500">Total Applicants</p>
               <p class="text-3xl font-semibold text-gray-800 mt-1">
-                {{ jobsStore?.jobApplicants?.length || 0 }}
+                {{ usejobsStore?.jobApplicants?.length || 0 }}
               </p>
             </div>
             <div class="bg-green-100 p-3 rounded-lg">
@@ -298,10 +298,9 @@
             </div>
             <div class="divide-y divide-gray-200">
               <div
-                v-for="applicant in recentApplicants"
-                :key="applicant.id"
-                class="p-6 hover:bg-gray-50 transition cursor-pointer"
-                @click="viewApplicant(applicant.id)"
+                v-for="applicant in filterRecentApplicants"
+                :key="applicant.application_id"
+                class="p-6 hover:bg-gray-50 transition"
               >
                 <div class="flex items-center">
                   <img
@@ -317,33 +316,36 @@
                       {{ applicant.name }}
                     </h3>
                     <p class="text-sm text-gray-500">
-                      Applied for {{ applicant.job_title }}
+                      Applied for {{ applicant.title }}
                     </p>
                     <div class="flex items-center mt-1">
                       <span
                         class="px-2 py-1 text-xs rounded-full"
                         :class="{
                           'bg-green-100 text-green-800':
-                            applicant.status === 'New',
+                            applicant.application_status === 'IN_PROGRESS',
                           'bg-blue-100 text-blue-800':
-                            applicant.status === 'Reviewed',
+                            applicant.application_status === 'Reviewed',
                           'bg-purple-100 text-purple-800':
-                            applicant.status === 'Interview',
+                            applicant.application_status === 'Interview',
                           'bg-gray-100 text-gray-800':
-                            applicant.status === 'Rejected',
+                            applicant.application_status === 'REJECTED',
                         }"
                       >
-                        {{ applicant.status }}
+                        {{ applicant.application_status }}
                       </span>
                       <span class="text-xs text-gray-500 ml-2">{{
-                        applicant.applied_at
+                        new Date(applicant.applied_at)
+                          .toISOString()
+                          .split("T")[0]
                       }}</span>
                     </div>
                   </div>
                 </div>
               </div>
+
               <div
-                v-if="recentApplicants.length === 0"
+                v-if="filterRecentApplicants?.length === 0"
                 class="p-6 text-center text-gray-500"
               >
                 No recent applicants
@@ -369,69 +371,10 @@
               </h2>
             </div>
             <div class="divide-y divide-gray-200">
-              <!-- <div
-                v-for="job in activeJobs"
-                :key="job.id"
-                class="p-6 hover:bg-gray-50 transition cursor-pointer"
-                @click="viewJob(job.id)"
-              >
-                <h3 class="font-medium text-gray-800">{{ job.title }}</h3>
-                <div class="flex items-center mt-2 text-sm text-gray-500">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4 mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <span>{{ job.location }}</span>
-                </div>
-                <div class="flex items-center justify-between mt-3">
-                  <div class="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-4 w-4 mr-1 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                      />
-                    </svg>
-                    <span class="text-sm text-gray-500"
-                      >{{ job.applicants }} applicants</span
-                    >
-                  </div>
-                  <span
-                    class="text-xs px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full"
-                  >
-                    {{ job.type }}
-                  </span>
-                </div>
-              </div> -->
-
               <div
                 v-for="job in employeeStore?.limitedJobs"
                 :key="job.job_id"
-                class="p-6 hover:bg-gray-50 transition cursor-pointer"
-                @click="viewJob(job.job_id)"
+                class="p-6 hover:bg-gray-50 transition"
               >
                 <h3 class="font-medium text-gray-800">
                   {{ job.title || "title" }}
@@ -475,8 +418,19 @@
                         d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                       />
                     </svg>
-                    <span class="text-sm text-gray-500"
-                      >{{ job.applicants || "0" }} applicants</span
+                    <span class="text-sm text-gray-500">
+                      {{
+                        usejobsStore?.jobApplicants?.filter(
+                          (j) => j.job_id === job.job_id
+                        ).length
+                      }}
+                      {{
+                        usejobsStore?.jobApplicants?.filter(
+                          (j) => j.job_id === job.job_id
+                        ).length > 1
+                          ? "applicants"
+                          : "applicant"
+                      }}</span
                     >
                   </div>
                   <span
@@ -537,7 +491,7 @@ import { jobStore } from "../../store/useJobStore";
 
 const userStore = useAuthStore();
 const employeeStore = useEmployeeStore();
-const jobsStore = jobStore();
+const usejobsStore = jobStore();
 const showInsertModel = ref(false);
 const router = useRouter();
 const profilePercentage = ref(null);
@@ -547,39 +501,15 @@ const companyInfo = ref({
   name: "Tech Innovations Inc.",
 });
 
-const stats = ref({
-  activeJobs: 5,
-  totalApplicants: 42,
-  newApplicants: 7,
-  interviewsScheduled: 3,
-});
+const filterRecentApplicants = ref(
+  computed(() =>
+    usejobsStore?.jobApplicants
+      ?.filter((job) => job.application_status === "IN_PROGRESS")
+      .splice(0, 3)
+  )
+);
 
-const recentApplicants = ref([
-  {
-    id: 1,
-    name: "John Doe",
-    photo_url: "https://randomuser.me/api/portraits/men/1.jpg",
-    job_title: "Senior Frontend Developer",
-    status: "New",
-    applied_at: "2 hours ago",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    photo_url: "https://randomuser.me/api/portraits/women/1.jpg",
-    job_title: "UX Designer",
-    status: "Reviewed",
-    applied_at: "1 day ago",
-  },
-  {
-    id: 3,
-    name: "Robert Johnson",
-    photo_url: "https://randomuser.me/api/portraits/men/2.jpg",
-    job_title: "Backend Engineer",
-    status: "Interview",
-    applied_at: "3 days ago",
-  },
-]);
+const recentApplicants = ref([]);
 
 const activeJobs = ref([
   {
@@ -610,7 +540,7 @@ const activeJobs = ref([
 
 const filterForNewJobs = ref(
   computed(() => {
-    return jobsStore?.jobApplicants?.filter(
+    return usejobsStore?.jobApplicants?.filter(
       (job) => job.application_status === "IN_PROGRESS"
     );
   })
@@ -629,6 +559,6 @@ onMounted(async () => {
   await userStore.userAuthStatus();
   await employeeStore.fetchEmployeeAllJobs();
   await employeeStore.fetchEmployeeProfileCompletionProgress();
-  await jobsStore.fetchJobApplicants();
+  await usejobsStore.fetchJobApplicants();
 });
 </script>
