@@ -420,17 +420,11 @@
                       />
                     </svg>
                     <span class="text-sm text-gray-500">
+                      {{ filterJobApplicants(job) }}
                       {{
-                        usejobsStore?.jobApplicants?.filter(
-                          (j) => j.job_id === job.job_id
-                        ).length
-                      }}
-                      {{
-                        usejobsStore?.jobApplicants?.filter(
-                          (j) => j.job_id === job.job_id
-                        ).length > 1
-                          ? "applicants"
-                          : "applicant"
+                        filterJobApplicants(job) === 1
+                          ? "applicant"
+                          : "applicants"
                       }}</span
                     >
                   </div>
@@ -484,7 +478,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useRouter } from "vue-router";
 import postJob from "../../components/postJob.vue";
 import { useAuthStore } from "../../store/useUserState";
 import { useEmployeeStore } from "../../store/useEmployeeStore";
@@ -494,13 +487,6 @@ const userStore = useAuthStore();
 const employeeStore = useEmployeeStore();
 const usejobsStore = jobStore();
 const showInsertModel = ref(false);
-const router = useRouter();
-const profilePercentage = ref(null);
-
-// Mock data - in a real app this would come from API calls
-const companyInfo = ref({
-  name: "Tech Innovations Inc.",
-});
 
 const filterRecentApplicants = ref(
   computed(() =>
@@ -509,36 +495,11 @@ const filterRecentApplicants = ref(
       .splice(0, 3)
   )
 );
-
-const recentApplicants = ref([]);
-
-const activeJobs = ref([
-  {
-    id: 1,
-    title: "Senior Frontend Developer",
-    location: "Remote",
-    type: "Full-time",
-    applicants: 12,
-    posted_at: "1 week ago",
-  },
-  {
-    id: 2,
-    title: "UX Designer",
-    location: "San Francisco, CA",
-    type: "Contract",
-    applicants: 8,
-    posted_at: "2 weeks ago",
-  },
-  {
-    id: 3,
-    title: "Backend Engineer",
-    location: "New York, NY",
-    type: "Full-time",
-    applicants: 15,
-    posted_at: "3 weeks ago",
-  },
-]);
-
+const filterJobApplicants = (j) => {
+  return usejobsStore?.jobApplicants?.filter((job) => j.job_id === job.job_id)
+    .length;
+};
+// usejobsStore?.jobApplicants?.filter((j) => j.job_id === job.job_id);
 const filterForNewJobs = ref(
   computed(() => {
     return usejobsStore?.jobApplicants?.filter(
@@ -546,13 +507,6 @@ const filterForNewJobs = ref(
     );
   })
 );
-const viewApplicant = (id) => {
-  router.push(`/employer/applicants/${id}`);
-};
-
-const viewJob = (id) => {
-  router.push(`/employer/jobs/${id}`);
-};
 
 // In a real app, you would fetch this data from your API
 onMounted(async () => {
