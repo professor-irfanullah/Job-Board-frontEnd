@@ -193,6 +193,17 @@
               >
             </p>
           </div>
+          <div class="mt-1 text-center">
+            <p class="text-sm text-gray-600">
+              Account not verified?
+              <button
+                @click="showVerificationModel = !showVerificationModel"
+                class="font-medium text-indigo-600 hover:underline cursor-pointer"
+              >
+                check account status
+              </button>
+            </p>
+          </div>
         </div>
 
         <!-- Right Side - Importance of Registration -->
@@ -338,22 +349,32 @@
         </div>
       </div>
     </div>
+    <div
+      v-if="showVerificationModel"
+      class="fixed inset-0 border-2 bg-gray-200 flex justify-center items-center"
+    >
+      <verifyAccount @click.self="showVerificationModel = false" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import axios from "axios";
 import { ref } from "vue";
 import api from "../../api/api";
+import verifyAccount from "../../components/verifyAccount.vue";
 const okMessage = ref("");
+const showVerificationModel = ref(false);
 const form = ref({
   username: "",
   email: "",
   password: "",
 });
-const registerUrl = "http://localhost:3000/api/auth/register";
+
 const errMsg = ref("");
 const isButtonDisabled = ref(false);
+const selfClick = () => {
+  console.log("click on the box");
+};
 const validateEmail = () => {
   const regex = /[a-zA-Z0-9]+[a-zA-Z0-9]+@[a-z]{3,}.com$/;
   if (regex.test(form.value.email)) {
@@ -377,11 +398,6 @@ const handleSubmit = async () => {
 
   try {
     okMessage.value = "Please wait...";
-    // const response = await axios.post(registerUrl, {
-    //   user_name: form.value.username,
-    //   email: form.value.email,
-    //   password: form.value.password,
-    // });
     const response = await api.post("/api/auth/register", {
       user_name: form.value.username,
       email: form.value.email,
