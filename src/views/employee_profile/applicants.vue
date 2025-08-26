@@ -113,11 +113,11 @@
               class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
             >
               <option value="">All Statuses</option>
-              <option value="new">New</option>
+              <option value="IN_PROGRESS">New</option>
               <option value="reviewed">Reviewed</option>
               <option value="interview">Interview</option>
               <option value="hired">Hired</option>
-              <option value="rejected">Rejected</option>
+              <option value="REJECTED">Rejected</option>
             </select>
           </div>
           <button
@@ -231,13 +231,13 @@
             </div>
 
             <!-- Experience Column -->
-            <div class="md:col-span-2 flex items-center">
+            <!-- <div class="md:col-span-2 flex items-center">
               <span
                 class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800"
               >
-                {{ applicant.experience }} years
+                {{ applicant.experience || "UNDEFINED" }} years
               </span>
-            </div>
+            </div> -->
 
             <!-- Status Column -->
             <div class="md:col-span-2 flex items-center">
@@ -250,16 +250,16 @@
                 <option value="IN_PROGRESS" class="bg-blue-100 text-blue-800">
                   New
                 </option>
-                <option value="reviewed" class="bg-purple-100 text-purple-800">
+                <option value="REVIEWED" class="bg-purple-100 text-purple-800">
                   Reviewed
                 </option>
-                <option value="interview" class="bg-yellow-100 text-yellow-800">
+                <option value="INTERVIEW" class="bg-yellow-100 text-yellow-800">
                   Interview
                 </option>
-                <option value="hired" class="bg-green-100 text-green-800">
+                <option value="HIRED" class="bg-green-100 text-green-800">
                   Hired
                 </option>
-                <option value="rejected" class="bg-red-100 text-red-800">
+                <option value="REJECTED" class="bg-red-100 text-red-800">
                   Rejected
                 </option>
               </select>
@@ -271,7 +271,9 @@
                 :href="applicant.resume_url"
                 target="_blank"
                 class="text-indigo-600 hover:text-indigo-900"
-                title="View Resume"
+                :title="
+                  applicant.resume_url ? 'view resume' : 'no resume provided'
+                "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -604,7 +606,7 @@ const applicants = ref([]);
 const filters = ref({
   search: "",
   job: "",
-  status: "",
+  application_status: "",
 });
 
 // Pagination
@@ -650,11 +652,11 @@ const paginatedApplicants = computed(() => {
 
 const statusClass = (status) => {
   const classes = {
-    new: "border-blue-200 bg-blue-50",
+    IN_PROGRESS: "border-blue-200 bg-blue-50",
     reviewed: "border-purple-200 bg-purple-50",
     interview: "border-yellow-200 bg-yellow-50",
     hired: "border-green-200 bg-green-50",
-    rejected: "border-red-200 bg-red-50",
+    REJECTED: "border-red-200 bg-red-50",
   };
   return classes[status] || "border-gray-200 bg-gray-50";
 };
