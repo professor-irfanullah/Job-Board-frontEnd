@@ -3,9 +3,10 @@
     <form @submit.prevent="handleSubmit" class="form-card">
       <h2 class="title">Check Your Account Status</h2>
 
-      <label for="email" class="label">Email</label>
+      <label for="Email" class="label">Email</label>
       <input
-        id="email"
+        @focus="hideAll"
+        id="Email"
         v-model="email"
         type="email"
         placeholder="you@example.com"
@@ -15,7 +16,7 @@
       <p v-if="emailError" class="error-message">{{ emailError }}</p>
 
       <button type="submit" class="submit-button" :disabled="loading">
-        {{ loading ? "Verifying..." : "Verify" }}
+        {{ loading ? "Checking..." : "Verify" }}
       </button>
 
       <!-- ✅ Server feedback -->
@@ -25,6 +26,7 @@
           'success-message': success,
           'error-message': !success,
         }"
+        class="animate-pulse mt-1"
       >
         {{ serverMessage }}
       </p>
@@ -62,8 +64,11 @@ const success = ref(false);
 const nodemailerResponse = ref(null);
 const nodemailerError = ref(null);
 
+const hideAll = () => {
+  serverMessage.value = "";
+};
 const validateEmail = (value) => {
-  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]{3}$/;
   return pattern.test(value);
 };
 
@@ -91,6 +96,8 @@ const handleSubmit = async () => {
       if (error.response.data.err === "Email is not verified") {
         user.value = error?.response?.data?.email;
       }
+    } else if (error.code === "ERR_NETWORK") {
+      serverMessage.value = "Network Disconnected..";
     } else {
       serverMessage.value = "An unexpected error occurred.";
     }
@@ -127,6 +134,7 @@ const sendEmail = async () => {
   align-items: center;
   padding: 2rem;
   min-height: 100vh;
+  width: 100%;
   background-color: #f8f9fa;
 }
 
@@ -170,13 +178,13 @@ const sendEmail = async () => {
 .error-message {
   color: #dc3545;
   font-size: 0.9rem;
-  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .success-message {
   color: #28a745;
   font-size: 0.95rem;
-  margin-top: 1rem;
+  font-weight: 600;
 }
 
 .submit-button {
