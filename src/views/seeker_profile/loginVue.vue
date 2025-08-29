@@ -283,8 +283,6 @@ import { useAuthStore } from "../../store/useUserState";
 
 const store = useAuthStore();
 const router = useRouter();
-const railwayUrl =
-  "https://authentication-production-18e1.up.railway.app/api/auth/login";
 const errMsg = ref("");
 const okMessage = ref("");
 const isButtonDisabled = ref(false);
@@ -307,6 +305,40 @@ const handlfocus = () => {
 const handleSubmit = async () => {
   const isEmailValid = validateEmail();
   if (!isEmailValid) {
+    errMsg.value = "Invalid Email";
+    isButtonDisabled.value = true;
+    okMessage.value = "";
+    return;
+  }
+
+  try {
+    await store.login(form.value.email, form.value.password);
+    isButtonDisabled.value = true;
+    okMessage.value = `Please wait while we log you in...`;
+    errMsg.value = "";
+    await store.getUserInformation();
+    await store.userAuthStatus();
+    setTimeout(() => {
+      router.push("/dashboard");
+    }, 2000);
+  } catch (error) {
+    if (error.code === "ERR_NETWORK") {
+      okMessage.value = "";
+      errMsg.value = "Network Disconnected...";
+      return;
+    }
+    if (error.code === "ERR_BAD_RESPONSE") {
+      okMessage.value = "";
+      errMsg.value = "Unable to connect to database";
+      isButtonDisabled.value = true;
+      return;
+    }
+    okMessage.value = "";
+    errMsg.value = error?.response?.data?.err;
+    isButtonDisabled.value = true;
+  }
+  /*
+  if (!isEmailValid) {
     errMsg.value = "Invalid Email!";
     isButtonDisabled.value = true;
     okMessage.value = "";
@@ -324,14 +356,8 @@ const handleSubmit = async () => {
     isButtonDisabled.value = true;
     return;
   } else {
-    isButtonDisabled.value = true;
-    okMessage.value = `Please wait while we log you in...`;
-    errMsg.value = "";
-    await store.getUserInformation();
-    await store.userAuthStatus();
-    setTimeout(() => {
-      router.push("/dashboard");
-    }, 2000);
+
   }
+    */
 };
 </script>
