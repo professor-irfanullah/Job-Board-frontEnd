@@ -395,30 +395,37 @@ const handleSubmit = async () => {
     isButtonDisabled.value = true;
     return;
   }
+  console.log(isEmailValid);
 
   try {
-    okMessage.value = "Please wait...";
     const response = await api.post("/api/auth/register", {
       user_name: form.value.username,
       email: form.value.email,
       password: form.value.password,
     });
-    okMessage.value = response.data.message;
+    console.log(response);
+    okMessage.value = response.data.okMessage;
     errMsg.value = "";
-    form.value.email = "";
     isButtonDisabled.value = true;
-    // console.log(response);
   } catch (error) {
-    console.error(error);
-    if (error.code === "ERR_BAD_RESPONSE") {
+    if (error.code === "ERR_NETWORK") {
       okMessage.value = "";
-      errMsg.value = "Network Disconnected";
+      errMsg.value = "Network Disconnected...";
+      isButtonDisabled.value = true;
       return;
     }
-    errMsg.value = error.response.data.msg || error.response.data.err;
-    isButtonDisabled.value = true;
-    okMessage.value = "";
-    isButtonDisabled.value = true;
+    if (error.status === 403) {
+      okMessage.value = "";
+      errMsg.value =
+        error?.response?.data?.msg || "Something went wrong due to conflict...";
+      isButtonDisabled.value = true;
+    }
+    if (error.status === 500) {
+      okMessage.value = "";
+      errMsg.value = error?.response?.data?.err || "internal server error...";
+      isButtonDisabled.value = true;
+    }
+    console.error(error);
   }
 };
 </script>
