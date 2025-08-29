@@ -3,12 +3,6 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../api/api'
 export const useAuthStore = defineStore('auth', () => {
-    const url = 'http://localhost:3000/api/auth/protected'
-    const signOutUrl = "http://localhost:3000/api/auth/logout";
-    const loginUrl = 'http://localhost:3000/api/auth/login'
-    const userInfoUrl = 'http://localhost:3000/api/seeker/profile-info'
-    const postUserProfileInformationUrl = 'http://localhost:3000/api/seeker/insert/profile/record'
-
     const isAuthenticated = ref(false)
     const user = ref(null)
     const error = ref(null)
@@ -19,9 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             user.value = null
             isAuthenticated.value = null
-            // const response = await axios.post(url, {}, { withCredentials: true })
             const response = await api.post('/api/auth/protected', {}, { withCredentials: true })
-
             user.value = response.data
             isAuthenticated.value = true
             return true
@@ -31,7 +23,6 @@ export const useAuthStore = defineStore('auth', () => {
             error.value = err.response
             isAuthenticated.value = false
             console.clear()
-
             return false
         }
     }
@@ -40,26 +31,17 @@ export const useAuthStore = defineStore('auth', () => {
         isAuthenticated.value = false
 
         try {
-            // const response = await axios.post(loginUrl, { email: email, password: password }, { withCredentials: true })
             const response = await api.post('/api/auth/login', { email: email, password: password }, { withCredentials: true })
-            message.value = response.data
             isAuthenticated.value = true
-            error.value = null
             return response.data
         } catch (err) {
-            error.value = err
-            isAuthenticated.value = false
-            message.value = null
-            return err.response.data.err
+            throw err
         }
     }
 
     const logOut = async () => {
         try {
-
-            // const response = await axios.post(signOutUrl, {}, { withCredentials: true })
             const response = await api.post('/api/auth/logout', {}, { withCredentials: true })
-
             message.value = response.data
             isAuthenticated.value = false
             error.value = null
@@ -73,9 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (isAuthenticated.value === true && user?.value?.user?.role === 'seeker') {
             try {
                 userInfo.value = null
-                // const response = await axios.get(userInfoUrl, { withCredentials: true })
                 const response = await api.get('/api/seeker/profile-info', { withCredentials: true })
-
                 userInfo.value = response.data
                 return userInfo.value
             } catch (error) {
@@ -87,18 +67,6 @@ export const useAuthStore = defineStore('auth', () => {
     const postUserProfileInformation = async (userProfileInfo) => {
         if (!userProfileInfo) return undefined
         try {
-            // /api/seeker/insert/profile/record
-            // const response = await axios.post(
-            //     postUserProfileInformationUrl,
-            //     {
-            //         bio: userProfileInfo.about,
-            //         headline: userProfileInfo.headline,
-            //         location: userProfileInfo.location,
-            //         linkedin_url: userProfileInfo.linkedin_url,
-            //         github_url: userProfileInfo.github_url,
-            //     },
-            //     { withCredentials: true }
-            // );
             const response = await api.post(
                 '/api/seeker/insert/profile/record',
                 {
