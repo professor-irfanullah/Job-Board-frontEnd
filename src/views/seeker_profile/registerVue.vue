@@ -372,9 +372,6 @@ const form = ref({
 
 const errMsg = ref("");
 const isButtonDisabled = ref(false);
-const selfClick = () => {
-  console.log("click on the box");
-};
 const validateEmail = () => {
   const regex = /[a-zA-Z0-9]+[a-zA-Z0-9]+@[a-z]{3,}.com$/;
   if (regex.test(form.value.email)) {
@@ -419,13 +416,28 @@ const handleSubmit = async () => {
       errMsg.value =
         error?.response?.data?.msg || "Something went wrong due to conflict...";
       isButtonDisabled.value = true;
+      return;
     }
     if (error.status === 500) {
+      if (error.code === "ERR_BAD_RESPONSE") {
+        errMsg.value = "Database connection error";
+        okMessage.value = "";
+        isButtonDisabled.value = true;
+        return;
+      }
       okMessage.value = "";
       errMsg.value = error?.response?.data?.err || "internal server error...";
       isButtonDisabled.value = true;
+      console.log(error);
+
+      return;
     }
-    console.error(error);
+    if (error.code === "ENOTFOUND") {
+      okMessage.value = "";
+      errMsg.value = "internal server error...";
+      isButtonDisabled.value = true;
+      return;
+    }
   }
 };
 </script>
