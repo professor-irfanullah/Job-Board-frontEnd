@@ -410,12 +410,15 @@ const handleSubmit = async () => {
     // console.log(response);
   } catch (error) {
     console.error(error);
+    if (error.code === "ERR_BAD_RESPONSE") {
+      okMessage.value = "";
+      errMsg.value = "Network Disconnected";
+      return;
+    }
     errMsg.value = error.response.data.msg || error.response.data.err;
     isButtonDisabled.value = true;
     okMessage.value = "";
     isButtonDisabled.value = true;
   }
-
-  // You would typically send this data to your backend API
 };
 </script>
