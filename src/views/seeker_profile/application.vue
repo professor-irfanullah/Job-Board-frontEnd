@@ -60,7 +60,7 @@
             </p>
           </div>
           <div class="bg-white rounded-lg shadow-sm p-4 text-center">
-            <p class="text-sm font-medium text-gray-500">Verified</p>
+            <p class="text-sm font-medium text-gray-500">Reviewed</p>
             <p class="text-3xl font-bold text-purple-600 mt-1">
               {{ applicationsAccepted.length }}
             </p>
@@ -381,85 +381,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Application Timeline -->
-          <!-- <div class="mb-8">
-            <h4 class="text-lg font-semibold text-gray-800 mb-4">
-              Application Timeline
-            </h4>
-            <div class="relative">
-              <div
-                class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"
-              ></div>
-
-              <div
-                v-for="(app, index) in applicationsInProgress"
-                :key="index"
-                class="relative pl-10 pb-6"
-              >
-                <div
-                  class="absolute left-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-indigo-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      v-if="app.application_status === 'IN_PROGRESS'"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                    <path
-                      v-else-if="app.application_status === 'REJECTED'"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      v-else-if="app.application_status === 'ACCEPTED'"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                    <path
-                      v-else
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm">
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <h5 class="font-medium text-gray-800">
-                        {{ "Application seen" }}
-                      </h5>
-                      <p class="text-sm text-gray-500">{{ app.applied_at }}</p>
-                    </div>
-                    <span
-                      v-if="app.application_status === 'IN_PROGRESS'"
-                      class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                    >
-                      Completed
-                    </span>
-                  </div>
-                  <p class="mt-2 text-gray-600">
-                    {{ "Application view" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div> -->
-
           <div>
             <div class="mt-4 flex justify-end">
               <button
@@ -490,7 +411,7 @@ const applications = ref([]);
 // Filters
 const applicationStatuses = ref([
   { id: "IN_PROGRESS", name: "In Progress", count: 12 },
-  { id: "ACCEPTED", name: "Interview", count: 5 },
+  { id: "INTERVIEW", name: "Interview", count: 5 },
   { id: "REJECTED", name: "Rejected", count: 3 },
 ]);
 
@@ -512,41 +433,6 @@ const showApplicationStats = ref(true);
 const selectedApplication = ref(null);
 
 // Computed properties
-/*
-const filteredApplicationss = computed(() => {
-  return applications.value
-    .filter((app) => {
-      // Status filter
-
-      // Date range filter
-      if (filters.value.dateRange !== "all") {
-        const days = parseInt(filters.value.dateRange);
-        const appliedDate = new Date(app.appliedDate);
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - days);
-        if (appliedDate < cutoffDate) return false;
-      }
-
-      // Job type filter (simplified for demo)
-      if (filters.value.jobTypes.length > 0) {
-        // In a real app, this would check against actual job type data
-        return true;
-      }
-
-      return true;
-    })
-    .sort((a, b) => {
-      if (sortBy.value === "oldest") {
-        return new Date(a.appliedDate) - new Date(b.appliedDate);
-      } else if (sortBy.value === "status") {
-        return a.status.localeCompare(b.status);
-      }
-      // Default: newest first
-      return new Date(b.appliedDate) - new Date(a.appliedDate);
-    });
-});
-ok so lets understand the schema completely we have users storing informations like  id , name , email , password , verification_token , and a role as enum like seeker and employee. a seeker_profile_table , a seeker_education_table , a seeker_skills_table and same as employer_profile , jobs listing_table by an employee which  is verified , applications table for seeker to apply for jobs now we have to work around for employer to change the status of an application like from submitted to verified , rejected etc 
-*/
 const filteredApplications = ref(
   computed(() => {
     let results = applications.value;
@@ -641,7 +527,7 @@ const applicationsInProgress = ref(
 const applicationsAccepted = ref(
   computed(() =>
     applications.value.filter(
-      (application) => application.application_status === "ACCEPTED"
+      (application) => application.application_status !== "IN_PROGRESS"
     )
   )
 );
