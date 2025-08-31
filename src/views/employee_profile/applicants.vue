@@ -15,8 +15,9 @@
         </div>
         <div class="mt-4 md:mt-0 flex space-x-3">
           <button
+            disabled
             @click="exportApplicants"
-            class="px-4 py-2 border border-gray-300 bg-white text-gray-700 rounded-md font-medium hover:bg-gray-50 transition flex items-center"
+            class="px-4 py-2 border border-gray-300 bg-white text-gray-700 rounded-md font-medium hover:bg-gray-50 transition flex items-center disabled:bg-gray-100 disabled:cursor-not-allowed"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +36,7 @@
             Export
           </button>
           <router-link
-            to="/employer/jobs"
+            to="/my-jobs"
             class="px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition flex items-center"
           >
             <svg
@@ -114,9 +115,9 @@
             >
               <option value="">All Statuses</option>
               <option value="IN_PROGRESS">New</option>
-              <option value="reviewed">Reviewed</option>
-              <option value="interview">Interview</option>
-              <option value="hired">Hired</option>
+              <!-- <option value="reviewed">Reviewed</option> -->
+              <!-- <option value="interview">Interview</option> -->
+              <!-- <option value="hired">Hired</option> -->
               <option value="REJECTED">Rejected</option>
             </select>
           </div>
@@ -670,11 +671,16 @@ const resetFilters = () => {
   currentPage.value = 1;
 };
 
-const updateStatus = (applicant) => {
-  // In a real app, you would make an API call here
-  console.log(
-    `Updated status for ${applicant.name} to ${applicant.application_status}`
-  );
+const updateStatus = async (applicant) => {
+  try {
+    const response = await empStore.verifyApplication(
+      applicant.application_status,
+      applicant.application_id
+    );
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const exportApplicants = () => {
