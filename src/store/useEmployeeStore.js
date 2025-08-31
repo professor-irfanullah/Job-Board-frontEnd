@@ -59,5 +59,32 @@ export const useEmployeeStore = defineStore('employeeStore', () => {
     const limitedJobs = computed(() => {
         return allJobs.value.slice(0, 5)
     })
-    return { insertEmployeeProfile, fetchEmployeeProfile, fetchEmployeeAllJobs, fetchEmployeeProfileCompletionProgress, profileInfo, employeeJobsLength, allJobs, limitedJobs, profile_percentage }
+
+    const verifyApplication = async (status, app_id) => {
+        if (!status) {
+            const err = new Error("application status is required...")
+            err.status = 400
+            return err
+        }
+        if (!parseInt(app_id)) {
+            const err = new Error('application_id is requried..')
+            err.status = 400
+            return err
+        }
+
+        try {
+            const response = await api.post('/api/employee/verify/application',
+                {
+                    application_id: app_id,
+                    application_status: status
+                },
+                { withCredentials: true }
+            )
+            return response.data
+        } catch (error) {
+            throw error.response
+        }
+
+    }
+    return { insertEmployeeProfile, fetchEmployeeProfile, fetchEmployeeAllJobs, fetchEmployeeProfileCompletionProgress, profileInfo, employeeJobsLength, allJobs, limitedJobs, profile_percentage, verifyApplication }
 })
