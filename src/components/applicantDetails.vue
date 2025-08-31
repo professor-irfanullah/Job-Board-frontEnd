@@ -308,20 +308,19 @@
             </h2>
             <select
               v-model="applicant.application_status"
-              @change="updateStatus"
-              class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              :class="statusClass(applicant.application_status)"
+              class="border block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              @change="updateStatus(applicant)"
             >
               <option value="IN_PROGRESS" class="bg-blue-100 text-blue-800">
                 New
               </option>
-              <option value="reviewed" class="bg-purple-100 text-purple-800">
+              <option value="REVIEWED" class="bg-purple-100 text-purple-800">
                 Reviewed
               </option>
-              <option value="interview" class="bg-yellow-100 text-yellow-800">
+              <option value="INTERVIEW" class="bg-yellow-100 text-yellow-800">
                 Interview
               </option>
-              <option value="hired" class="bg-green-100 text-green-800">
+              <option value="HIRED" class="bg-green-100 text-green-800">
                 Hired
               </option>
               <option value="REJECTED" class="bg-red-100 text-red-800">
@@ -329,6 +328,20 @@
               </option>
             </select>
 
+            <div class="notify mt-2 animate-pulse">
+              <p
+                v-if="errMsg"
+                class="text-sm font-medium capitalize text-red-400"
+              >
+                {{ errMsg }}
+              </p>
+              <p
+                v-if="serverMsg"
+                class="text-sm font-medium capitalize text-green-400"
+              >
+                {{ serverMsg }}
+              </p>
+            </div>
             <div class="mt-4" v-if="applicant.status === 'interview'">
               <label
                 for="interviewDate"
@@ -492,6 +505,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useEmployeeStore } from "../store/useEmployeeStore";
 
 const props = defineProps({
   applicant: {
@@ -499,43 +513,14 @@ const props = defineProps({
     required: true,
   },
 });
-
+const store = useEmployeeStore();
 const emits = defineEmits(["close"]);
-
+const errMsg = ref("");
+const serverMsg = ref("");
 const closeModal = () => emits("close");
 
 const interviewDate = ref("");
 const showDeleteModal = ref(false);
-
-// Sample jobs data - in a real app, this would come from your API or store
-const jobs = [
-  {
-    job_id: 1,
-    title: "Senior Frontend Developer",
-    employment_type: "full-time",
-    is_remote: true,
-  },
-];
-
-const getJobTitle = (jobId) => {
-  const job = jobs.find((j) => j.job_id === jobId);
-  return job ? job.title : "Unknown Position";
-};
-
-const getJobType = (jobId) => {
-  const job = jobs.find((j) => j.job_id === jobId);
-  if (!job) return "";
-
-  const types = {
-    "full-time": "Full-time",
-    "part-time": "Part-time",
-    contract: "Contract",
-    internship: "Internship",
-  };
-
-  const type = types[job.employment_type] || job.employment_type;
-  return job.is_remote ? `${type} • Remote` : type;
-};
 
 const formatDate = (dateString) => {
   const options = { year: "numeric", month: "short", day: "numeric" };
@@ -573,9 +558,20 @@ const statusClass = (status) => {
   return classes[status] || "bg-gray-100 text-gray-800";
 };
 
-const updateStatus = () => {
-  // In a real app, you would make an API call here
-  console.log(`Status updated to ${props.applicant.application_status}`);
+const updateStatus = async (applicant) => {
+  try {
+    const response = await store.verifyApplication(
+      applicant.application_status,
+      applicant.application_id
+    );
+    console.log(response);
+    serverMsg.value = response.msg;
+    errMsg.value = "";
+  } catch (error) {
+    console.error(error);
+    errMsg.value = error.data.err;
+    serverMsg.value = "";
+  }
 };
 
 const scheduleInterview = () => {
