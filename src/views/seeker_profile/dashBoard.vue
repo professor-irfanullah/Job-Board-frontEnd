@@ -45,7 +45,9 @@
             <f-a-c class="text-yellow-700 text-xl" :icon="faFileAlt" />
           </p>
         </div>
-        <h1 class="font-bold text-2xl">{{ applicants?.length }}</h1>
+        <h1 class="font-bold text-2xl">
+          {{ findApplicationsPending?.length }}
+        </h1>
         <router-link
           to="/applications"
           class="text-yellow-500 font-semibold text-sm"
@@ -157,7 +159,7 @@ import {
   faCloudUploadAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "vue-router";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import api from "../../api/api";
 
 // Add icons to library
@@ -208,5 +210,10 @@ const getUserProfilePercentage = async () => {
     }
   }
 };
+const findApplicationsPending = ref(
+  computed(() =>
+    applicants?.value?.filter((app) => app.application_status === "IN_PROGRESS")
+  )
+);
 onMounted(() => getUser());
 </script>
