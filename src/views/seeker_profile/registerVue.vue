@@ -393,7 +393,7 @@ const handleSubmit = async () => {
     return;
   }
   console.log(isEmailValid);
-
+  okMessage.value = "please wait...";
   try {
     const response = await api.post("/api/auth/register", {
       user_name: form.value.username,
