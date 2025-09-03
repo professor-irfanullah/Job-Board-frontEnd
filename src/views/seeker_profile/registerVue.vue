@@ -389,45 +389,41 @@ const handleSubmit = async () => {
 
   if (!isEmailValid) {
     errMsg.value = "Invalid Email";
+    okMessage.value = "";
     isButtonDisabled.value = true;
     return;
   }
-  console.log(isEmailValid);
+
   okMessage.value = "please wait...";
+  isButtonDisabled.value = true;
   try {
     const response = await api.post("/api/auth/register", {
       user_name: form.value.username,
       email: form.value.email,
       password: form.value.password,
     });
-    console.log(response);
-    okMessage.value = response.data.okMessage;
+    okMessage.value = response?.data?.msg;
     errMsg.value = "";
-    isButtonDisabled.value = true;
   } catch (error) {
     if (error.code === "ERR_NETWORK") {
       okMessage.value = "";
       errMsg.value = "Network Disconnected...";
-      isButtonDisabled.value = true;
       return;
     }
     if (error.status === 403) {
       okMessage.value = "";
       errMsg.value =
         error?.response?.data?.msg || "Something went wrong due to conflict...";
-      isButtonDisabled.value = true;
       return;
     }
     if (error.status === 500) {
       if (error.code === "ERR_BAD_RESPONSE") {
         errMsg.value = "Database connection error";
         okMessage.value = "";
-        isButtonDisabled.value = true;
         return;
       }
       okMessage.value = "";
       errMsg.value = error?.response?.data?.err || "internal server error...";
-      isButtonDisabled.value = true;
       console.log(error);
 
       return;
@@ -435,7 +431,6 @@ const handleSubmit = async () => {
     if (error.code === "ENOTFOUND") {
       okMessage.value = "";
       errMsg.value = "internal server error...";
-      isButtonDisabled.value = true;
       return;
     }
   }
