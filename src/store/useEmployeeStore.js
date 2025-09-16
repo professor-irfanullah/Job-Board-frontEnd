@@ -1,28 +1,20 @@
 import { defineStore } from "pinia";
-import axios from "axios";
 import { computed, ref } from "vue";
 import api from "../api/api";
 export const useEmployeeStore = defineStore('employeeStore', () => {
-    const profile_url = 'http://localhost:3000/api/employee/insertProfile'
-    const fetchProfileUrl = 'http://localhost:3000/api/employee/fetchProfile'
-    const fetchEmployeeAllJobsUrl = 'http://localhost:3000/api/employee/fetchEmployeeAllJobs'
     const profileInfo = ref()
     const employeeJobsLength = ref(null)
-    const employeeProgressUrl = 'http://localhost:3000/api/employee/fetchProfilePercentage'
     const allJobs = ref([])
     const profile_percentage = ref(null)
     const insertEmployeeProfile = async (param) => {
+        if (!param) {
+            throw new Error('Input fields are missing')
+        }
         try {
             const response = await api.post('/api/employee/insertProfile', {
-                company_description: param.description,
-                founded_year: param.founded_year,
-                headquarters_location: param.headquarters,
-                industry: param.industry,
-                company_name: param.name,
-                company_size: param.size
+                headline: param.headline,
+                about: param.about
             }, { withCredentials: true })
-            console.log(response);
-
             return response.data
         } catch (error) {
             throw error

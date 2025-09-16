@@ -499,7 +499,6 @@ const filterJobApplicants = (j) => {
   return usejobsStore?.jobApplicants?.filter((job) => j.job_id === job.job_id)
     .length;
 };
-// usejobsStore?.jobApplicants?.filter((j) => j.job_id === job.job_id);
 const filterForNewJobs = ref(
   computed(() => {
     return usejobsStore?.jobApplicants?.filter(
@@ -508,9 +507,7 @@ const filterForNewJobs = ref(
   })
 );
 
-// In a real app, you would fetch this data from your API
 onMounted(async () => {
-  // await fetchDashboardData();
   await userStore.userAuthStatus();
   await employeeStore.fetchEmployeeAllJobs();
   await employeeStore.fetchEmployeeProfileCompletionProgress();

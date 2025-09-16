@@ -192,8 +192,8 @@
                   <!-- Company Logo -->
                   <div class="flex-shrink-0 mb-4 sm:mb-0 sm:mr-6">
                     <img
-                      :src="'not specified'"
-                      :alt="application || 'company logo'"
+                      :src="application.company_logo_url"
+                      :alt="'company logo'"
                       class="h-16 w-16 object-contain rounded-lg"
                     />
                   </div>
@@ -203,7 +203,9 @@
                     <div class="flex items-start justify-between">
                       <div>
                         <h3 class="text-lg font-semibold text-gray-800">
-                          <p class="hover:text-indigo-600 hover:underline">
+                          <p
+                            class="hover:text-indigo-600 hover:underline capitalize"
+                          >
                             {{ application.title }}
                           </p>
                         </h3>
@@ -511,8 +513,9 @@ const getApplications = async () => {
       applied_at: date.toISOString(app.applied_at).split("T")[0],
       application_status: app.application_status,
       application_id: app.application_id,
+      company_logo_url: app.logo_url,
     }));
-    // console.log(applications.value);
+    console.log(applications.value);
   } catch (error) {
     console.log(error);
   }

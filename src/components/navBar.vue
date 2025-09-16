@@ -498,6 +498,7 @@ const handleSignOut = async () => {
     "/my-jobs", // done
     "/applications", //done
     "/applicants",
+    "/company-profile",
   ];
 
   await store.logOut();

@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../store/useUserState'
 const routes = [
@@ -59,6 +58,15 @@ const routes = [
         component: () => import('../views/employee_profile/applicants.vue')
     },
     {
+        path: '/company-profile',
+        component: () => import('../views/employee_profile/companyProfile.vue')
+    },
+    {
+        path: '/view-company/:id',
+        name: 'company',
+        component: () => import('../components/companyInfo.vue'),
+    },
+    {
         path: '/:pathMatch(.*)*',
         component: () => import('../views/seeker_profile/notFound.vue') // Create this component
     }
@@ -69,7 +77,7 @@ const router = createRouter(
         routes,
     }
 )
-const employerOnlyRoutes = ['/employee-dashboard', '/employee-profile', '/my-jobs', '/applicants']
+const employerOnlyRoutes = ['/employee-dashboard', '/employee-profile', '/my-jobs', '/applicants', '/company-profile']
 router.beforeEach(async (to, from, next) => {
     const beforeAuthRoutesForSeeker = ['/home', '/find-jobs', '/companies', '/resources']
     const afterAuthRoutesForSeeker = ['/dashboard', '/profile', '/saved-jobs', '/applications', '/accountSetting']
@@ -79,7 +87,7 @@ router.beforeEach(async (to, from, next) => {
     const isAuthenticated = await userStore.userAuthStatus()
     // avoid to access login or register for employee
     if (isAuthenticated && avoidAfterAuth.includes(to.path) && role === 'employee') {
-        return next('/employee_dashboard')
+        return next('/employee-dashboard')
     }
     if (!isAuthenticated && employerOnlyRoutes.includes(to.path)) {
         return next('/home')

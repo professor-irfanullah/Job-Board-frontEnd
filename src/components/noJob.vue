@@ -25,9 +25,10 @@
       Get started by posting a new job opening.
     </p>
     <button
+      :disabled="props.button === 'Add Company Profile First'"
       type="button"
       @click="resetFilters"
-      class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition"
+      class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed"
     >
       {{ props.button }}
     </button>

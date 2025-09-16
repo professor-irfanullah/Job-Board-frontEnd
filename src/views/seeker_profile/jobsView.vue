@@ -215,8 +215,8 @@
                   class="img&titel flex flex-col w500:flex-row gap-2 flex-wra"
                 >
                   <img
-                    :src="job.company_logo"
-                    alt="logo"
+                    :src="job.logo_url"
+                    :alt="job.title"
                     class="h-6 w-6 w400:h-16 w400:w-16 object-contain rounded-lg"
                   />
                   <div class="JobTitle">

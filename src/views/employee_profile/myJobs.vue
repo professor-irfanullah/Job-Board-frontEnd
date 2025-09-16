@@ -2,7 +2,7 @@
   <main class="bg-gray-50 min-h-screen p-4 relative">
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
-      <div
+      <!-- <div
         class="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
       >
         <div>
@@ -12,8 +12,9 @@
           <p class="text-gray-600 mt-1">Manage your current job listings</p>
         </div>
         <button
+          :disabled="companyIDs?.length === 0"
           @click="showAddNewJobModal = true"
-          class="mt-4 md:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition flex items-center"
+          class="mt-4 md:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition flex items-center disabled:bg-indigo-400 disabled:cursor-not-allowed"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -29,10 +30,117 @@
               d="M12 6v6m0 0v6m0-6h6m-6 0H6"
             />
           </svg>
-          Post New Job
+
+          {{
+            companyIDs?.length != 0
+              ? "Post New Job"
+              : "Create Company Profile First"
+          }}
         </button>
       </div>
+      <select
+        class="p-2 block w-full mb-2 outline-blue-400"
+        v-if="companyIDs?.length > 1"
+      >
+        <option value="" selected>Select Company For Job Posting</option>
+        <option v-for="id in companyIDs" :key="id.company_id" value="">
+          {{ id.name }}
+        </option>
+      </select> -->
+      <div
+        class="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
+      >
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+            My Job Postings
+          </h1>
+          <p class="text-gray-600 mt-1">Manage your current job listings</p>
+        </div>
 
+        <div
+          class="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0"
+        >
+          <!-- Company Selector (only shown when multiple companies exist) -->
+          <div v-if="companyIDs?.length > 1" class="w-full md:w-48">
+            <select
+              required
+              @change="checkChange"
+              class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+            >
+              <option value="" disabled>Select Company</option>
+              <!-- :value="company.company_id" -->
+              <option
+                v-for="company in companyIDs"
+                :key="company.company_id"
+                :value="company.company_id"
+              >
+                {{ company.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Post Job Button -->
+          <button
+            @click="showAddNewJobModal = true"
+            :disabled="companyIDs?.length === 0"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition flex items-center disabled:bg-indigo-400 disabled:cursor-not-allowed whitespace-nowrap"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
+            </svg>
+            {{
+              companyIDs?.length !== 0 ? "Post New Job" : "Create Company First"
+            }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Info Alert when no companies -->
+      <div
+        v-if="companyIDs?.length === 0"
+        class="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6"
+      >
+        <div class="flex items-center">
+          <svg
+            class="h-5 w-5 text-blue-400 mr-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <div>
+            <h3 class="text-sm font-medium text-blue-800">
+              Company Profile Required
+            </h3>
+            <p class="text-sm text-blue-600 mt-1">
+              You need to create a company profile before posting jobs.
+              <router-link
+                to="/company-profile"
+                class="font-medium underline hover:text-blue-800"
+              >
+                Create your company profile
+              </router-link>
+            </p>
+          </div>
+        </div>
+      </div>
       <!-- Filters -->
       <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
         <div
@@ -151,7 +259,12 @@
                     {{ job.title }}
                   </h3>
                   <p
-                    class="text-center md:text-left text-sm text-gray-500 truncate"
+                    class="text-center md:text-left font-semibold text-sm text-gray-500 truncat"
+                  >
+                    {{ job.company_name }}
+                  </p>
+                  <p
+                    class="text-center md:text-left text-sm text-gray-500 truncat"
                   >
                     {{ job.description }}
                   </p>
@@ -294,7 +407,14 @@
         </div>
 
         <div v-else class="p-12 text-center relative">
-          <nojob @reset="showAddNewJobModal = true" button="Post New Job" />
+          <nojob
+            @reset="showAddNewJobModal = true"
+            :button="
+              companyIDs?.length !== 0
+                ? 'Post New Job'
+                : 'Add Company Profile First'
+            "
+          />
         </div>
         <!-- Pagination -->
         <div
@@ -418,7 +538,10 @@
       />
     </div>
     <div v-if="showAddNewJobModal" class="fixed inset-0 overflow-y-auto">
-      <add-job @close="closeAddModalAndCallJobs" />
+      <add-job
+        :company_id="selectedCompany"
+        @close="closeAddModalAndCallJobs"
+      />
     </div>
     <div v-if="showModifyJobModal" class="fixed inset-0 overflow-y-auto">
       <update-jobs
@@ -444,16 +567,26 @@ import addJob from "../../components/postJob.vue";
 import { useEmployeeStore } from "../../store/useEmployeeStore";
 import deleteJobModel from "../../components/deleteJobModel.vue";
 import jobDetails from "../../components/jobDetails.vue";
-
-import axios from "axios";
 import UpdateJobs from "../../components/updateJobs.vue";
+import api from "../../api/api";
+import { useComapnyStore } from "../../store/companyStore";
 
 const employeeStore = useEmployeeStore();
-
+const companyStore = useComapnyStore();
 const showAddNewJobModal = ref(false);
 const showModifyJobModal = ref(false);
 const showJobDetailModal = ref(false);
 const jobToDelete = ref();
+const companyIDs = ref(
+  computed(() =>
+    companyStore?.companyProfile?.filter(
+      (company) => company?.company_id !== null
+    )
+  )
+);
+const selectedCompany = ref(null);
+console.log(selectedCompany.value);
+
 // Sample data - replace with actual API calls
 const jobs = ref([]);
 // Filters
@@ -470,6 +603,9 @@ const itemsPerPage = ref(10);
 // Delete modal
 const showDeleteModal = ref(false);
 
+const checkChange = (event) => {
+  console.log(event.target.value);
+};
 // Computed properties
 const filteredJobs = computed(() => {
   let results = jobs.value;
@@ -587,7 +723,7 @@ const deleteJob = async () => {
   // http://localhost:3000
   try {
     await api.delete(
-      `/api/employee/delete/job?job_id=${jobToDelete.value.job_id}&employer_id=${jobToDelete.value.employer_id}`,
+      `/api/employee/delete/job?job_id=${jobToDelete.value.job_id}`,
       { withCredentials: true }
     );
     showDeleteModal.value = false;
@@ -607,7 +743,11 @@ const handleCloseUpdateModal = async () => {
   const response = await employeeStore.fetchEmployeeAllJobs();
   jobs.value = response;
 };
+
 onMounted(async () => {
   await fetchEmployeeAllJobs();
+  await companyStore?.fetchCompanyProfile();
+  // console.log(companyStore?.companyProfile[0].company_id);
+  console.log(companyIDs.value);
 });
 </script>

@@ -9,15 +9,15 @@
         <section
           class="profile&info flex items-center flex-wrap w600:gap-2 gap-1"
         >
-          <div v-if="companyInfo?.company_logo_url" class="imageIcon relative">
+          <div v-if="companyInfo?.profile_photo_url" class="imageIcon relative">
             <div
               class="img w-[50px] h-[50px] w200:w-[100px] w200:h-[100px] rounded-full overflow-hidden border-2 w200:border-4"
             >
               <img
                 class="w-[50px] h-[50px] w200:w-[100px] w200:h-[100px] flex items-center justify-center bg-white"
-                alt="Company Logo"
+                alt="Profile"
                 :src="
-                  companyInfo?.company_logo_url ||
+                  companyInfo?.profile_photo_url ||
                   'https://via.placeholder.com/150?text=Company+Logo'
                 "
               />
@@ -102,25 +102,15 @@
 
           <div class="userInfo">
             <h1 class="text-white font-bold text-xl capitalize">
-              {{ companyInfo?.company_name || "Company Name" }}
+              {{ userStore?.user?.user?.name || "Company Name" }}
             </h1>
             <template v-if="!isEditing">
-              <div v-if="companyInfo?.tagline" class="">
-                <p class="text-white text-sm">{{ companyInfo?.tagline }}</p>
+              <div v-if="companyInfo?.headline" class="">
+                <p class="text-white text-sm">{{ companyInfo?.headline }}</p>
               </div>
               <div v-else class="">
                 <p class="text-white text-sm">Add your company name</p>
               </div>
-            </template>
-            <template v-else>
-              <input
-                v-model.trim="companyInfo.company_name"
-                type="text"
-                required
-                @focus="enableButtonAgain"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                placeholder="Company name"
-              />
             </template>
           </div>
         </section>
@@ -201,14 +191,12 @@
               />
             </svg>
           </div>
-          <h2 class="text-xl font-semibold text-gray-800 ml-3">
-            About Company
-          </h2>
+          <h2 class="text-xl font-semibold text-gray-800 ml-3">About</h2>
         </div>
         <template v-if="!isEditing">
-          <div v-if="companyInfo?.company_description">
+          <div v-if="companyInfo?.about">
             <p class="text-gray-600 whitespace-pre-line pl-11">
-              {{ companyInfo?.company_description }}
+              {{ companyInfo?.about }}
             </p>
           </div>
           <div v-else>
@@ -222,7 +210,7 @@
             @focus="enableButtonAgain"
             class="w-full p-2 border"
             rows="4"
-            v-model.trim="companyInfo.company_description"
+            v-model.trim="companyInfo.about"
             placeholder="About your company"
           ></textarea>
           <p class="text-xs text-gray-500 mt-1">
@@ -249,11 +237,10 @@
             </svg>
           </div>
           <h2 class="text-xl font-semibold text-gray-800 ml-3">
-            Company Information
+            Personal Information
           </h2>
         </div>
         <div class="space-y-5 pl-11">
-          <!-- Email (always readonly) -->
           <div>
             <label class="block text-sm font-medium text-gray-500 mb-1"
               >Email Address</label
@@ -279,10 +266,10 @@
             </div>
             <div class="mt-3">
               <label class="block text-sm font-medium text-gray-500 mb-1"
-                >Website</label
+                >Role Assigned</label
               >
               <template v-if="!isEditing">
-                <div v-if="companyInfo?.website_url" class="">
+                <div v-if="companyInfo?.job_role" class="">
                   <div class="flex items-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -298,12 +285,9 @@
                         d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                       />
                     </svg>
-                    <a
-                      :href="companyInfo?.website_url"
-                      target="_blank"
-                      class="text-indigo-600 hover:underline"
-                      >{{ companyInfo?.website_url }}</a
-                    >
+                    <p class="text-indigo-600 hover:underline">
+                      {{ companyInfo?.job_role }}
+                    </p>
                   </div>
                 </div>
                 <div v-else class="">
@@ -330,20 +314,21 @@
               </template>
               <template v-else>
                 <input
-                  v-model.trim="companyInfo.website_url"
-                  type="url"
+                  v-model.trim="companyInfo.job_role"
+                  type="text"
                   @focus="enableButtonAgain"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  class="read-only:cursor-not-allowed w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
                   placeholder="https://yourcompany.com"
+                  readonly
                 />
               </template>
             </div>
             <div class="mt-3">
               <label class="block text-sm font-medium text-gray-500 mb-1"
-                >Industry</label
+                >Headline</label
               >
               <template v-if="!isEditing">
-                <div v-if="companyInfo?.industry" class="">
+                <div v-if="companyInfo?.headline" class="">
                   <div class="flex items-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -360,7 +345,7 @@
                       />
                     </svg>
                     <p class="text-gray-700">
-                      {{ companyInfo?.industry }}
+                      {{ companyInfo?.headline }}
                     </p>
                   </div>
                 </div>
@@ -388,7 +373,7 @@
               </template>
               <template v-else>
                 <input
-                  v-model.trim="companyInfo.industry"
+                  v-model.trim="companyInfo.headline"
                   type="text"
                   @focus="enableButtonAgain"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
@@ -396,208 +381,14 @@
                 />
               </template>
             </div>
-            <div class="mt-3">
-              <label class="block text-sm font-medium text-gray-500 mb-1"
-                >Company Size</label
-              >
-              <template v-if="!isEditing">
-                <div v-if="companyInfo?.company_size" class="">
-                  <div class="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-gray-400 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                    <p class="text-gray-700">
-                      {{ companyInfo?.company_size }}
-                    </p>
-                  </div>
-                </div>
-                <div v-else class="">
-                  <div class="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-gray-400 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                    <p class="text-gray-700">
-                      {{ "Not specified" }}
-                    </p>
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                <select
-                  v-model="companyInfo.company_size"
-                  @focus="enableButtonAgain"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                >
-                  <option value="">Select company size</option>
-                  <option value="1-10 employees">1-10 employees</option>
-                  <option value="11-50 employees">11-50 employees</option>
-                  <option value="51-200 employees">51-200 employees</option>
-                  <option value="201-500 employees">201-500 employees</option>
-                  <option value="501-1000 employees">501-1000 employees</option>
-                  <option value="1001+ employees">1001+ employees</option>
-                </select>
-              </template>
-            </div>
-            <div class="mt-3">
-              <label class="block text-sm font-medium text-gray-500 mb-1"
-                >Founded Year</label
-              >
-              <template v-if="!isEditing">
-                <div v-if="companyInfo?.founded_year" class="">
-                  <div class="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-gray-400 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <p class="text-gray-700">
-                      {{ companyInfo?.founded_year }}
-                    </p>
-                  </div>
-                </div>
-                <div v-else class="">
-                  <div class="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-gray-400 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <p class="text-gray-700">
-                      {{ "Not specified" }}
-                    </p>
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                <input
-                  v-model.trim="companyInfo.founded_year"
-                  type="number"
-                  min="1900"
-                  :max="new Date().getFullYear()"
-                  @focus="enableButtonAgain"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                  placeholder="E.g. 2010"
-                />
-              </template>
-            </div>
-            <div class="mt-3">
-              <label class="block text-sm font-medium text-gray-500 mb-1"
-                >Headquarters Location</label
-              >
-              <template v-if="!isEditing">
-                <div v-if="companyInfo?.headquarters_location" class="">
-                  <div class="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-gray-400 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    <p class="text-gray-700">
-                      {{ companyInfo.headquarters_location }}
-                    </p>
-                  </div>
-                </div>
-                <div v-else class="">
-                  <div class="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-gray-400 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    <p class="text-gray-700">
-                      {{ "Not specified" }}
-                    </p>
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                <input
-                  v-model.trim="companyInfo.headquarters_location"
-                  type="text"
-                  @focus="enableButtonAgain"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                  placeholder="E.g. San Francisco, CA"
-                />
-              </template>
-            </div>
             <p
               class="text-red-500 animate-pulse text-sm mt-2 font-medium capitalize"
-              v-if="errorMessage"
+              v-if="errorMessage && isEditing"
             >
               {{ errorMessage }}
             </p>
             <p
-              v-if="responseMessage"
+              v-if="responseMessage && isEditing"
               class="text-green-500 animate-pulse text-sm mt-2 font-medium capitalize"
             >
               {{ responseMessage }}
@@ -605,78 +396,6 @@
           </div>
         </div>
       </div>
-
-      <!-- <div class="bg bg-gray-50 rounded-md border border-gray-100">
-        <div class="social p-6 mt-2">
-          <div class="div flex items-center gap-2">
-            <div class="bg-indigo-100 p-2 rounded-lg">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-indigo-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-            </div>
-            <h1 class="text-xl font-semibold text-gray-800 ml-2">
-              Social Links
-            </h1>
-          </div>
-          <div class="linkedin mt-5 pl-11">
-            <div class="linkedinSection">
-              <label class="block text-sm font-medium text-gray-500 mb-1"
-                >LinkedIn</label
-              >
-              <template v-if="isEditing">
-                <div class="flex rounded-md shadow-sm">
-                  <span
-                    class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"
-                  >
-                    linkedin.com/company/
-                  </span>
-                  <input
-                    v-model.trim="companyInfo.linkedin_url"
-                    type="text"
-                    @focus="enableButtonAgain"
-                    class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                    placeholder="your-company"
-                  />
-                </div>
-              </template>
-              <template v-else>
-                <div v-if="companyInfo.linkedin_url" class="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                    />
-                  </svg>
-                  <a
-                    :href="
-                      'https://linkedin.com/company/' + companyInfo.linkedin_url
-                    "
-                    target="_blank"
-                    class="ml-2 text-indigo-600 hover:underline font-medium"
-                    >linkedin.com/company/{{ companyInfo.linkedin_url }}</a
-                  >
-                </div>
-                <div v-else class="text-gray-500 italic">Not provided</div>
-              </template>
-            </div>
-          </div>
-        </div>
-      </div> -->
 
       <div v-if="isEditing" class="mt-10 flex justify-end space-x-4">
         <button
@@ -718,14 +437,14 @@
   </main>
 </template>
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useEmployeeStore } from "../../store/useEmployeeStore";
-import axios from "axios";
+import { useAuthStore } from "../../store/useUserState";
 import api from "../../api/api";
 
 const store = useEmployeeStore();
 const companyInfo = ref({});
-
+const userStore = useAuthStore();
 const isEditing = ref(false);
 const logoInput = ref(null);
 const isSaving = ref(false);
@@ -735,120 +454,21 @@ const responseMessage = ref("");
 const errInLogoUpload = ref("");
 const successLogoUpload = ref("");
 
-const getCompanyInfo = async () => {
-  // http://localhost:3000
-  try {
-    const response = await api.get("/api/employer/profile", {
-      withCredentials: true,
-    });
-    companyInfo.value = response.data.company || {};
-  } catch (error) {
-    console.error("Error fetching company info:", error);
-  }
-};
-
-const validateInputs = () => {
-  return {
-    name: companyInfo.value.company_name || null,
-    description: companyInfo.value.company_description || null,
-    website_url: companyInfo.value.website_url || null,
-    industry: companyInfo.value.industry || null,
-    size: companyInfo.value.company_size || null,
-    founded_year: companyInfo.value.founded_year || null,
-    headquarters: companyInfo.value.headquarters_location || null,
-  };
-};
-
-const handleLogoChange = (event) => {
-  errInLogoUpload.value = "";
-  const file = event.target.files[0];
-  if (
-    file &&
-    (file.type === "image/png" ||
-      file.type === "image/jpg" ||
-      file.type === "image/jpeg")
-  ) {
-    logoInput.value = file;
-  } else {
-    errInLogoUpload.value = "Only PNG, JPG, or JPEG files are supported";
-    logoInput.value = null;
-  }
-};
-
-const submitLogo = async () => {
-  successLogoUpload.value = "Uploading please wait...";
-  if (!logoInput.value) return;
-
-  const formData = new FormData();
-  formData.append("logo", logoInput.value);
-  // http://localhost:3000
-  try {
-    const response = await api.post("/api/employer/profile/logo", formData, {
-      withCredentials: true,
-    });
-    successLogoUpload.value = response.data.msg;
-    errInLogoUpload.value = "";
-    getCompanyInfo();
-    logoInput.value = null;
-  } catch (err) {
-    console.error(err);
-    successLogoUpload.value = "";
-    errInLogoUpload.value = err.response?.data?.err || "Error uploading logo";
-  }
-};
-
-const enableButtonAgain = () => {
-  disableBtn.value = false;
-  errorMessage.value = "";
-  responseMessage.value = "";
-};
-
-const submitDetails = async () => {
-  isSaving.value = true;
-  const validInputs = validateInputs();
-  // http://localhost:3000/
-  try {
-    const response = await api.put("api/employer/profile", validInputs, {
-      withCredentials: true,
-    });
-
-    responseMessage.value = response.data.msg || "Profile updated successfully";
-    errorMessage.value = "";
-    disableBtn.value = true;
-    isEditing.value = false;
-    getCompanyInfo();
-  } catch (error) {
-    errorMessage.value = error.response?.data?.err || "Something went wrong";
-    responseMessage.value = "";
-    disableBtn.value = true;
-  } finally {
-    isSaving.value = false;
-  }
-};
-
 const postProfile = async () => {
-  const inputs = validateInputs();
-
-  if (inputs.name === null) {
-    disableBtn.value = true;
-    errorMessage.value = "Company Name is required...";
-    return;
-  }
-  disableBtn.value = true;
-  errorMessage.value = "";
   try {
-    const response = await store.insertEmployeeProfile(inputs);
+    const response = await store.insertEmployeeProfile(companyInfo.value);
     responseMessage.value = response.msg;
   } catch (error) {
     console.log(error);
   } finally {
     await store.fetchEmployeeProfile();
+    companyInfo.value = store?.profileInfo || {};
+    isEditing.value = false;
   }
 };
-
 onMounted(async () => {
+  await userStore.userAuthStatus();
   await store.fetchEmployeeProfile();
   companyInfo.value = store?.profileInfo;
-  console.log(store?.profileInfo);
 });
 </script>

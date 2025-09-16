@@ -38,12 +38,32 @@
       <!-- Job Posting Form -->
       <div class="bg-white p-6 rounded-xl shadow-sm space-y-6">
         <form @submit.prevent="submitForm">
+          <!-- company selection -->
+          <div class="mb-2">
+            <select
+              required
+              @change="switchCompanyID"
+              v-model="company_id"
+              name=""
+              class="block w-full p-2 border rounded-md outline-blue-400"
+            >
+              <option value="" disabled selected>Select Company</option>
+              <option
+                v-for="company in companyIDs"
+                :key="company.company_id"
+                :value="company.company_id"
+              >
+                {{ company.name }}
+              </option>
+            </select>
+          </div>
           <!-- Title -->
           <div class="space-y-2">
             <label for="title" class="block text-sm font-medium text-gray-700">
               Job Title *
             </label>
             <input
+              required
               v-model.trim="form.title"
               type="text"
               id="title"
@@ -61,6 +81,7 @@
               Job Description *
             </label>
             <textarea
+              required
               v-model.trim="form.description"
               id="description"
               rows="5"
@@ -78,6 +99,7 @@
               Requirements *
             </label>
             <textarea
+              required
               v-model.trim="form.requirements"
               id="requirements"
               rows="5"
@@ -95,6 +117,7 @@
               Responsibilities
             </label>
             <textarea
+              required
               v-model.trim="form.responsibilities"
               id="responsibilities"
               rows="3"
@@ -113,6 +136,7 @@
                 Location *
               </label>
               <input
+                required
                 v-model.trim="form.location"
                 type="text"
                 id="location"
@@ -147,6 +171,7 @@
               Employment Type *
             </label>
             <select
+              required
               v-model="form.employment_type"
               id="employment_type"
               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -176,6 +201,7 @@
                   <span class="text-gray-500 sm:text-sm">$</span>
                 </div>
                 <input
+                  required
                   v-model.number="form.salary_min"
                   type="number"
                   id="salary_min"
@@ -206,6 +232,7 @@
                   <span class="text-gray-500 sm:text-sm">$</span>
                 </div>
                 <input
+                  required
                   v-model.number="form.salary_max"
                   type="number"
                   id="salary_max"
@@ -234,6 +261,7 @@
                 Status *
               </label>
               <select
+                required
                 v-model="form.status"
                 id="status"
                 class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -253,6 +281,7 @@
                 Deadline *
               </label>
               <input
+                required
                 type="date"
                 v-model="form.deadline"
                 id="deadline"
@@ -326,13 +355,14 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import { ref, computed, onMounted } from "vue";
 import { useEmployeeStore } from "../store/useEmployeeStore";
+import { useComapnyStore } from "../store/companyStore";
 import api from "../api/api";
 
+const companyStore = useComapnyStore();
 const employeeStore = useEmployeeStore();
-const jobPostUrl = "http://localhost:3000/api/employee/post/job";
+const company_id = ref("");
 const emit = defineEmits(["close"]);
 const closeModal = () => {
   emit("close");
@@ -365,17 +395,10 @@ const form = ref({
 });
 
 const isSubmitting = ref(false);
-
-// If editing, populate form with existing data
-onMounted(() => {
-  if (props.jobData) {
-    form.value = {
-      ...props.jobData,
-      is_remote: props.jobData.is_remote || false,
-    };
-  }
-});
-
+const switchCompanyID = (event) => {
+  company_id.value = event.target.value;
+  console.log(company_id);
+};
 const submitForm = async () => {
   responseMessage.value = "Please wait..";
   errMessage.value = "";
@@ -395,6 +418,7 @@ const submitForm = async () => {
         salary_max: form.value.salary_max,
         status: form.value.status,
         application_deadline: form.value.deadline,
+        company_id: parseInt(company_id.value),
       },
       { withCredentials: true }
     );
@@ -408,4 +432,22 @@ const submitForm = async () => {
     isSubmitting.value = false;
   }
 };
+const companyIDs = ref(
+  computed(() =>
+    companyStore?.companyProfile?.filter(
+      (company) => company?.company_id !== null
+    )
+  )
+);
+// If editing, populate form with existing data
+onMounted(async () => {
+  if (props.jobData) {
+    form.value = {
+      ...props.jobData,
+      is_remote: props.jobData.is_remote || false,
+    };
+  }
+  await companyStore.fetchCompanyProfile();
+  console.log(companyStore?.companyProfile);
+});
 </script>

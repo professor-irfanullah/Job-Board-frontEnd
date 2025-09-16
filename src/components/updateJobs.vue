@@ -322,6 +322,8 @@ const props = defineProps({
     required: true,
   },
 });
+console.log(props.job);
+
 const form = computed(() => ({
   ...props.job,
   application_deadline: new Date(props.job.application_deadline)
