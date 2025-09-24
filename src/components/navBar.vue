@@ -498,21 +498,21 @@ const handleSignOut = async () => {
     "/applicants",
     "/company-profile",
   ];
-
-  let x = await store.logOut();
-  console.log(x);
-
-  await store.userAuthStatus();
-
-  setTimeout(() => {
-    if (
-      privatePaths.includes(router.currentRoute.value.path) ||
-      router.currentRoute.value.path.startsWith("/view")
-    ) {
-      router.push("/home");
-    }
-    isMobileMenuOpen.value = false;
-  }, 1000);
+  try {
+    await store.logOut();
+    await store.userAuthStatus();
+    setTimeout(() => {
+      if (
+        privatePaths.includes(router.currentRoute.value.path) ||
+        router.currentRoute.value.path.startsWith("/view")
+      ) {
+        router.push("/home");
+      }
+      isMobileMenuOpen.value = false;
+    }, 1000);
+  } catch (error) {
+    console.log(error);
+  }
 };
 const onClickOutside = (event) => {
   if (userMenuRef.value && !userMenuRef.value.contains(event.target)) {

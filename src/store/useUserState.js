@@ -44,11 +44,9 @@ export const useAuthStore = defineStore('auth', () => {
             const response = await api.post('/api/auth/logout', {}, { withCredentials: true })
             message.value = response.data
             isAuthenticated.value = false
-            error.value = null
             return response.data
         } catch (err) {
-            error.value = err
-            return err.response.data.err
+            throw err
         }
     }
     const getUserInformation = async () => {
