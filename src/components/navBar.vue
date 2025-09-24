@@ -499,7 +499,9 @@ const handleSignOut = async () => {
     "/company-profile",
   ];
 
-  await store.logOut();
+  let x = await store.logOut();
+  console.log(x);
+
   await store.userAuthStatus();
 
   setTimeout(() => {
