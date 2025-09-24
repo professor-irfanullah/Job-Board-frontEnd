@@ -86,19 +86,14 @@ router.beforeEach(async (to, from, next) => {
     const role = userStore?.user?.user?.role
     const isAuthenticated = await userStore.userAuthStatus()
     // avoid to access login or register for employee
-    if (isAuthenticated && avoidAfterAuth.includes(to.path) && role === 'employee') {
+    if (isAuthenticated && role === 'employee' && avoidAfterAuth.includes(to.path)) {
         return next('/employee-dashboard')
     }
-    if (!isAuthenticated && employerOnlyRoutes.includes(to.path)) {
-        return next('/home')
-    }
-    if (isAuthenticated && avoidAfterAuth.includes(to.path) && role === 'seeker') {
+    if (isAuthenticated && role === 'seeker' && (avoidAfterAuth.includes(to.path) || to.path.startsWith('/view'))) {
         return next('/dashboard')
     }
-
-
     // prevent beforeAuthRoutesForSeeker 
-    if (!isAuthenticated && (afterAuthRoutesForSeeker.includes(to.path) || employerOnlyRoutes.includes(to.path))) {
+    if (!isAuthenticated && (afterAuthRoutesForSeeker.includes(to.path) || employerOnlyRoutes.includes(to.path) || to.path.startsWith('/view'))) {
         return next('/home')
     }
 

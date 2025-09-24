@@ -217,7 +217,7 @@
                   <img
                     :src="job.logo_url"
                     :alt="job.title"
-                    class="h-6 w-6 w400:h-16 w400:w-16 object-contain rounded-lg"
+                    class="h-8 w-8 w400:h-16 w400:w-16 object-contain rounded-lg"
                   />
                   <div class="JobTitle">
                     <h1 class="font-semibold w300:text-lg">
@@ -243,8 +243,9 @@
                       {{ job.description }}
                     </p>
 
+                    <!-- class="mt-4 flex gap-2 flex-col sm:flex-row sm:items-center sm:justify-between" -->
                     <div
-                      class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
+                      class="flex items-center mt-4 flex-col gap-1 w500:flex-row w500:gap-20 w-[100%] p-2"
                     >
                       <div class="flex flex-col space-y-1">
                         <span class="text-sm text-gray-500">

@@ -22,8 +22,30 @@ export const useComapnyStore = (defineStore('company', () => {
                 name: params.name,
                 description: params.description,
                 website_url: params.website_url,
-                logo_url: params.logo_url
+                logo_url: params.logo_url,
+                address: params.address,
+                industry: params.industry,
+                company_size: params.company_size
             }, { withCredentials: true })
+            return response.data
+        } catch (error) {
+            throw error
+        }
+    }
+    const updateCompanyProfile = async (params) => {
+        if (!params) return 'Insufficient query Parameters';
+
+        try {
+            const response = await api.post('/api/employee/update/company',
+                {
+                    name: params.name,
+                    description: params.description,
+                    company_size: params.company_size,
+                    industry: params.industry,
+                    address: params.address,
+                    company_id: parseInt(params.company_id)
+                }, { withCredentials: true }
+            )
             return response.data
         } catch (error) {
             throw error
@@ -40,5 +62,5 @@ export const useComapnyStore = (defineStore('company', () => {
             throw error
         }
     }
-    return { fetchCompanyProfile, companyProfile, addCompany, deleteCompany }
+    return { fetchCompanyProfile, companyProfile, addCompany, deleteCompany, updateCompanyProfile }
 })) 

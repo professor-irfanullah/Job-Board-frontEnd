@@ -18,7 +18,7 @@
 
       <div class="space-y-3 w300:space-y-4 pt-3 w300:pt-4">
         <router-link
-          to="/"
+          to="/home"
           class="inline-flex items-center px-4 w300:px-6 py-2 w300:py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
         >
           <span>Return Home</span>

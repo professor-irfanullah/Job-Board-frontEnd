@@ -31,7 +31,7 @@
         >
           <div class="flex items-center gap-4">
             <img
-              :src="jobs.company_logo"
+              :src="jobs.logo_url"
               alt="Company Logo"
               class="h-16 w-16 object-contain rounded-md border"
             />

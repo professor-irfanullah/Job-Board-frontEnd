@@ -25,7 +25,9 @@
               <span>{{ savedJobs.length || 0 }}</span>
               Jobs Saved
             </h1>
-            <p class="text-sm text-gray-600">Sorted by: Most Relevant</p>
+            <p class="text-sm text-gray-600 capitalize">
+              Sorted by: {{ sortBy }}
+            </p>
           </div>
           <div
             class="headingsLeft rounded-md p-2 bg-white w-full w500:w-[200px]"
@@ -57,7 +59,7 @@
                   class="img&titel flex flex-col w500:flex-row gap-2 flex-wra"
                 >
                   <img
-                    :src="job.company_logo"
+                    :src="job.logo_url"
                     alt="logo"
                     class="h-6 w-6 w400:h-16 w400:w-16 object-contain rounded-lg"
                   />
@@ -66,7 +68,7 @@
                       {{ job.title }}
                     </h1>
                     <p class="text-sm text-gray-600">
-                      {{ job.company_name }} • {{ job.location }}
+                      {{ job.name }} • {{ job.location }}
                     </p>
                     <div class="tags text-sm flex gap-2 mt-4">
                       <p

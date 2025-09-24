@@ -471,14 +471,12 @@
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { useAuthStore } from "../store/useUserState";
 import { useRouter } from "vue-router";
-import { storeToRefs } from "pinia";
 const image_url = ref(
   "https://res.cloudinary.com/dvrlvz76t/image/upload/v1752045266/Fa-Team-Fontawesome-FontAwesome-Circle-User.512_1_xpral9.png"
 );
 const router = useRouter();
 const store = useAuthStore();
 const isMobileMenuOpen = ref(false);
-const { isAuthenticated } = storeToRefs(store);
 const userMenuRef = ref(null);
 const isUserMenuOpen = ref(false);
 const hideMobileMenuAfterClick = () => {
@@ -505,7 +503,10 @@ const handleSignOut = async () => {
   await store.userAuthStatus();
 
   setTimeout(() => {
-    if (privatePaths.includes(router.currentRoute.value.path)) {
+    if (
+      privatePaths.includes(router.currentRoute.value.path) ||
+      router.currentRoute.value.path.startsWith("/view")
+    ) {
       router.push("/home");
     }
     isMobileMenuOpen.value = false;

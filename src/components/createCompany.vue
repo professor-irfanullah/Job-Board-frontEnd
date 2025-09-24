@@ -150,6 +150,77 @@
                 />
               </div>
             </div>
+            <!-- address -->
+            <div class="space-y-2">
+              <label
+                for="address"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Address *
+              </label>
+              <input
+                v-model.trim="form.address"
+                type="text"
+                id="address"
+                required
+                :class="[
+                  'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                  errors.address ? 'border-red-300' : 'border-gray-300',
+                ]"
+                placeholder="Address"
+                @blur="validateField('address')"
+              />
+              <p v-if="errors.website_url" class="text-sm text-red-600">
+                {{ errors.address }}
+              </p>
+            </div>
+            <!-- industry -->
+            <div class="space-y-2">
+              <label
+                for="industry"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Industry *
+              </label>
+              <input
+                v-model.trim="form.industry"
+                type="text"
+                id="industry"
+                required
+                :class="[
+                  'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                  errors.industry ? 'border-red-300' : 'border-gray-300',
+                ]"
+                placeholder="Industry"
+                @blur="validateField('industry')"
+              />
+              <p v-if="errors.industry" class="text-sm text-red-600">
+                {{ errors.industry }}
+              </p>
+            </div>
+            <!-- company_size -->
+            <div class="space-y-2">
+              <select
+                @change="handleFormCompanySize"
+                name=""
+                id="companySize"
+                required
+                v-model="form.company_size"
+                class="border block w-full p-2 rounded-md"
+                :class="[
+                  'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                  errors.company_size ? 'border-red-300' : 'border-gray-300',
+                ]"
+              >
+                <option value="" disabled>Select Company Size</option>
+                <option value="10-20 Employees">10-20 Employees</option>
+                <option value="30-50 Employees">30-50 Employees</option>
+                <option value="100-200 Employees">100-200 Employees</option>
+              </select>
+              <p v-if="errors.industry" class="text-sm text-red-600">
+                {{ errors.company_size }}
+              </p>
+            </div>
           </div>
 
           <!-- Status Messages -->
@@ -220,7 +291,6 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import api from "../api/api";
 import { useComapnyStore } from "../store/companyStore";
 
 const emit = defineEmits(["close"]);
@@ -240,6 +310,10 @@ const form = ref({
   description: "",
   website_url: "",
   logo_url: "",
+  company_size: "",
+  address: "",
+  founded_year: "",
+  industry: "",
 });
 
 // Validation errors
@@ -248,6 +322,10 @@ const errors = ref({
   description: "",
   website_url: "",
   logo_url: "",
+  company_size: "",
+  address: "",
+  founded_year: "",
+  industry: "",
 });
 
 // Status messages
@@ -262,7 +340,10 @@ const hasErrors = computed(() => {
     !form.value.name ||
     !form.value.description ||
     !form.value.website_url ||
-    !form.value.logo_url
+    !form.value.logo_url ||
+    !form.value.address ||
+    !form.value.industry ||
+    form.value.company_size === ""
   );
 });
 
@@ -303,6 +384,19 @@ const validationRules = {
     }
     return "";
   },
+  address: (value) => {
+    if (!value) return "Address is required";
+    if (value.length < 10) return "Address must be at least 10 characters";
+    if (value.length > 1000) return "Address must be less than 1000 characters";
+    return "";
+  },
+  industry: (value) => {
+    if (!value) return "Industry is required";
+    if (value.length < 10) return "Industry must be at least 10 characters";
+    if (value.length > 1000)
+      return "Industry must be less than 1000 characters";
+    return "";
+  },
 };
 
 // Validate individual field
@@ -325,6 +419,10 @@ const handleImageError = (event) => {
   event.target.style.display = "none";
 };
 
+const handleFormCompanySize = (event) => {
+  console.log(event.target.value);
+  form.value.company_size = event.target.value;
+};
 // Submit form
 const submitForm = async () => {
   validateForm();
