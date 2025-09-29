@@ -497,6 +497,7 @@ const handleSignOut = async () => {
     "/applications", //done
     "/applicants",
     "/company-profile",
+    "/accountSetting",
   ];
   try {
     await store.logOut();
