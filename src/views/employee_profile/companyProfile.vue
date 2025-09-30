@@ -243,8 +243,9 @@
                 </svg>
               </button>
               <button
+                :disabled="company.role != 'HR'"
                 @click="confirmDelete(company)"
-                class="text-red-600 hover:text-red-900"
+                class="text-red-600 hover:text-red-900 disabled:cursor-not-allowed disabled:text-red-400"
                 title="Delete"
               >
                 <svg
