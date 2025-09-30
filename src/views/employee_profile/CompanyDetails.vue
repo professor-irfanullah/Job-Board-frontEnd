@@ -53,11 +53,9 @@
               />
             </svg>
             <span class="text-sm text-yellow-700">
-              Your company profile is pending verification by the super admin.
-              <span v-if="company.role === 'HR'"
-                >You can still add employees, but they won't be able to access
-                all features until verification is complete.</span
-              >
+              Your company's profile is pending verification by the super admin.
+              You will be able to access company features once verification is
+              complete.
             </span>
           </div>
         </main>
@@ -103,7 +101,7 @@
             </div>
 
             <div
-              v-if="isEditing === false && company.role === 'HR'"
+              v-if="isEditing === false"
               class="grid grid-cols-1 md:grid-cols-2 gap-6"
             >
               <div>
@@ -157,9 +155,9 @@
                 </h3>
                 <p class="text-gray-900">
                   {{
-                    company.verified_at
-                      ? formatDate(company.verified_at)
-                      : "Not verified yet"
+                    company.is_verified
+                      ? company.verified_at || "Verification date is missing"
+                      : "Not yet verified"
                   }}
                 </p>
               </div>
@@ -264,7 +262,7 @@
               <button
                 @click="isEditing = !isEditing"
                 v-if="!isEditing"
-                class="px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition"
+                class="px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition disabled:bg-indigo-500 disabled:cursor-not-allowed"
                 :disabled="company.role !== 'HR'"
               >
                 {{ "Edit Company Info" }}
