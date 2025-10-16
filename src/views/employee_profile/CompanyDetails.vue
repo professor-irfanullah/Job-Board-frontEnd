@@ -280,7 +280,230 @@
               </button>
             </div>
           </div>
+          <div class="statistics bg-white rounded-xl shadow-sm p-6 mt-2">
+            <div class="headings">
+              <h1 class="text-xl font-semibold">Company Statistics</h1>
+            </div>
+            <!-- cards sections -->
+            <div
+              class="cards grid grid-cols-1 w400:grid-cols-2 w700:grid-cols-3 mt-4 gap-4"
+            >
+              <div
+                class="card1 p-4 flex flex-col items-center rounded-md bg-blue-50"
+              >
+                <h1 class="head text-2xl font-bold text-blue-600">
+                  {{ company?.employees?.length || 0 }}
+                </h1>
+                <div class="text capitalize font-normal text-sm">
+                  Total Employees
+                </div>
+              </div>
+              <div
+                class="card2 p-4 flex flex-col items-center rounded-md bg-green-50"
+              >
+                <h1 class="head text-2xl font-bold text-green-600">2</h1>
+                <div class="text capitalize font-normal text-sm">
+                  Departments
+                </div>
+              </div>
+              <div
+                class="card3 p-4 flex flex-col items-center rounded-md bg-purple-50"
+              >
+                <h1 class="head text-2xl font-bold text-purple-600">8</h1>
+                <div class="text capitalize font-normal text-sm">
+                  open positions
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <!-- company logo part -->
+        <div
+          class="company-logo bg-white rounded-xl shadow-sm p-6 mt-2 flex justify-center items-center flex-col gap-4 max-h-fit"
+        >
+          <!-- class="img shadow-md overflow-hidde size-32 bg-indigo-50 rounded-full p-2" -->
+          <div class="company-logo-here">
+            <img
+              v-if="company.logo_url"
+              class="object-center size-32 border rounded-full border-indigo-400 overflow-hidden"
+              :src="company.logo_url"
+              :alt="company.name"
+            />
+            <!-- class="flex justify-center items-center w-full h-full text-blue-600 bg-indigo" -->
+            <div
+              v-else
+              class="border size-32 rounded-full flex justify-center items-center text-blue-600 bg-indigo-100"
+            >
+              <p class="text-4xl font-bold">
+                {{ company?.name?.charAt(0) }}
+              </p>
+            </div>
+            <!-- {{  }} -->
+          </div>
+          <div class="name flex items-center flex-col gap-1">
+            <h1 class="font-semibold text-xl">{{ company.name }}</h1>
+            <p class="text-sm capitalize">{{ company.industry }}</p>
+          </div>
+          <div
+            class="status px-2 py-0.5 text-xs rounded-full capitalize font-semibold text-gray-600"
+            :class="
+              company.is_verified
+                ? 'bg-green-100 text-green-800'
+                : 'bg-yellow-100 text-yellow-800'
+            "
+          >
+            {{ company.is_verified ? "verified" : "pending verification" }}
+          </div>
+        </div>
+      </div>
+      <div class="teamMembers mt-7 space-y-4">
+        <div class="header flex justify-between items-center">
+          <div class="heading">
+            <h1 class="text-xl text-gray-700 font-semibold">Team Members</h1>
+          </div>
+          <div class="searchsort flex jc space-x-4">
+            <div class="searchWithIcon relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 text-gray-400 absolute left-3 top-2.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Search employees"
+              />
+            </div>
+            <select
+              class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              id=""
+            >
+              <option value="">All Departments</option>
+              <option value="">All Departments</option>
+              <option value="">All Departments</option>
+            </select>
+          </div>
+        </div>
+        <!-- {{ company.employees }} -->
+        <!-- Employees Grid -->
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          <div
+            v-for="employee in company.employees"
+            :key="employee.id"
+            class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
+          >
+            <div class="text-center">
+              <div
+                class="size-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center"
+              >
+                <span class="text-xl font-bold text-indigo-600">{{
+                  employee.name.charAt(0)
+                }}</span>
+              </div>
+
+              <h3 class="text-lg font-semibold text-gray-800">
+                {{ employee.name }}
+              </h3>
+              <p class="text-sm text-gray-600">{{ employee.email }}</p>
+              <p class="text-xs text-gray-500">{{ employee.role }}</p>
+
+              <div class="mt-4 flex justify-center space-x-2">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                >
+                  {{ employee.role }}
+                </span>
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                >
+                  {{ employee.status }}
+                </span>
+              </div>
+
+              <div class="mt-4 flex justify-center space-x-2">
+                <button
+                  @click="viewEmployee(employee)"
+                  class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full transition"
+                  title="View Profile"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition"
+                  title="Edit"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div
+          v-for="emp in company.employees"
+          :key="emp.employee_id"
+          class="cardContents border bg-white rounded-xl p-2 grid grid-cols-2"
+        >
+          <div class="cont flex justify-center items-center flex-col">
+            <div class="img">
+              <div
+                class="logo size-20 rounded-full flex items-center justify-center bg-blue-100"
+              >
+                <h1 class="nameFirstLetter text-2xl font-bold text-blue-700">
+                  J
+                </h1>
+              </div>
+            </div>
+            <div class="name mt-4 text-center">
+              <h1 class="font-semibold">Employee Name</h1>
+              <p class="text-sm text-gray-500">Role of Employee</p>
+              <p class="text-xs text-gray-500 mt-0.5">Human Resources</p>
+            </div>
+          </div>
+        </div> -->
       </div>
     </section>
   </main>
