@@ -1,5 +1,5 @@
 <template>
-  <main class="bg-gray-50 min-h-screen p-4">
+  <main class="bg-gray-50 min-h-screen p-4 relative">
     <section class="max-w-7xl mx-auto">
       <header>
         <div class="headings space-y-1 w350:flex w350:gap-2 w350:space-y-0">
@@ -62,6 +62,7 @@
         <div class="btn mt-2">
           <button
             v-if="company.role === 'HR'"
+            @click="showAddEmployeeCard = true"
             class="md:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition flex items-center"
             :disabled="!company.is_verified"
             :class="{
@@ -99,165 +100,179 @@
 
               <!-- Verification Badge for Super Admin -->
             </div>
+            <transition name="list" mode="out-in">
+              <div
+                v-if="isEditing === false"
+                class="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">
+                    Company Name
+                  </h3>
+                  <p class="text-gray-900">{{ company.name }}</p>
+                </div>
 
-            <div
-              v-if="isEditing === false"
-              class="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">
-                  Company Name
-                </h3>
-                <p class="text-gray-900">{{ company.name }}</p>
-              </div>
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">
+                    Industry
+                  </h3>
+                  <p class="text-gray-900">{{ company.industry }}</p>
+                </div>
 
-              <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">Industry</h3>
-                <p class="text-gray-900">{{ company.industry }}</p>
-              </div>
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">
+                    Company Size
+                  </h3>
+                  <p class="text-gray-900">
+                    {{ company.company_size }}
+                  </p>
+                </div>
 
-              <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">
-                  Company Size
-                </h3>
-                <p class="text-gray-900">
-                  {{ company.company_size }}
-                </p>
-              </div>
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">
+                    Founded
+                  </h3>
+                  <p class="text-gray-900">
+                    {{ company.founded_year || "Not specified" }}
+                  </p>
+                </div>
 
-              <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">Founded</h3>
-                <p class="text-gray-900">
-                  {{ company.founded_year || "Not specified" }}
-                </p>
-              </div>
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">
+                    Verification Status
+                  </h3>
+                  <p class="text-gray-900">
+                    <span
+                      :class="
+                        company.is_verified
+                          ? 'text-green-600'
+                          : 'text-yellow-600'
+                      "
+                    >
+                      {{
+                        company.is_verified
+                          ? "Verified"
+                          : "Pending Verification"
+                      }}
+                    </span>
+                  </p>
+                </div>
 
-              <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">
-                  Verification Status
-                </h3>
-                <p class="text-gray-900">
-                  <span
-                    :class="
-                      company.is_verified ? 'text-green-600' : 'text-yellow-600'
-                    "
-                  >
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">
+                    Verification Date
+                  </h3>
+                  <p class="text-gray-900">
                     {{
-                      company.is_verified ? "Verified" : "Pending Verification"
+                      company.is_verified
+                        ? company.verified_at || "Verification date is missing"
+                        : "Not yet verified"
                     }}
-                  </span>
-                </p>
+                  </p>
+                </div>
+
+                <div class="md:col-span-2">
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">
+                    Address
+                  </h3>
+                  <p class="text-gray-900">{{ company.address }}</p>
+                </div>
+
+                <div class="md:col-span-2">
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">About</h3>
+                  <p class="text-gray-900 leading-relaxed">
+                    {{ company.description }}
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">
-                  Verification Date
-                </h3>
-                <p class="text-gray-900">
-                  {{
-                    company.is_verified
-                      ? company.verified_at || "Verification date is missing"
-                      : "Not yet verified"
-                  }}
-                </p>
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    for="name"
+                    class="text-sm font-medium text-gray-500 mb-2"
+                    >Company Name</label
+                  >
+
+                  <input
+                    class="text-gray-900 border block w-full p-2 rounded-md outline-blue-400"
+                    type="text"
+                    id="name"
+                    placeholder="Company name"
+                    v-model.trim="company.name"
+                  />
+                </div>
+
+                <form @submit.prevent="">
+                  <label
+                    for="industry"
+                    class="text-sm font-medium text-gray-500 mb-2"
+                    >Industry</label
+                  >
+                  <input
+                    id="industry"
+                    type="text"
+                    class="text-gray-900 border block w-full p-2 rounded-md outline-blue-500"
+                    placeholder="Industry"
+                    v-model.trim="company.industry"
+                  />
+                </form>
+
+                <div>
+                  <label for="size">Company Size</label>
+                  <select
+                    class="text-gray-900 border block w-full p-2 rounded-md outline-blue-500"
+                    id="size"
+                    v-model="company.company_size"
+                  >
+                    <option value="" disabled>Select Company Size</option>
+                    <option value="10-20 Employees">10-20 Employees</option>
+                    <option value="30-50 Employees">30-50 Employees</option>
+                    <option value="100-200 Employees">100-200 Employees</option>
+                  </select>
+                </div>
+
+                <div>
+                  <h3 class="text-sm font-medium text-gray-500 mb-2">
+                    Founded
+                  </h3>
+                  <p class="text-gray-900">
+                    {{ company.founded_year || "Not specified" }}
+                  </p>
+                </div>
+
+                <div class="md:col-span-2">
+                  <label
+                    for="address"
+                    class="text-sm font-medium text-gray-500 mb-2"
+                    >Address</label
+                  >
+                  <input
+                    id="address"
+                    type="text"
+                    class="text-gray-900 border block w-full p-2 rounded-md outline-blue-500"
+                    placeholder="Address"
+                    v-model.trim="company.address"
+                  />
+                </div>
+
+                <div class="md:col-span-2">
+                  <label
+                    for="address"
+                    class="text-sm font-medium text-gray-500 mb-2"
+                    >About</label
+                  >
+                  <textarea
+                    id="about"
+                    type="text"
+                    class="text-gray-900 border block w-full p-2 rounded-md outline-blue-500"
+                    placeholder="Industry"
+                    v-model.trim="company.description"
+                  >
+                  </textarea>
+                </div>
               </div>
-
-              <div class="md:col-span-2">
-                <h3 class="text-sm font-medium text-gray-500 mb-2">Address</h3>
-                <p class="text-gray-900">{{ company.address }}</p>
-              </div>
-
-              <div class="md:col-span-2">
-                <h3 class="text-sm font-medium text-gray-500 mb-2">About</h3>
-                <p class="text-gray-900 leading-relaxed">
-                  {{ company.description }}
-                </p>
-              </div>
-            </div>
-
-            <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label for="name" class="text-sm font-medium text-gray-500 mb-2"
-                  >Company Name</label
-                >
-
-                <input
-                  class="text-gray-900 border block w-full p-2 rounded-md outline-blue-400"
-                  type="text"
-                  id="name"
-                  placeholder="Company name"
-                  v-model.trim="company.name"
-                />
-              </div>
-
-              <form @submit.prevent="">
-                <label
-                  for="industry"
-                  class="text-sm font-medium text-gray-500 mb-2"
-                  >Industry</label
-                >
-                <input
-                  id="industry"
-                  type="text"
-                  class="text-gray-900 border block w-full p-2 rounded-md outline-blue-500"
-                  placeholder="Industry"
-                  v-model.trim="company.industry"
-                />
-              </form>
-
-              <div>
-                <label for="size">Company Size</label>
-                <select
-                  class="text-gray-900 border block w-full p-2 rounded-md outline-blue-500"
-                  id="size"
-                  v-model="company.company_size"
-                >
-                  <option value="" disabled>Select Company Size</option>
-                  <option value="10-20 Employees">10-20 Employees</option>
-                  <option value="30-50 Employees">30-50 Employees</option>
-                  <option value="100-200 Employees">100-200 Employees</option>
-                </select>
-              </div>
-
-              <div>
-                <h3 class="text-sm font-medium text-gray-500 mb-2">Founded</h3>
-                <p class="text-gray-900">
-                  {{ company.founded_year || "Not specified" }}
-                </p>
-              </div>
-
-              <div class="md:col-span-2">
-                <label
-                  for="address"
-                  class="text-sm font-medium text-gray-500 mb-2"
-                  >Address</label
-                >
-                <input
-                  id="address"
-                  type="text"
-                  class="text-gray-900 border block w-full p-2 rounded-md outline-blue-500"
-                  placeholder="Address"
-                  v-model.trim="company.address"
-                />
-              </div>
-
-              <div class="md:col-span-2">
-                <label
-                  for="address"
-                  class="text-sm font-medium text-gray-500 mb-2"
-                  >About</label
-                >
-                <textarea
-                  id="about"
-                  type="text"
-                  class="text-gray-900 border block w-full p-2 rounded-md outline-blue-500"
-                  placeholder="Industry"
-                  v-model.trim="company.description"
-                >
-                </textarea>
-              </div>
-            </div>
-
+            </transition>
             <div class="mt-6 pt-4 border-t border-gray-100">
               <button
                 @click="isEditing = !isEditing"
@@ -301,7 +316,9 @@
               <div
                 class="card2 p-4 flex flex-col items-center rounded-md bg-green-50"
               >
-                <h1 class="head text-2xl font-bold text-green-600">2</h1>
+                <h1 class="head text-2xl font-bold text-green-600">
+                  {{ roles.length }}
+                </h1>
                 <div class="text capitalize font-normal text-sm">
                   Departments
                 </div>
@@ -309,7 +326,7 @@
               <div
                 class="card3 p-4 flex flex-col items-center rounded-md bg-purple-50"
               >
-                <h1 class="head text-2xl font-bold text-purple-600">8</h1>
+                <h1 class="head text-2xl font-bold text-purple-600">0</h1>
                 <div class="text capitalize font-normal text-sm">
                   open positions
                 </div>
@@ -378,139 +395,220 @@
                 />
               </svg>
               <input
+                v-model.trim="search.name"
                 type="text"
                 class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Search employees"
               />
             </div>
             <select
+              v-model="search.role"
               class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               id=""
             >
-              <option value="">All Departments</option>
-              <option value="">All Departments</option>
-              <option value="">All Departments</option>
+              <option :value="null" :disabled="search.role === 'Sort by'">
+                {{ search.role !== null ? "Reset Filters" : "Sort by" }}
+              </option>
+              <option v-for="(role, index) in roles" :key="index" :value="role">
+                {{ role }}
+              </option>
             </select>
           </div>
         </div>
-        <!-- {{ company.employees }} -->
-        <!-- Employees Grid -->
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-        >
-          <div
-            v-for="employee in company.employees"
-            :key="employee.id"
-            class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
+        <transition name="fade-slide" mode="in-out">
+          <transition-group
+            name="fade-slide"
+            tag="div"
+            v-if="filterEmployee?.length"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           >
-            <div class="text-center">
-              <div
-                class="size-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center"
-              >
-                <span class="text-xl font-bold text-indigo-600">{{
-                  employee.name.charAt(0)
-                }}</span>
-              </div>
+            <div
+              v-for="employee in filterEmployee"
+              :key="employee.company_employee_id"
+              class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
+            >
+              <div class="text-center">
+                <div
+                  class="size-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center"
+                >
+                  <span class="text-xl font-bold text-indigo-600">{{
+                    employee.name.charAt(0)
+                  }}</span>
+                </div>
 
-              <h3 class="text-lg font-semibold text-gray-800">
-                {{ employee.name }}
+                <h3 class="text-lg font-semibold text-gray-800">
+                  {{ employee.name }}
+                </h3>
+                <p class="text-sm text-gray-600">{{ employee.email }}</p>
+                <p class="text-xs text-gray-500">{{ employee.role }}</p>
+
+                <div class="mt-4 flex justify-center space-x-2">
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                  >
+                    {{ employee.role }}
+                  </span>
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                  >
+                    {{ employee.status }}
+                  </span>
+                </div>
+
+                <div class="mt-4 flex justify-center space-x-2">
+                  <button
+                    @click="viewEmployee(employee)"
+                    class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full transition"
+                    title="View Profile"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    class="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition"
+                    title="Edit"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </transition-group>
+        </transition>
+        <transition name="fade-slide">
+          <no-Employees v-if="filterEmployee?.length === 0">
+            <div class="mt-3 bg-white rounded-xl shadow-sm p-8 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-12 w-12 mx-auto text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <h3 class="mt-4 text-lg font-medium text-gray-900">
+                No Employee found
               </h3>
-              <p class="text-sm text-gray-600">{{ employee.email }}</p>
-              <p class="text-xs text-gray-500">{{ employee.role }}</p>
-
-              <div class="mt-4 flex justify-center space-x-2">
-                <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                >
-                  {{ employee.role }}
-                </span>
-                <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                >
-                  {{ employee.status }}
-                </span>
-              </div>
-
-              <div class="mt-4 flex justify-center space-x-2">
-                <button
-                  @click="viewEmployee(employee)"
-                  class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full transition"
-                  title="View Profile"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
-                  </svg>
-                </button>
-
-                <button
-                  class="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition"
-                  title="Edit"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- <div
-          v-for="emp in company.employees"
-          :key="emp.employee_id"
-          class="cardContents border bg-white rounded-xl p-2 grid grid-cols-2"
-        >
-          <div class="cont flex justify-center items-center flex-col">
-            <div class="img">
-              <div
-                class="logo size-20 rounded-full flex items-center justify-center bg-blue-100"
+              <p class="mt-2 text-gray-500">
+                Try adjusting your search or filter criteria or invite them
+              </p>
+              <button
+                type="button"
+                @click="search.name = ''"
+                class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed"
               >
-                <h1 class="nameFirstLetter text-2xl font-bold text-blue-700">
-                  J
-                </h1>
-              </div>
+                {{ "Reset Filters" }}
+              </button>
             </div>
-            <div class="name mt-4 text-center">
-              <h1 class="font-semibold">Employee Name</h1>
-              <p class="text-sm text-gray-500">Role of Employee</p>
-              <p class="text-xs text-gray-500 mt-0.5">Human Resources</p>
-            </div>
-          </div>
-        </div> -->
+          </no-Employees>
+        </transition>
       </div>
     </section>
+    <transition name="fade-scale">
+      <profile-card
+        v-if="showEmpProfile"
+        class="fixed inset-0 overflow-auto"
+        @close="showEmpProfile = false"
+        :employee="passObj"
+      />
+    </transition>
+    <transition name="fade-scale">
+      <invite-employee
+        class="fixed inset-0"
+        @close="showAddEmployeeCard = false"
+        v-if="showAddEmployeeCard"
+      />
+    </transition>
   </main>
 </template>
+<style scoped>
+/* Fade + slide up */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.4s ease;
+}
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Fade + scale */
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: all 0.3s ease;
+}
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+/* Fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* List (for v-for) */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.3s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+</style>
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useComapnyStore } from "../../store/companyStore";
+import profileCard from "./profileCard.vue";
+import inviteEmployee from "./inviteEmployee.vue";
+import noEmployees from "../../components/noEmployees.vue";
 
 const store = useComapnyStore();
 const props = defineProps({
@@ -519,7 +617,14 @@ const props = defineProps({
     required: true,
   },
 });
+const showAddEmployeeCard = ref(false);
+const showEmpProfile = ref(false);
 const isEditing = ref(false);
+const search = ref({
+  name: null,
+  role: null,
+});
+const passObj = ref(null);
 const verificationStatusClass = computed(() => {
   return props.company.is_verified
     ? "bg-green-100 text-green-800"
@@ -533,7 +638,38 @@ const updateCompany = async () => {
     console.log(error);
   }
 };
+const roles = ref(
+  computed(() => {
+    const setOfRoles = new Set(
+      props?.company?.employees?.map((emp) => emp?.role)
+    );
+    const roles = new Array(...setOfRoles);
+    return roles;
+  })
+);
+const filterEmployee = ref(
+  computed(() => {
+    let result = [];
+    result = props?.company?.employees;
+    if (search.value.name !== null) {
+      result = result.filter((emp) =>
+        emp.name.toLowerCase().includes(search.value.name.toLowerCase())
+      );
+    }
+    if (search.value.role !== null) {
+      result = result.filter((r) => r.role.includes(search.value.role));
+    }
+
+    return result;
+  })
+);
+// view employee functionality
+const viewEmployee = (emp) => {
+  showEmpProfile.value = true;
+  passObj.value = emp;
+  console.log(emp);
+};
 onMounted(() => {
-  console.log(props);
+  console.log(props?.company?.employees);
 });
 </script>
