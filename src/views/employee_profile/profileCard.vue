@@ -23,7 +23,6 @@
           Back to Employees
         </button>
       </div>
-      <p>{{ props.employee }}</p>
       <!-- Employee Header -->
       <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <div class="flex flex-col md:flex-row md:items-center gap-6">
