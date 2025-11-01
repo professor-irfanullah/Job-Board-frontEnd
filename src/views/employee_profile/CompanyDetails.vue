@@ -62,7 +62,7 @@
         <div class="btn mt-2">
           <button
             v-if="company.role === 'HR'"
-            @click="showAddEmployeeCard = true"
+            @click="handleNewEmployeeModal"
             class="md:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition flex items-center"
             :disabled="!company.is_verified"
             :class="{
@@ -165,7 +165,8 @@
                   <p class="text-gray-900">
                     {{
                       company.is_verified
-                        ? company.verified_at || "Verification date is missing"
+                        ? formatDate(company.verified_at) ||
+                          "Verification date is missing"
                         : "Not yet verified"
                     }}
                   </p>
@@ -425,8 +426,27 @@
             <div
               v-for="employee in filterEmployee"
               :key="employee.company_employee_id"
-              class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
+              class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow relative"
             >
+              <!-- Professional "This is you" Badge for HR -->
+              <div
+                v-if="employee.email === actEmail"
+                class="absolute top-3 right-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-semibold py-1.5 px-3 rounded-full shadow-lg z-10 flex items-center space-x-1.5"
+              >
+                <svg
+                  class="w-3.5 h-3.5 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="whitespace-nowrap">You</span>
+              </div>
+
               <div class="text-center">
                 <div
                   class="size-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center"
@@ -484,7 +504,9 @@
                   </button>
 
                   <button
-                    class="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition"
+                    :disabled="employee.email !== actEmail"
+                    @click="goTo('/employee-profile')"
+                    class="p-2 text-gray-600 hover:bg-gray-50 rounded-full transition disabled:cursor-not-allowed"
                     title="Edit"
                   >
                     <svg
@@ -507,36 +529,59 @@
             </div>
           </transition-group>
         </transition>
+
         <transition name="fade-slide">
           <no-Employees v-if="filterEmployee?.length === 0">
-            <div class="mt-3 bg-white rounded-xl shadow-sm p-8 text-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-12 w-12 mx-auto text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <h3 class="mt-4 text-lg font-medium text-gray-900">
-                No Employee found
-              </h3>
-              <p class="mt-2 text-gray-500">
-                Try adjusting your search or filter criteria or invite them
-              </p>
-              <button
-                type="button"
-                @click="search.name = ''"
-                class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed"
-              >
-                {{ "Reset Filters" }}
-              </button>
+            <div
+              class="mt-6 bg-white rounded-2xl shadow-xs border border-gray-100 p-12 text-center"
+            >
+              <div class="max-w-sm mx-auto">
+                <div
+                  class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-10 w-10 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-3">
+                  No team members found
+                </h3>
+                <p class="text-gray-600 leading-relaxed mb-6">
+                  We couldn't find any employees matching your current search
+                  criteria. Try adjusting your filters or invite new team
+                  members to get started.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    type="button"
+                    @click="
+                      search.name = '';
+                      search.role = null;
+                    "
+                    class="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    Reset Filters
+                  </button>
+                  <button
+                    v-if="company.role === 'HR' && company.is_verified"
+                    @click="handleNewEmployeeModal"
+                    class="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    Invite Team Member
+                  </button>
+                </div>
+              </div>
             </div>
           </no-Employees>
         </transition>
@@ -552,7 +597,8 @@
     </transition>
     <transition name="fade-scale">
       <invite-employee
-        class="fixed inset-0"
+        :emp="props?.company"
+        class="fixed inset-0 overflow-y-auto"
         @close="showAddEmployeeCard = false"
         v-if="showAddEmployeeCard"
       />
@@ -609,8 +655,13 @@ import { useComapnyStore } from "../../store/companyStore";
 import profileCard from "./profileCard.vue";
 import inviteEmployee from "./inviteEmployee.vue";
 import noEmployees from "../../components/noEmployees.vue";
+import { useAuthStore } from "../../store/useUserState";
+import { useRouter } from "vue-router";
 
 const store = useComapnyStore();
+const userStore = useAuthStore();
+const router = useRouter();
+const actEmail = userStore?.user?.user?.email;
 const props = defineProps({
   company: {
     type: Object,
@@ -667,9 +718,20 @@ const filterEmployee = ref(
 const viewEmployee = (emp) => {
   showEmpProfile.value = true;
   passObj.value = emp;
-  console.log(emp);
 };
-onMounted(() => {
-  console.log(props?.company?.employees);
+// handle add new employee modal
+const handleNewEmployeeModal = () => {
+  showAddEmployeeCard.value = true;
+};
+const goTo = (path) => {
+  router.push(path);
+};
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const result = date.toISOString().split("T")[0];
+  return result;
+};
+onMounted(async () => {
+  await userStore?.userAuthStatus();
 });
 </script>
