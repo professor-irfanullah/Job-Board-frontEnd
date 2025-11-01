@@ -1,5 +1,5 @@
 <template>
-  <main class="bg-gray-50 min-h-screen p-4">
+  <main class="bg-gray-50 min-h-screen p-4 z-10">
     <div class="max-w-6xl mx-auto">
       <!-- Back Button -->
       <div class="mb-6">
@@ -300,8 +300,9 @@
                 </svg>
                 Send Message
               </button>
-              <button
-                @click="editEmployee"
+              <!-- @click="editEmployee" -->
+              <router-link
+                to="/employee-profile"
                 class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
               >
                 <svg
@@ -318,7 +319,7 @@
                   />
                 </svg>
                 Edit Profile
-              </button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -328,8 +329,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
 
 // props
 const props = defineProps({
@@ -344,25 +345,7 @@ const emit = defineEmits(["close"]);
 const closeModal = () => {
   emit("close");
 };
-const route = useRoute();
 const router = useRouter();
-
-// Employee data - in a real app, this would come from an API
-const employee = ref({
-  company_employee_id: "EMP-001",
-  user_id: "USR-036",
-  status: "active",
-  role: "hr",
-  name: "Sarah Johnson",
-  email: "sarah.johnson@company.com",
-  user_role: "HR Manager",
-  created_by_user: "Admin User",
-  bio: "Experienced HR professional with 8+ years in talent acquisition and employee development. Passionate about creating inclusive workplace cultures and driving organizational growth through strategic HR initiatives.",
-  about:
-    "I specialize in talent management, employee engagement, and organizational development. My focus is on building strong teams and fostering professional growth.",
-  profile_photo:
-    "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80",
-});
 
 // Computed properties
 const statusClass = computed(() => {
@@ -372,7 +355,7 @@ const statusClass = computed(() => {
     suspended: "bg-red-100 text-red-800",
     pending: "bg-yellow-100 text-yellow-800",
   };
-  return classes[employee.value.status] || "bg-gray-100 text-gray-800";
+  return classes[props?.employee?.status] || "bg-gray-100 text-gray-800";
 });
 
 // Methods
@@ -396,10 +379,6 @@ const formatRole = (role) => {
   return roleMap[role] || role;
 };
 
-const goBack = () => {
-  router.back();
-};
-
 const sendMessage = () => {
   alert(`Opening message composer for ${employee.value.name}`);
   // In a real app, this would open a messaging interface
@@ -409,10 +388,4 @@ const editEmployee = () => {
   alert(`Opening edit form for ${employee.value.name}`);
   // In a real app, this would navigate to edit page or open modal
 };
-
-// In a real app, you would fetch employee data based on route params
-onMounted(() => {
-  // const employeeId = route.params.id;
-  // fetchEmployee(employeeId);
-});
 </script>
