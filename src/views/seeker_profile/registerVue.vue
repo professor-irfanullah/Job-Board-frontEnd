@@ -401,6 +401,7 @@ const handleSubmit = async () => {
       user_name: form.value.username,
       email: form.value.email,
       password: form.value.password,
+      baseUrl: encodeURIComponent(window.location.origin + "/#/login"),
     });
     okMessage.value = response?.data?.msg;
     errMsg.value = "";
