@@ -110,7 +110,11 @@ const handleSubmit = async () => {
 const sendEmail = async () => {
   nodemailerResponse.value = "Please wait...";
   try {
-    const response = await api.get(`/api/auth/email/user?email=${user.value}`);
+    const response = await api.get(
+      `/api/auth/email/user?email=${
+        user.value
+      }&redirectURL=${encodeURIComponent(window.location.origin + "/#/login")}`
+    );
     console.log(response);
     nodemailerError.value = null;
     nodemailerResponse.value = response.data.msg;
