@@ -728,7 +728,12 @@ const goTo = (path) => {
 };
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  const result = date.toISOString().split("T")[0];
+  // const result = date.toISOString().split("T")[0];
+  const result = date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
   return result;
 };
 onMounted(async () => {
