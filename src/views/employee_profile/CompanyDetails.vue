@@ -374,6 +374,10 @@
           </div>
         </div>
       </div>
+      <trending-technologies
+        :company="company"
+        @update:technologies="(newTechs) => (company.technologies = newTechs)"
+      />
       <div class="teamMembers mt-7 space-y-4">
         <div class="header flex justify-between items-center">
           <div class="heading">
@@ -587,6 +591,7 @@
         </transition>
       </div>
     </section>
+    <section></section>
     <transition name="fade-scale">
       <profile-card
         v-if="showEmpProfile"
@@ -655,6 +660,7 @@ import { useComapnyStore } from "../../store/companyStore";
 import profileCard from "./profileCard.vue";
 import inviteEmployee from "./inviteEmployee.vue";
 import noEmployees from "../../components/noEmployees.vue";
+import trendingTechnologies from "./trendingTechnologies.vue";
 import { useAuthStore } from "../../store/useUserState";
 import { useRouter } from "vue-router";
 
