@@ -62,5 +62,26 @@ export const useComapnyStore = (defineStore('company', () => {
             throw error
         }
     }
-    return { fetchCompanyProfile, companyProfile, addCompany, deleteCompany, updateCompanyProfile }
+    const addTechnologyToCompany = async (name, id) => {
+        if (!name) {
+            throw new Error('Technology name  is required')
+        }
+        if (!id) {
+            throw new Error('Company ID is required')
+        }
+        return { name, id }
+    }
+
+    const removeTechnologyFromCompany = async (company_id, tech_id) => {
+        if (!company_id) {
+            throw new Error("Company ID is required")
+        }
+        if (!tech_id) {
+            throw new Error("Technology ID is required")
+        }
+        return { company_id, tech_id }
+    }
+
+
+    return { fetchCompanyProfile, companyProfile, addCompany, deleteCompany, updateCompanyProfile, addTechnologyToCompany, removeTechnologyFromCompany }
 })) 
