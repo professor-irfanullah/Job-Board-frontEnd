@@ -15,7 +15,6 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useComapnyStore } from "../store/companyStore";
 import NoCompanies from "./No-companies.vue";
-import testCompanyProfile from "../views/employee_profile/testCompanyProfile.vue";
 import CompanyDetails from "../views/employee_profile/CompanyDetails.vue";
 const store = useComapnyStore();
 const id = parseInt(useRoute().params.id);
