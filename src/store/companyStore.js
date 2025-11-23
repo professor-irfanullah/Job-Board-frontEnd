@@ -69,17 +69,36 @@ export const useComapnyStore = (defineStore('company', () => {
         if (!id) {
             throw new Error('Company ID is required')
         }
-        return { name, id }
+
+        try {
+            const response = await api.post('/api/employee/add/technology',
+                {
+                    name: name,
+                    company_id: id
+                }
+            )
+            return response.data
+        } catch (error) {
+            throw error
+        }
     }
 
-    const removeTechnologyFromCompany = async (company_id, tech_id) => {
-        if (!company_id) {
-            throw new Error("Company ID is required")
-        }
+    const removeTechnologyFromCompany = async (tech_id, company_id) => {
         if (!tech_id) {
             throw new Error("Technology ID is required")
         }
-        return { company_id, tech_id }
+
+        if (!company_id) {
+            throw new Error("Company ID is required")
+        }
+
+        try {
+            const response = await api.delete(`/api/employee/delete/technology?techID=${tech_id}&company_id=${company_id}`)
+            return response.data
+        }
+        catch (error) {
+            throw error
+        }
     }
 
 
