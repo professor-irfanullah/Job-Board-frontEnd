@@ -93,7 +93,9 @@
                     </span>
                   </div>
                   <div class="min-w-0 flex-1">
-                    <h3 class="text-base font-semibold text-gray-900 truncate">
+                    <h3
+                      class="text-base font-semibold text-gray-900 truncate capitalize"
+                    >
                       {{ tech.technology }}
                     </h3>
                     <p class="text-xs text-gray-500 font-medium">TECHNOLOGY</p>
@@ -103,7 +105,7 @@
                 <!-- Remove Button -->
                 <button
                   v-if="company.role === 'HR' && company.is_verified"
-                  @click="removeTechnology(tech.tech_id)"
+                  @click="removeTechnology(tech.tech_id, tech.company_id)"
                   class="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
                   title="Remove Technology"
                 >
@@ -274,7 +276,9 @@
 <script setup>
 import { computed, ref } from "vue";
 import noTechnology from "../../components/noEmployees.vue";
+import { useComapnyStore } from "../../store/companyStore";
 
+const store = useComapnyStore();
 const props = defineProps({
   company: {
     type: Object,
@@ -306,31 +310,34 @@ const getTechInitial = (techName) => {
   return techName.charAt(0).toUpperCase();
 };
 
-const addCustomTechnology = () => {
+const addCustomTechnology = async () => {
   if (!newTechName.value.trim()) return;
 
-  const newTech = {
-    tech_id: Date.now(),
-    technology: newTechName.value.trim(),
-  };
-
-  const updatedTechs = [...(props.company.technologies || []), newTech];
-  emit("update:technologies", updatedTechs);
-
-  // Reset and close modal
-  newTechName.value = "";
-  showAddTechModal.value = false;
+  try {
+    await store.addTechnologyToCompany(
+      newTechName.value,
+      props?.company?.company_id
+    );
+    let updatedTechnologies = await store.fetchCompanyProfile();
+    props.company.technologies = updatedTechnologies[0].technologies;
+    newTechName.value = "";
+    showAddTechModal.value = false;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const removeTechnology = (techId) => {
+const removeTechnology = async (techId) => {
   if (!props.company.is_verified || props.company.role !== "HR") return;
 
-  const updatedTechs = (props.company.technologies || []).filter(
-    (tech) => tech.tech_id !== techId
-  );
-  emit("update:technologies", updatedTechs);
+  try {
+    await store.removeTechnologyFromCompany(techId, props?.company?.company_id);
+    let updatedTechnologies = await store.fetchCompanyProfile();
+    props.company.technologies = updatedTechnologies[0].technologies;
+  } catch (error) {
+    console.log(error);
+  }
 };
-console.log(props.company);
 </script>
 
 <style scoped>
