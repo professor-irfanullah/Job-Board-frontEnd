@@ -329,7 +329,7 @@ const handleSubmit = async () => {
     }
     if (error.code === "ERR_BAD_RESPONSE") {
       okMessage.value = "";
-      errMsg.value = "Unable to connect to database";
+      errMsg.value = "Unable to Register your account please try again later";
       isButtonDisabled.value = true;
       return;
     }
