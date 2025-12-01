@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import api from '../api/api'
 import { ref } from 'vue'
 export const useComapnyStore = (defineStore('company', () => {
+    const companiesForSeekers = ref([])
     const companyProfile = ref(null)
     const fetchCompanyProfile = async () => {
         try {
@@ -101,6 +102,14 @@ export const useComapnyStore = (defineStore('company', () => {
         }
     }
 
-
-    return { fetchCompanyProfile, companyProfile, addCompany, deleteCompany, updateCompanyProfile, addTechnologyToCompany, removeTechnologyFromCompany }
+    const fetchAllCompanies = async () => {
+        try {
+            const response = await api.get('/api/seeker/get/all/companies')
+            companiesForSeekers.value = response.data
+            return companiesForSeekers.value
+        } catch (error) {
+            throw error
+        }
+    }
+    return { fetchCompanyProfile, companyProfile, addCompany, deleteCompany, updateCompanyProfile, addTechnologyToCompany, removeTechnologyFromCompany, fetchAllCompanies }
 })) 
