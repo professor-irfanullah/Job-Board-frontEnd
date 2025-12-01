@@ -66,8 +66,8 @@
             <h3 class="text-lg font-semibold text-gray-800">
               Current Stack
               <span class="text-sm font-normal text-gray-500 ml-2">
-                ({{ filteredTechnologies.length }} technology{{
-                  filteredTechnologies.length !== 1 ? "s" : ""
+                ({{ filteredTechnologies.length }} technolog{{
+                  filteredTechnologies.length !== 1 ? "ies" : "y"
                 }})
               </span>
             </h3>
