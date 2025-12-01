@@ -27,6 +27,10 @@ const routes = [
         component: () => import('../views/seeker_profile/jobsView.vue')
     },
     {
+        path: '/companies',
+        component: () => import('../views/companyForSeekers/companyList.vue')
+    },
+    {
         path: '/applications',
         component: () => import('../views/seeker_profile/application.vue')
     },
