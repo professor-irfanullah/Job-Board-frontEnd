@@ -278,16 +278,11 @@ const filters = ref({
 
 // get company size
 const companySize = computed(() => {
-  return companies.value.map((c) => c.company_size);
+  return [...new Set(companies.value.map((c) => c.company_size))];
 });
 // Available filters
 const industries = computed(() => {
   return [...new Set(companies.value.map((company) => company.industry))];
-});
-// technologies
-const technologies = computed(() => {
-  const allTechs = companies.value.flatMap((company) => company.technologies);
-  return [...new Set(allTechs)].sort();
 });
 
 // technologies 2.0

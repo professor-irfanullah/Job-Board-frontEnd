@@ -352,7 +352,7 @@
             v-else
             @click="hideMobileMenuAfterClick"
             class="border-transparent text-gray-500 font-medium text-sm inline-flex p-2 hover:rounded-md hover:bg-[rgba(240,248,255,0.8)] transition"
-            to="/findJobs"
+            to="/companies"
             active-class="text-gray-900"
             >Companies</router-link
           >
